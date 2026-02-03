@@ -1,0 +1,299 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  height: 100vh;
+}
+
+code {
+  font-family:
+    source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+.top-bar {
+  display: flex;
+  position: relative;
+}
+.top-bar-container {
+  display: flex;
+  gap: 62px;
+  padding: 25px 80px 25px 80px;
+  border-bottom: 0.5px solid #eee;
+  box-shadow: 0.5px 0.1px 0.5px #e1dddd;
+}
+.topbar-section {
+  display: flex;
+  align-items: center;
+}
+.topbar-section p {
+  padding: 0;
+  margin: 0 15px 0 0;
+  color: #747272;
+}
+.menu-container {
+  margin-left: 2px;
+  display: flex;
+  position: relative;
+  align-items: center;
+  border: 0.5px solid #eee;
+  box-shadow: 0.5px 0.1px 0.5px #e1dddd;
+  width: 100%;
+  justify-content: space-between;
+}
+.menu-logo img {
+  margin: 0 0 0 15px;
+  width: 70%;
+}
+.menu-items-top {
+  display: flex;
+  position: relative;
+  right: 5%;
+  align-items: center !important;
+}
+.menu-items-top ul {
+  display: flex;
+  list-style: none;
+  align-items: center;
+}
+.menu-items-top ul li {
+  margin: 0 15px 0 0 !important;
+  font-size: 1rem;
+}
+.menu-items-top ul .user-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.dashboard {
+  padding: 0;
+  margin: 0;
+}
+
+.watchlist {
+  height: 100%;
+  width: 100%;
+  border: #e1dddd;
+}
+.watchlist-container {
+  display: flex;
+  position: relative;
+  margin: 0;
+  padding: 0 29px;
+  text-align: center;
+  font-size: small;
+  border: 0.5px solid #e1dddd;
+  box-shadow: 0.5px 0.5px 1px #eee;
+  background-color: #ffffff;
+}
+.watchlist-container p {
+  justify-content: space-between;
+  margin: 5px;
+  padding: 5px;
+}
+.dashboard-user,
+.portfolio,
+.dashboard-holdings {
+  margin: 10px 5px 50px 5px;
+  padding: 15px 20px;
+}
+.dashboard-user h3 {
+  font-weight: 300;
+}
+.dashboard-mini-container {
+  display: flex;
+  position: relative;
+  margin-top: 45px;
+  gap: 150px;
+}
+.margin-used,
+.value {
+  padding: 20px;
+}
+.margin-used p,
+.value p {
+  margin: 0;
+  padding: 0;
+  line-height: 1.8;
+  color: #747272;
+  font-size: small;
+}
+.profit-loss {
+  display: flex;
+  position: relative;
+}
+.percentage {
+  padding: 22px 0 0 4px;
+}
+.menu-links {
+  text-decoration: none;
+  color: rgb(0, 0, 0);
+  font-size: 14px;
+  transition: all 0.2s ease-in-out;
+}
+.menu-links-active {
+  text-decoration: none;
+  color: #d64c33;
+}
+.menu-links:hover {
+  cursor: pointer;
+  color: #d64c33;
+}
+
+.holdings-container {
+  margin: 30px;
+  width: 100%;
+}
+.holdings-table {
+  margin: 15px 0 0 0;
+  padding: 0;
+  width: 100%;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead th {
+  font-weight: 400;
+  font-size: 1.2rem;
+  padding-bottom: 10px;
+  color: #514e4e;
+}
+.holdings-value {
+  margin: 150px 0 0 0;
+  display: flex;
+  flex-direction: row;
+  gap: 150px;
+}
+.conatiner p {
+  line-height: 0.5;
+}
+.main-amount {
+  font-size: 1.8rem;
+  color: #514e4e;
+}
+.decimal-amount {
+  font-size: 0.8rem;
+  color: #585555;
+}
+.value-type {
+  padding: 20px 0 0 0;
+  font-size: 0.85rem;
+  color: #747272;
+}
+td {
+  font-size: 0.8rem;
+  padding: 0 0 5px 0;
+}
+
+.position-container {
+  margin: 40px;
+}
+.position-header {
+  font-weight: 400;
+  font-size: 1.5rem;
+}
+.watchlist-data {
+  all: unset;
+  margin: 0 0 0 12px;
+  width: 100%;
+}
+.watchlist-data ul {
+  padding: 0;
+  margin: 0;
+}
+
+.item {
+  margin: 0 0 0 18px;
+  padding: 0px;
+  width: 95%;
+  display: flex;
+  position: relative;
+  justify-content: space-between;
+  cursor: pointer;
+  background-color: #fff;
+  box-shadow: 0.5px 0.5px 1px #e3d5d5;
+  transition: background-color 0.25s ease;
+}
+.item p {
+  margin: 0;
+  width: 40%;
+  padding: 8px;
+}
+.watchlist-li {
+  list-style: none;
+  letter-spacing: 0.5px;
+  font-size: 0.75rem;
+  margin: 0;
+  padding: 6px;
+}
+.down {
+  color: #c62828;
+}
+.up {
+  color: #4caf50;
+}
+.itemInfo {
+  width: 38%;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.itemInfo .percent {
+  margin: 0 8px 0 0;
+}
+.itemInfo .price {
+  margin: 0 8px 0 8px;
+}
+.actions {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+}
+
+.actions span button {
+  border: none;
+  margin: 2px 8px 0 0;
+  padding: 5px;
+}
+.buy {
+  background-color: #1e90ff;
+  color: #fff;
+}
+.sell {
+  background-color: #e53935;
+  color: #fff;
+}
+.item:hover {
+  background-color: #ebebeb;
+}
+.analytics,
+.more {
+  background-color: #fff;
+}
+
+ table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+ th,
+ td {
+  border-bottom: 1px solid #e0e0e0;
+  padding: 10px 6px;
+}
+.buy-component{
+  display: flex;
+  position: absolute;
+  left: 50%;
+  bottom:300px;
+  flex-direction:column;
+}
