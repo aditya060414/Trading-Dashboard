@@ -24,6 +24,8 @@ export default function BuyComponent({ stock, closeBuy }) {
   const handleSubmitPurchase = async () => {
      if (!qty || qty <= 0) {
         alert("Quantity must be greater than 0");
+        closeBuy();
+        return;
       } 
     try {
       const response = await axios.post("http://localhost:3002/orders", {
@@ -32,8 +34,6 @@ export default function BuyComponent({ stock, closeBuy }) {
         price: stock.price,
         mode: "BUY",
       });
-     
-        // console.log("server Response:", response.data);
         alert("Order Placed Successfully");
         closeBuy();
         setTimeout(() => {
@@ -46,7 +46,7 @@ export default function BuyComponent({ stock, closeBuy }) {
     }
   };
   return (
-    <div className="buy-component">
+    <div className="buy-sell-component">
       <div className="container">
         <div className="hero-section">
           <h5 style={{ fontSize: "1.7rem" }}>Buy Stock</h5>

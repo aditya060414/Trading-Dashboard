@@ -37,12 +37,12 @@ export default function Holdings() {
             </tr>
           </thead>
           <tbody>
-            {orders.map((order) => (
-              <tr key={order.id}>
+            {orders
+              .map((order) => (
+                <tr key={order.id}>
                 <td>{order.name}</td>
                 <td>{order.qty}</td>
                 <td>{formatINR(order.price)}</td>
-                {/* <td>{order.mode}</td> */}
               </tr>
             ))}
           </tbody>

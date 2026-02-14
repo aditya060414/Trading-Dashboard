@@ -290,7 +290,7 @@ td {
   border-bottom: 1px solid #e0e0e0;
   padding: 10px 6px;
 }
-.buy-component {
+.buy-sell-component {
   position: absolute;
   left: 50%;
   bottom: 50%;
@@ -306,35 +306,43 @@ td {
   box-shadow: 0 8px 10px rgba(30, 144, 255, 0.2);
   z-index: 10;
 }
-.buy-component .container .hero-section {
+.buy-sell-component .container .hero-section {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   margin: 0 0 15px 0;
 }
-.buy-component .container .stock-description{
+.buy-sell-component .container .stock-description {
   display: flex;
   position: relative;
   justify-content: space-between;
   align-items: center;
 }
-.buy-component .container .stock-description p {
+.buy-sell-component .container .stock-description p {
   line-height: 0.8;
 }
 
-.buy-component .container .stock-description .price-desc {
+.buy-sell-component .container .stock-description .price-desc {
   display: flex;
   flex-direction: row;
 }
-.buy-component .container .stock-description .price-desc .percentage-desc {
+.buy-sell-component .container .stock-description .price-desc .percentage-desc {
   font-size: 0.6rem;
   margin: 3px 0 0 0;
 }
 
-.buy-component .container .quantity {
+.buy-sell-component .container .sell-quantity {
   display: flex;
   flex-direction: column;
+}
+
+.buy-sell-component .container .sell-quantity {
+  display: flex;
+  flex-direction: row;
+}
+.buy-sell-component .container .sell-quantity p{
+  padding-left: 15px;
 }
 
 #qty {
@@ -344,7 +352,7 @@ td {
   margin: 0 0 20px 6px;
 }
 
-.order-title{
+.order-title {
   color: #272525;
   font-size: 1.8rem;
   padding: 16px 0 0 24px;

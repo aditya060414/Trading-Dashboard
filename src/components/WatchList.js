@@ -7,10 +7,23 @@ import { BarChartOutlined, MoreHoriz } from "@mui/icons-material";
 import BuyComponent from "./BuyComponent";
 import SellComponent from "./SellComponent";
 export default function WatchList() {
-  const [isBuyComponentOpen, setIsBuyComponentOpen] = useState(null);
+  const [tradeState, setTradeState] = useState({
+    type: null,
+    stock: null,
+  });
 
   const handleBuyButton = (stock) => {
-    setIsBuyComponentOpen(stock);
+    setTradeState({
+      type: "BUY",
+      stock,
+    });
+  };
+
+  const handleSellButton = (stock) => {
+    setTradeState({
+      type: "SELL",
+      stock,
+    });
   };
   return (
     <>
@@ -28,22 +41,39 @@ export default function WatchList() {
                 stock={stock}
                 key={index}
                 handleBuyButton={handleBuyButton}
+                handleSellButton={handleSellButton}
               />
             ))}
           </ul>
         </div>
       </div>
-      {isBuyComponentOpen && (
+      {tradeState.type === "BUY" && (
         <BuyComponent
-          stock={isBuyComponentOpen}
-          closeBuy={() => setIsBuyComponentOpen(null)}
+          stock={tradeState.stock}
+          closeBuy={() =>
+            setTradeState({
+              type: null,
+              stock: null,
+            })
+          }
+        />
+      )}
+      {tradeState.type === "SELL" && (
+        <SellComponent
+          stock={tradeState.stock}
+          closeBuy={() =>
+            setTradeState({
+              type: null,
+              stock: null,
+            })
+          }
         />
       )}
     </>
   );
 }
 
-const WatchListItem = ({ stock, handleBuyButton }) => {
+const WatchListItem = ({ stock, handleBuyButton, handleSellButton }) => {
   const [showWatchListAction, setShowWatchListAction] = useState(false);
 
   const handleMouseEnter = (e) => {
@@ -74,14 +104,18 @@ const WatchListItem = ({ stock, handleBuyButton }) => {
           <span className="price">{stock.price}</span>
         </div>
         {showWatchListAction && (
-          <WatchListActions handleBuyButton={handleBuyButton} stock={stock} />
+          <WatchListActions
+            handleBuyButton={handleBuyButton}
+            handleSellButton={handleSellButton}
+            stock={stock}
+          />
         )}
       </div>
     </li>
   );
 };
 
-const WatchListActions = ({ stock, handleBuyButton }) => {
+const WatchListActions = ({ stock, handleBuyButton, handleSellButton }) => {
   return (
     <span className="actions">
       <span>
@@ -99,7 +133,9 @@ const WatchListActions = ({ stock, handleBuyButton }) => {
           placement="top"
           arrowslot={{ transition: Grow }}
         >
-          <button className="sell">Sell</button>
+          <button className="sell" onClick={() => handleSellButton(stock)}>
+            Sell
+          </button>
         </Tooltip>
         <Tooltip
           title="More (M)"
