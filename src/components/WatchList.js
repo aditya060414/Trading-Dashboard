@@ -5,6 +5,7 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { BarChartOutlined, MoreHoriz } from "@mui/icons-material";
 import BuyComponent from "./BuyComponent";
+import SellComponent from "./SellComponent";
 export default function WatchList() {
   const [isBuyComponentOpen, setIsBuyComponentOpen] = useState(null);
 
