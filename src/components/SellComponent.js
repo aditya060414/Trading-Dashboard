@@ -17,6 +17,7 @@ export default function SellComponent({ stock, closeBuy }) {
   };
   const [holdingsData, setHoldingsData] = useState([]);
   useEffect(() => {
+    if (!stock?.name) return;
     try {
       axios.get("http://localhost:3002/fetchOrders").then((res) => {
         const stockDetail = res.data.find((item) => item.name === stock.name);
@@ -30,9 +31,19 @@ export default function SellComponent({ stock, closeBuy }) {
   }, [stock]);
   const [qty, setQty] = useState(1);
   const handleQtyChange = (event) => {
-    setQty(event.target.value);
+    setQty(Number(event.target.value));
   };
   const handleSubmitPurchase = async () => {
+    if (!holdingsData || holdingsData.qty === 0) {
+      alert(`You don't have any holdings of ${stock.name}`);
+      closeBuy();
+      return;
+    }
+    if (!holdingsData || qty > holdingsData.qty) {
+      alert("Entered quantity exceeds available holdings.");
+      closeBuy();
+      return;
+    }
     if (!qty || qty <= 0) {
       alert("Quantity must be greater than 0");
       closeBuy();
@@ -114,10 +125,10 @@ export default function SellComponent({ stock, closeBuy }) {
             onChange={handleQtyChange}
             placeholder="Quantity"
           />
-          <p>Max Qty. : {holdingsData.qty}</p>
+          <p>Max Qty. : {holdingsData?.qty ?? 0}</p>
         </div>
         <div className="sell-purchase-button">
-            <Button
+          <Button
             variant="contained"
             size="small"
             onClick={handleSubmitPurchase}

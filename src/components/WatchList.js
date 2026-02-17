@@ -20,6 +20,7 @@ export default function WatchList() {
   };
 
   const handleSellButton = (stock) => {
+    console.log("clicked");
     setTradeState({
       type: "SELL",
       stock,
