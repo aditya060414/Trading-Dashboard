@@ -29,7 +29,6 @@ export default function Login() {
     });
 
   const handleSubmit = async (e) => {
-    console.log("button clicked");
     e.preventDefault();
     try {
       const { data } = await axios.post(
@@ -39,7 +38,6 @@ export default function Login() {
         },
         { withCredentials: true },
       );
-      // console.log(data);
       const { success, message } = data;
       if (success) {
         handleSuccess(message);
@@ -80,7 +78,7 @@ export default function Login() {
             onChange={handleOnChange}
             required
           />
-          <Button type="submit" variant="contained" className="auth-btn">
+          <Button type="submit" variant="contained" className="auth-btn" >
             Login
           </Button>
         </form>

@@ -15,7 +15,7 @@ export default function SellComponent({ stock, closeBuy }) {
   const handleChange = (event, newAlignment) => {
     setAlignment(newAlignment);
   };
-  const [holdingsData, setHoldingsData] = useState([]);
+  const [holdingsData, setHoldingsData] = useState(null);
   useEffect(() => {
     if (!stock?.name) return;
     try {
@@ -39,7 +39,7 @@ export default function SellComponent({ stock, closeBuy }) {
       closeBuy();
       return;
     }
-    if (!holdingsData || qty > holdingsData.qty) {
+    if (qty > holdingsData.qty) {
       alert("Entered quantity exceeds available holdings.");
       closeBuy();
       return;

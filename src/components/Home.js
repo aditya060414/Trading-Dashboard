@@ -11,7 +11,7 @@ export default function Home() {
     withCredentials: true
   })
   .then(res => {
-    if (!res.data.status) {
+    if (!res.data.authenticated) {
       navigate("/login")
     }
   });
