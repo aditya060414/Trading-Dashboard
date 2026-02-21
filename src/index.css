@@ -586,3 +586,103 @@ td {
 .logout-btn:hover {
   background: #f5f5f5;
 }
+
+.menu-logo h2 {
+  font-family: "Inter", sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #0F172A; /* deep slate */
+  margin: 0 0 0 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+/* Optional: highlight "Ex" */
+.menu-logo h2 span {
+  color: #0052CC; /* brand blue */
+}
+.menu-logo h2:hover span {
+  color: #0041A8;
+  transition: color 200ms ease;
+}
+.menu-container {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: #fff;
+}
+.mx-navbar-search {
+  position: relative;
+  flex: 1;
+  max-width: 420px;
+  margin-left: 30px;
+}
+/* Search container */
+.mx-search-container {
+  position: relative;
+  width: 100%;
+}
+
+/* Input */
+.mx-search-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+/* Dropdown */
+.mx-search-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+  z-index: 1100;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+/* Item */
+.mx-search-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.mx-search-item:hover {
+  background-color: #f3f4f6;
+}
+
+/* Symbol */
+.mx-search-symbol {
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Price */
+.mx-search-price {
+  font-weight: 500;
+  color: #16a34a;
+}
+/* Watchlist title */
+.watchlist-title {
+  margin: 4px 0 12px 12px;
+  padding-bottom: 6px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  width: 95%;
+  color: #111827; /* dark slate */
+  border-bottom: 1px solid #e5e7eb;
+}

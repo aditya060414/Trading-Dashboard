@@ -18,7 +18,7 @@ export default function WatchList() {
       stock,
     });
   };
-
+  
   const handleSellButton = (stock) => {
     console.log("clicked");
     setTradeState({
@@ -29,20 +29,15 @@ export default function WatchList() {
   return (
     <>
       <div className="watchlist">
-        <div className="watchlist-container">
-          <p className="text-muted">
-            Search eg:infy, bse, nifty fut weekly, gold mcx
-          </p>
-          <p style={{ color: "grey" }}>{watchListData.length}/50</p>
-        </div>
         <div className="watchlist-data">
+    <p className="watchlist-title">Watchlist</p>
           <ul>
             {watchListData.map((stock, index) => (
               <WatchListItem
-                stock={stock}
-                key={index}
-                handleBuyButton={handleBuyButton}
-                handleSellButton={handleSellButton}
+              stock={stock}
+              key={index}
+              handleBuyButton={handleBuyButton}
+              handleSellButton={handleSellButton}
               />
             ))}
           </ul>
@@ -50,18 +45,18 @@ export default function WatchList() {
       </div>
       {tradeState.type === "BUY" && (
         <BuyComponent
-          stock={tradeState.stock}
-          closeBuy={() =>
-            setTradeState({
-              type: null,
-              stock: null,
-            })
-          }
+        stock={tradeState.stock}
+        closeBuy={() =>
+          setTradeState({
+            type: null,
+            stock: null,
+          })
+        }
         />
       )}
       {tradeState.type === "SELL" && (
         <SellComponent
-          stock={tradeState.stock}
+        stock={tradeState.stock}
           closeBuy={() =>
             setTradeState({
               type: null,

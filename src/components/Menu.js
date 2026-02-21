@@ -2,6 +2,7 @@ import React from "react";
 import { useState, useRef, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
+import SearchBar from "./SearchBar";
 export default function Menu() {
   const notActiveMenu = "menu-links";
   const activeMenu = "menu-links-active";
@@ -52,9 +53,13 @@ export default function Menu() {
   return (
     <div className="menu-container">
       <div className="menu-logo">
-        <img src="/media/kite-logo.svg" alt="logo" />
+        <h2>
+          Market<span>Ex</span>
+        </h2>
       </div>
-
+      <div className="mx-navbar-search">
+        <SearchBar />
+      </div>
       <div className="menu-items-top">
         <ul style={{ margin: "10px 2px 5px 0", padding: "0" }}>
           <li>
