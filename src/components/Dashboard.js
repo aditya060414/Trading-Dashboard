@@ -1,5 +1,4 @@
 import React from "react";
-import WatchList from "./WatchList";
 import { Routes, Route } from "react-router-dom";
 import Summary from "./Summary";
 import Orders from "./Orders";
@@ -7,14 +6,15 @@ import Holdings from "./Holdings";
 import Positions from "./Positions";
 import Funds from "./Funds";
 import Apps from "./Apps";
-import BuyComponent from "./BuyComponent";
+import WatchListComponent from "./WatchListComponent";
+
 
 const DashBoard = () => {
   return (
     <div className="container-fluid dashboard">
       <div className="row dashboard-row">
         <div className="col-4" style={{ margin: "0", padding: "0" }}>
-          <WatchList />
+          <WatchListComponent />
         </div>
         <div className="col-8">
           <div className="content">

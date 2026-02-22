@@ -2,8 +2,7 @@ import React from "react";
 import { useState, useRef, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
-import SearchBar from "./SearchBar";
-export default function Menu() {
+export default function Menu({ onSelectStock }) {
   const notActiveMenu = "menu-links";
   const activeMenu = "menu-links-active";
   const [open, setOpen] = useState(false);
@@ -56,9 +55,6 @@ export default function Menu() {
         <h2>
           Market<span>Ex</span>
         </h2>
-      </div>
-      <div className="mx-navbar-search">
-        <SearchBar />
       </div>
       <div className="menu-items-top">
         <ul style={{ margin: "10px 2px 5px 0", padding: "0" }}>

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-
-export default function SearchBar() {
+export default function SearchBar({ onSelectStock }) {
+  console.log("onSelectStock prop:", onSelectStock);
   const ws = useRef(null);
   const debounceRef = useRef(null);
   const containerRef = useRef(null);
@@ -10,14 +10,20 @@ export default function SearchBar() {
 
   /* WebSocket connection */
   useEffect(() => {
-    ws.current = new WebSocket("ws://localhost:4000");
+  if (ws.current) return; // prevent double connect
 
-    ws.current.onmessage = (event) => {
-      setResults(JSON.parse(event.data));
-    };
+  const socket = new WebSocket("ws://localhost:4000");
+  ws.current = socket;
 
-    return () => ws.current?.close();
-  }, []);
+  socket.onmessage = (event) => {
+    setResults(JSON.parse(event.data));
+  };
+
+  return () => {
+    socket.close();
+    ws.current = null;
+  };
+}, []);
 
   /* Input handler with debounce */
   const handleChange = (e) => {
@@ -34,7 +40,7 @@ export default function SearchBar() {
           JSON.stringify({
             type: "SEARCH",
             query: value,
-          })
+          }),
         );
       }
     }, 300);
@@ -51,25 +57,40 @@ export default function SearchBar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const handleSelectStock = (stock) => {
+    if (typeof onSelectStock !== "function") {
+      console.error("onSelectStock missing");
+      return;
+    }
+    onSelectStock(stock);
+    setResults([]);
+  };
   return (
-    <div className="mx-search-container" ref={containerRef}>
-      <input
-        className="mx-search-input"
-        placeholder="Search stock..."
-        value={query}
-        onChange={handleChange}
-      />
+    <>
+      <div className="mx-search-container" ref={containerRef}>
+        <input
+          className="mx-search-input"
+          placeholder="Search stock..."
+          value={query}
+          onChange={handleChange}
+        />
 
-      {results.length > 0 && (
-        <div className="mx-search-dropdown">
-          {results.map((s) => (
-            <div key={s._id} className="mx-search-item">
-              <span className="mx-search-symbol">{s.symbol}</span>
-              <span className="mx-search-price">₹{s.close}</span>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+        {results.length > 0 && (
+          <div className="mx-search-dropdown">
+            {results.map((s) => (
+              <button
+                key={s._id}
+                type="button"
+                className="mx-search-item"
+                onClick={() => handleSelectStock(s)}
+              >
+                <span className="mx-search-symbol">{s.symbol}</span>
+                <span className="mx-search-price">₹{s.close}</span>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    </>
   );
 }

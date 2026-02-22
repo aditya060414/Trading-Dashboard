@@ -4,7 +4,7 @@ const TopBar = () => {
   return (
     <>
       <div className="top-bar">
-      <Menu/>
+      <Menu />
       </div>
     </>
   );

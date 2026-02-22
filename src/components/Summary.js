@@ -1,8 +1,27 @@
+import { useState, useRef, useEffect } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import axios from "axios";
 export default function Summary() {
+  const navigate = useNavigate();
+  const [userDetails, setUserDetails] = useState(null);
+  useEffect(() => {
+    axios
+      .get("http://localhost:3002/verify", { withCredentials: true })
+      .then((res) => {
+        if (!res.data.authenticated) {
+          navigate("/login", { replace: true });
+        } else {
+          setUserDetails(res.data.user);
+        }
+      })
+      .catch(() => {
+        navigate("/login", { replace: true });
+      });
+  }, []);
   return (
     <div className="dashboard-container">
       <div className="dashboard-user">
-        <h3>Hii, User!</h3>
+        <h2>{userDetails?.username}</h2>
       </div>
       <div className="portfolio">
         <h5 style={{ fontWeight: "300" }}>Equity</h5>
