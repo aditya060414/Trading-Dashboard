@@ -4,9 +4,12 @@ import StockDetails from "./StockDetails";
 import WatchList from "./WatchList";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+
 export default function WatchListComponent() {
+
   const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState(null);
+  // verify route
   useEffect(() => {
     axios
       .get("http://localhost:3002/verify", { withCredentials: true })
@@ -21,6 +24,23 @@ export default function WatchListComponent() {
         navigate("/login", { replace: true });
       });
   }, [navigate]);
+
+  // set watchlist data
+  useEffect(() => {
+    if (!userDetails?.email) return;
+    axios
+      .get("http://localhost:3002/watchlistData", {
+        params: { email: userDetails.email },
+        withCredentials: true,
+      })
+      .then((res) => {
+        setWatchlistStocks(res.data);
+      })
+      .catch((err) => {
+        console.error("Failed to load watchlist", err);
+      });
+  }, [userDetails]);
+
   const [selectedStock, setSelectedStock] = useState(null);
   const [watchlistStocks, setWatchlistStocks] = useState([]);
 

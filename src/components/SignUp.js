@@ -29,7 +29,6 @@ export default function SignUp() {
       position: "top-right",
     });
   const handleSubmit = async (e) => {
-    console.log("button clicked");
     e.preventDefault();
     try {
       const { data } = await axios.post(
@@ -50,6 +49,7 @@ export default function SignUp() {
       }
     } catch (err) {
       console.error(err);
+      handleError(err.response.data.message);
     }
   };
   return (

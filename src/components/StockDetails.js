@@ -1,8 +1,8 @@
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
-
+import CandleChart from "./CandleChart";
 export default function StockDetails({ stock, onClose, onAddToWatchlist }) {
-  console.log("onAddToWatchlist:", onAddToWatchlist);
+
   const handleAdd = () => {
   onAddToWatchlist(stock);
   onClose();
@@ -36,7 +36,7 @@ export default function StockDetails({ stock, onClose, onAddToWatchlist }) {
         </div>
 
         <div className="stock-chart">
-          📈 Historical price chart goes here
+          <CandleChart symbol={stock.symbol} />
         </div>
       </div>
     </div>

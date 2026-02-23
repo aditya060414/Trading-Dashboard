@@ -9,7 +9,7 @@ import Button from "@mui/material/Button";
 import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
 export default function BuyComponent({ stock, closeBuy }) {
-  // console.log("Stock received:", stock);
+  console.log("Stock received:", stock);
   const [alignment, setAlignment] = React.useState("nifty");
 
   const handleChange = (event, newAlignment) => {
@@ -50,18 +50,6 @@ export default function BuyComponent({ stock, closeBuy }) {
       <div className="container">
         <div className="hero-section">
           <h5 style={{ fontSize: "1.7rem" }}>Buy Stock</h5>
-          <ToggleButtonGroup
-            color="primary"
-            value={alignment}
-            exclusive
-            onChange={handleChange}
-            aria-label="Platform"
-          >
-            <ToggleButton value="nifty" className="toggle">
-              Nifty
-            </ToggleButton>
-            <ToggleButton value="sensex">Sensex</ToggleButton>
-          </ToggleButtonGroup>
           <Tooltip title="close">
             <Button variant="outlined" color="error" onClick={closeBuy}>
               <CloseIcon />
@@ -69,10 +57,10 @@ export default function BuyComponent({ stock, closeBuy }) {
           </Tooltip>
         </div>
         <div className="stock-description">
-          <p style={{ fontSize: "0.9rem" }}>Company: {stock.name}</p>
+          <p style={{ fontSize: "0.9rem" }}>Company: {stock.symbol}</p>
           <section className="price-desc">
             <p style={{ fontSize: "1.5rem" }}>
-              &#8377;&nbsp;<b>{stock.price}</b>
+              &#8377;&nbsp;<b>{stock.high}</b>
             </p>
             <p
               style={{ color: stock.percent >= 0 ? "#4CAF50" : "#c62828" }}
@@ -85,7 +73,7 @@ export default function BuyComponent({ stock, closeBuy }) {
                   <KeyboardArrowUpIcon className="up" />
                 )}
               </span>
-              <span>{stock.percent}%</span>
+              <span>{stock.open}%</span>
             </p>
           </section>
         </div>
