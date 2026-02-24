@@ -1,48 +1,62 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 export default function Holdings() {
-
-  const [orders, setOrders] = useState([]);
+  const navigate = useNavigate();
+  const [userDetails, setUserDetails] = useState(null);
   useEffect(() => {
     axios
-      .get("http://localhost:3002/fetchOrders")
+      .get("http://localhost:3002/verify", { withCredentials: true })
+      .then((res) => {
+        if (!res.data.authenticated) {
+          navigate("/login", { replace: true });
+        } else {
+          setUserDetails(res.data.user);
+        }
+      })
+      .catch(() => {
+        navigate("/login", { replace: true });
+      });
+  }, [navigate]);
+  const [orders, setOrders] = useState([]);
+  useEffect(() => {
+     if (!userDetails?.email) return;
+    axios
+      .get(`http://localhost:3002/fetchOrders/${userDetails.email}`)
       .then((res) => {
         setOrders(res.data);
-        // console.log(res.data);
       })
       .catch((err) => {
         console.error(err);
       });
-  }, []);
+  }, [userDetails]);
   const formatINR = (amount) => {
-  return new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR",
-  }).format(amount);
-};
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+    }).format(amount);
+  };
   return (
     <div className="orders-container">
       <div className="order-hero">
-        <p className="order-title">Orders</p>
+        <p className="order-title">Holdings</p>
       </div>
       <div className="order-details">
         <table>
           <thead>
             <tr>
-              <th>Name</th>
+              <th>Symbol</th>
               <th>Quantity</th>
               <th>price</th>
               {/* <th>Mode</th> */}
             </tr>
           </thead>
           <tbody>
-            {orders
-              .map((order) => (
-                <tr key={order.id}>
-                <td>{order.name}</td>
+            {orders.map((order) => (
+              <tr key={order._id}>
+                <td>{order.symbol}</td>
                 <td>{order.qty}</td>
-                <td>{formatINR(order.price)}</td>
+                <td>{formatINR(order.close)}</td>
               </tr>
             ))}
           </tbody>

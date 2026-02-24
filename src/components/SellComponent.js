@@ -8,39 +8,54 @@ import Tooltip from "@mui/material/Tooltip";
 import Button from "@mui/material/Button";
 import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 export default function SellComponent({ stock, closeBuy }) {
+  const navigate = useNavigate();
+  const [userDetails, setUserDetails] = useState(null);
   // console.log("Stock received:", stock);
   const [alignment, setAlignment] = React.useState("nifty");
-
+  useEffect(() => {
+    axios
+      .get("http://localhost:3002/verify", { withCredentials: true })
+      .then((res) => {
+        if (!res.data.authenticated) {
+          navigate("/login", { replace: true });
+        } else {
+          setUserDetails(res.data.user);
+        }
+      })
+      .catch(() => {
+        navigate("/login", { replace: true });
+      });
+  }, [navigate]);
   const handleChange = (event, newAlignment) => {
     setAlignment(newAlignment);
   };
   const [holdingsData, setHoldingsData] = useState(null);
   useEffect(() => {
-    if (!stock?.name) return;
+    if (!stock?.symbol || !userDetails?.email) return;
     try {
-      axios.get("http://localhost:3002/fetchOrders").then((res) => {
-        const stockDetail = res.data.find((item) => item.name === stock.name);
-        console.log(stockDetail);
-        setHoldingsData(stockDetail);
-      });
+      axios
+        .get(`http://localhost:3002/fetchOrders/${userDetails.email}`)
+        .then((res) => {
+          const stockDetail = res.data.find(
+            (item) => item.symbol === stock.symbol,
+          );
+          console.log(stockDetail);
+          setHoldingsData(stockDetail || null);
+        });
     } catch (err) {
       console.error(err);
       alert("Failed to fetch holdings data!");
     }
-  }, [stock]);
+  }, [stock,userDetails]);
   const [qty, setQty] = useState(1);
   const handleQtyChange = (event) => {
     setQty(Number(event.target.value));
   };
   const handleSubmitPurchase = async () => {
     if (!holdingsData || holdingsData.qty === 0) {
-      alert(`You don't have any holdings of ${stock.name}`);
-      closeBuy();
-      return;
-    }
-    if (qty > holdingsData.qty) {
-      alert("Entered quantity exceeds available holdings.");
+      alert(`You don't have any holdings of ${stock.symbol}`);
       closeBuy();
       return;
     }
@@ -57,9 +72,10 @@ export default function SellComponent({ stock, closeBuy }) {
     try {
       const response = await axios.post("http://localhost:3002/orders", {
         quantity: qty,
-        name: stock.name,
-        price: stock.price,
+        symbol: stock.symbol,
+        close: stock.close,
         mode: "SELL",
+        email: userDetails?.email,
       });
       alert("Order Placed Successfully");
       closeBuy();
@@ -76,18 +92,6 @@ export default function SellComponent({ stock, closeBuy }) {
       <div className="container">
         <div className="hero-section">
           <h5 style={{ fontSize: "1.7rem" }}>Sell Stock</h5>
-          <ToggleButtonGroup
-            color="primary"
-            value={alignment}
-            exclusive
-            onChange={handleChange}
-            aria-label="Platform"
-          >
-            <ToggleButton value="nifty" className="toggle">
-              Nifty
-            </ToggleButton>
-            <ToggleButton value="sensex">Sensex</ToggleButton>
-          </ToggleButtonGroup>
           <Tooltip title="close">
             <Button variant="outlined" color="error" onClick={closeBuy}>
               <CloseIcon />
@@ -95,23 +99,10 @@ export default function SellComponent({ stock, closeBuy }) {
           </Tooltip>
         </div>
         <div className="stock-description">
-          <p style={{ fontSize: "0.9rem" }}>Company: {stock.name}</p>
+          <p style={{ fontSize: "0.9rem" }}>Company: {stock.symbol}</p>
           <section className="price-desc">
             <p style={{ fontSize: "1.5rem" }}>
-              &#8377;&nbsp;<b>{stock.price}</b>
-            </p>
-            <p
-              style={{ color: stock.percent >= 0 ? "#4CAF50" : "#c62828" }}
-              className="percentage-desc"
-            >
-              <span>
-                {stock.isDown ? (
-                  <KeyboardArrowDownIcon className="down" />
-                ) : (
-                  <KeyboardArrowUpIcon className="up" />
-                )}
-              </span>
-              <span>{stock.percent}%</span>
+              &#8377;&nbsp;<b>{stock.close}</b>
             </p>
           </section>
         </div>

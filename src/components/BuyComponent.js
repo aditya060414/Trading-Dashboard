@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
@@ -8,38 +8,54 @@ import Tooltip from "@mui/material/Tooltip";
 import Button from "@mui/material/Button";
 import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 export default function BuyComponent({ stock, closeBuy }) {
-  console.log("Stock received:", stock);
+  const navigate = useNavigate();
+  const [userDetails, setUserDetails] = useState(null);
   const [alignment, setAlignment] = React.useState("nifty");
 
+  useEffect(() => {
+    axios
+      .get("http://localhost:3002/verify", { withCredentials: true })
+      .then((res) => {
+        if (!res.data.authenticated) {
+          navigate("/login", { replace: true });
+        } else {
+          setUserDetails(res.data.user);
+        }
+      })
+      .catch(() => {
+        navigate("/login", { replace: true });
+      });
+  }, [navigate]);
   const handleChange = (event, newAlignment) => {
     setAlignment(newAlignment);
   };
 
   const [qty, setQty] = useState(1);
   const handleQtyChange = (event) => {
-    // console.log(event.target.value);
+    console.log(event.target.value);
     setQty(event.target.value);
   };
   const handleSubmitPurchase = async () => {
-     if (!qty || qty <= 0) {
-        alert("Quantity must be greater than 0");
-        closeBuy();
-        return;
-      } 
+    if (!qty || qty <= 0) {
+      alert("Quantity must be greater than 0");
+      closeBuy();
+      return;
+    }
     try {
       const response = await axios.post("http://localhost:3002/orders", {
         quantity: qty,
-        name: stock.name,
-        price: stock.price,
+        symbol: stock.symbol,
+        close: stock.close,
+        email: userDetails?.email,
         mode: "BUY",
       });
-        alert("Order Placed Successfully");
-        closeBuy();
-        setTimeout(() => {
-          window.location.reload();
-        }, 500);
-      
+      alert("Order Placed Successfully");
+      closeBuy();
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
     } catch (err) {
       console.error(err);
       alert("Failed to place order");
@@ -60,20 +76,7 @@ export default function BuyComponent({ stock, closeBuy }) {
           <p style={{ fontSize: "0.9rem" }}>Company: {stock.symbol}</p>
           <section className="price-desc">
             <p style={{ fontSize: "1.5rem" }}>
-              &#8377;&nbsp;<b>{stock.high}</b>
-            </p>
-            <p
-              style={{ color: stock.percent >= 0 ? "#4CAF50" : "#c62828" }}
-              className="percentage-desc"
-            >
-              <span>
-                {stock.isDown ? (
-                  <KeyboardArrowDownIcon className="down" />
-                ) : (
-                  <KeyboardArrowUpIcon className="up" />
-                )}
-              </span>
-              <span>{stock.open}%</span>
+              &#8377;&nbsp;<b>{stock.close}</b>
             </p>
           </section>
         </div>

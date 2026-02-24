@@ -1,10 +1,27 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; 
 import axios from "axios";
 export default function Orders() {
+  const navigate = useNavigate();
+  const [userDetails, setUserDetails] = useState(null);
   const [orders, setOrders] = useState([]);
   useEffect(() => {
     axios
-      .get("http://localhost:3002/orderHistory")
+      .get("http://localhost:3002/verify", { withCredentials: true })
+      .then((res) => {
+        if (!res.data.authenticated) {
+          navigate("/login", { replace: true });
+        } else {
+          setUserDetails(res.data.user);
+        }
+      })
+      .catch(() => {
+        navigate("/login", { replace: true });
+      });
+  }, [navigate]);
+  useEffect(() => {
+    axios
+      .get(`http://localhost:3002/orderHistory/${userDetails?.email}`)
       .then((res) => {
         setOrders(res.data);
         // console.log(res.data);
@@ -12,7 +29,7 @@ export default function Orders() {
       .catch((err) => {
         console.error(err);
       });
-  }, []);
+  }, [userDetails]);
   const formatINR = (amount) => {
     return new Intl.NumberFormat("en-IN", {
       style: "currency",
@@ -28,9 +45,9 @@ export default function Orders() {
         <table>
           <thead>
             <tr>
-              <th>Name</th>
+              <th>Symbol</th>
               <th>Quantity</th>
-              <th>price</th>
+              <th>close</th>
               <th>Mode</th>
               <th>Date</th>
               <th>TIme</th>
@@ -54,10 +71,16 @@ export default function Orders() {
               });
               return (
                 <tr key={order._id}>
-                  <td>{order.name}</td>
+                  <td>{order.symbol}</td>
                   <td>{order.qty}</td>
-                  <td>{formatINR(order.price)}</td>
-                  <td style={{ color: order.mode === "BUY" ? "#4CAF50" : "#c62828" }}>{order.mode}</td>
+                  <td>{formatINR(order.close)}</td>
+                  <td
+                    style={{
+                      color: order.mode === "BUY" ? "#4CAF50" : "#c62828",
+                    }}
+                  >
+                    {order.mode}
+                  </td>
                   <td>{date}</td>
                   <td>{time}</td>
                 </tr>
