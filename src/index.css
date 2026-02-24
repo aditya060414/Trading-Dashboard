@@ -69,9 +69,11 @@ code {
   align-items: center;
   justify-content: center;
 }
+.dashboard-container,
 .dashboard {
   padding: 0;
   margin: 0;
+  box-sizing: border-box;
 }
 
 .watchlist {
@@ -95,39 +97,39 @@ code {
   margin: 5px;
   padding: 5px;
 }
-.dashboard-user,
-.portfolio,
-.dashboard-holdings {
-  margin: 10px 5px 50px 5px;
-  padding: 15px 20px;
-}
-.dashboard-user h3 {
-  font-weight: 300;
-}
-.dashboard-mini-container {
-  display: flex;
-  position: relative;
-  margin-top: 45px;
-  gap: 150px;
-}
-.margin-used,
-.value {
-  padding: 20px;
-}
-.margin-used p,
-.value p {
-  margin: 0;
+.dashboard {
   padding: 0;
-  line-height: 1.8;
-  color: #747272;
-  font-size: small;
+  margin: 0;
 }
-.profit-loss {
-  display: flex;
-  position: relative;
+.dashboard-user h2 {
+  font-size: 1.3rem;
+  padding: 6px 12px;
+  margin-top: 12px;
 }
-.percentage {
-  padding: 22px 0 0 4px;
+.dashboard-user h2 span {
+  font-weight: 400;
+}
+.mini-container {
+  padding: 6px 12px;
+}
+.mini-container .statistics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  
+}
+.mini-container .statistics .stats {
+  background: #fff;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 15px 30px rgba(142, 141, 141, 0.2);
+}
+.mini-container .statistics .stats p{
+  padding: 0 12px;
+  margin: 0;
+}
+.mini-container .statistics .stats .header{
+  font-weight: 500;
 }
 .menu-links {
   text-decoration: none;
@@ -162,7 +164,7 @@ thead th {
   font-weight: 400;
   font-size: 1.2rem;
   padding-bottom: 10px;
-  color: #514e4e;
+  color: #000000;
 }
 .holdings-value {
   margin: 150px 0 0 0;
@@ -592,7 +594,7 @@ td {
   font-size: 22px;
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: #0F172A; /* deep slate */
+  color: #0f172a; /* deep slate */
   margin: 0 0 0 5px;
   cursor: pointer;
   display: flex;
@@ -601,10 +603,10 @@ td {
 
 /* Optional: highlight "Ex" */
 .menu-logo h2 span {
-  color: #0052CC; /* brand blue */
+  color: #0052cc; /* brand blue */
 }
 .menu-logo h2:hover span {
-  color: #0041A8;
+  color: #0041a8;
   transition: color 200ms ease;
 }
 .menu-container {
@@ -692,7 +694,7 @@ td {
   inset: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -706,7 +708,7 @@ td {
   background: #fff;
   border-radius: 12px;
   padding: 18px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 
 /* Header */
@@ -763,7 +765,7 @@ td {
 .stock-chart {
   margin-top: 16px;
   width: 100%;
-  height: 400px;   
+  height: 400px;
   background: #f4f6f8;
   border-radius: 12px;
   overflow: visible;

@@ -19,8 +19,10 @@ export default function Holdings() {
       });
   }, [navigate]);
   const [orders, setOrders] = useState([]);
+  const [latestPrice, setLatestPrice] = useState({});
+
   useEffect(() => {
-     if (!userDetails?.email) return;
+    if (!userDetails?.email) return;
     axios
       .get(`http://localhost:3002/fetchOrders/${userDetails.email}`)
       .then((res) => {
@@ -30,12 +32,28 @@ export default function Holdings() {
         console.error(err);
       });
   }, [userDetails]);
+
+  useEffect(() => {
+    if (!orders.length) return;
+    const symbols = orders.map((o) => o.symbol);
+    axios
+      .post("http://localhost:3002/getLatestStock", { symbols })
+      .then((res) => {
+        console.log(res.data);
+        setLatestPrice(res.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, [orders]);
+
   const formatINR = (amount) => {
     return new Intl.NumberFormat("en-IN", {
       style: "currency",
       currency: "INR",
     }).format(amount);
   };
+
   return (
     <div className="orders-container">
       <div className="order-hero">
@@ -46,19 +64,33 @@ export default function Holdings() {
           <thead>
             <tr>
               <th>Symbol</th>
-              <th>Quantity</th>
-              <th>price</th>
-              {/* <th>Mode</th> */}
+              <th>Qty</th>
+              <th>Buy Price</th>
+              <th>Gross</th>
+              <th>Current Value</th>
+              <th>P/L</th>
             </tr>
           </thead>
           <tbody>
-            {orders.map((order) => (
-              <tr key={order._id}>
-                <td>{order.symbol}</td>
-                <td>{order.qty}</td>
-                <td>{formatINR(order.close)}</td>
-              </tr>
-            ))}
+            {orders.map((order) => {
+              const current = latestPrice?.[order.symbol] ?? 0;
+              const currentValue = current * order.qty;
+              const pnl = currentValue - order.gross;
+              const roundedPnl = Number(pnl.toFixed(3));
+
+              return (
+                <tr key={order._id}>
+                  <td>{order.symbol}</td>
+                  <td>{order.qty}</td>
+                  <td>{formatINR(order.close)}</td>
+                  <td>{formatINR(order.gross)}</td>
+                  <td>{formatINR(currentValue)}</td>
+                  <td style={{ color: roundedPnl >= 0 ? "green" : "red" }}>
+                    {roundedPnl}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

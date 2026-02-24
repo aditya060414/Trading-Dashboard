@@ -19,47 +19,35 @@ export default function Summary() {
       });
   }, []);
   return (
-    <div className="dashboard-container">
-      <div className="dashboard-user">
-        <h2>{userDetails?.username}</h2>
-      </div>
-      <div className="portfolio">
-        <h5 style={{ fontWeight: "300" }}>Equity</h5>
-        <div className="dashboard-mini-container">
-          <div className="margin-available">
-            <p style={{ fontSize: "2rem" }}>3.74K</p>
-            <p style={{ fontSize: "0.9rem" }} className="text-muted">
-              Margin Available
-            </p>
+    <div className="container-fluid dashboard-container">
+      <div className="row">
+        <div className="col-7 dashboard">
+          <div className="dashboard-user">
+            <h2>
+              WELCOME,&nbsp;<span>{userDetails?.username}!</span>
+            </h2>
           </div>
-          <div className="margin-used">
-            <p>margins used 0</p>
-
-            <p>opening balance : 3.74k</p>
+          <div className="mini-container">
+            <div className="statistics">
+              <div className="stats">
+                <p className="header">Portfolio Value</p>
+                <p>
+                  price&nbsp;&nbsp;<span>24</span>
+                </p>
+              </div>
+              <div className="stats">
+                <p className="header">Todays's Gain</p>
+                <p>gain</p>
+              </div>
+              <div className="stats">
+                <p className="header">Available Cash</p>
+                <p>price</p>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-      <div className="dashboard-holdings">
-        <h5 style={{ fontWeight: "300" }}>Holdings</h5>
-        <div className="dashboard-mini-container">
-          <div className="margin-available">
-            <div className="profit-loss">
-              <p style={{ fontSize: "2rem", color: "#4CAF50" }}>1.55K</p>
-              <p
-                style={{ fontSize: "0.7rem", color: "#4CAF50" }}
-                className="percentage"
-              >
-                +5.20%
-              </p>
-            </div>
-            <p style={{ fontSize: "0.9rem" }} className="text-muted">
-              P&L
-            </p>
-          </div>
-          <div className="value">
-            <p>current value 31.43k</p>
-            <p>investment 29.88k</p>
-          </div>
+        <div className="col-5 dashboard">
+          <h3>r</h3>
         </div>
       </div>
     </div>
