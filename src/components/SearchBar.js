@@ -10,20 +10,20 @@ export default function SearchBar({ onSelectStock }) {
 
   /* WebSocket connection */
   useEffect(() => {
-  if (ws.current) return; // prevent double connect
+    if (ws.current) return; // prevent double connect
 
-  const socket = new WebSocket("ws://localhost:4000");
-  ws.current = socket;
+    const socket = new WebSocket("ws://localhost:4000");
+    ws.current = socket;
 
-  socket.onmessage = (event) => {
-    setResults(JSON.parse(event.data));
-  };
+    socket.onmessage = (event) => {
+      setResults(JSON.parse(event.data));
+    };
 
-  return () => {
-    socket.close();
-    ws.current = null;
-  };
-}, []);
+    return () => {
+      socket.close();
+      ws.current = null;
+    };
+  }, []);
 
   /* Input handler with debounce */
   const handleChange = (e) => {
@@ -74,20 +74,44 @@ export default function SearchBar({ onSelectStock }) {
           value={query}
           onChange={handleChange}
         />
-
         {results.length > 0 && (
           <div className="mx-search-dropdown">
-            {results.map((s) => (
-              <button
-                key={s._id}
-                type="button"
-                className="mx-search-item"
-                onClick={() => handleSelectStock(s)}
-              >
-                <span className="mx-search-symbol">{s.symbol}</span>
-                <span className="mx-search-price">₹{s.close}</span>
-              </button>
-            ))}
+            <table className="mx-search-table">
+              <thead>
+                <tr>
+                  <th>Symbol</th>
+                  <th>Open</th>
+                  <th>High</th>
+                  <th>Low</th>
+                  <th>Close</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {results.map((s) => {
+                  const isPositive = s.close >= s.open;
+                  return (
+                    <tr
+                      key={s._id}
+                      className="mx-search-row"
+                      onClick={() => handleSelectStock(s)}
+                    >
+                      <td className="mx-symbol">{s.symbol}</td>
+                      <td className="price-up">₹{s.open}</td>
+                      <td className="price-up">₹{s.high}</td>
+                      <td className="price-down">₹{s.low}</td>
+                      <td
+                        className={`x-number ${
+                          isPositive ? "price-up" : "price-down"
+                        }`}
+                      >
+                        ₹{s.close}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         )}
       </div>
