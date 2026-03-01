@@ -1127,6 +1127,10 @@ td {
   background: #c82333;
 }
 
+.input-text-red:focus-within{
+  border-color: #9c0808f5;
+  z-index: 999;
+}
 /* Loading State */
 .modal-actions button:disabled {
   opacity: 0.6;

@@ -69,6 +69,11 @@ export default function Funds() {
       setLoading(false);
     }
   };
+  // handle cancel
+  const handleCancel = () => {
+    setIsModalOpen(false);
+    setAmount("");
+  };
   const formatINR = (amount) => {
     return new Intl.NumberFormat("en-IN", {
       style: "currency",
@@ -161,7 +166,7 @@ export default function Funds() {
           <div className="modal-content">
             <h3>{modalMode} Funds</h3>
             <p>Available Fund: {balance !== null ? formatINR(balance) : "0"}</p>
-            <div className="input-box">
+            <div className={`input-box ${balance < amount ? "input-text-red" : ""}`}>
               <span>₹</span>
               <input
                 type="number"
@@ -172,7 +177,7 @@ export default function Funds() {
               />
             </div>
             <div className="modal-actions">
-              <button disabled={loading} onClick={() => setIsModalOpen(false)}>
+              <button disabled={loading} onClick={handleCancel}>
                 Cancel
               </button>
               <button
