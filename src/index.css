@@ -116,7 +116,6 @@ code {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 12px;
-  
 }
 .mini-container .statistics .stats {
   background: #fff;
@@ -124,11 +123,11 @@ code {
   padding: 16px;
   box-shadow: 0 15px 30px rgba(142, 141, 141, 0.2);
 }
-.mini-container .statistics .stats p{
+.mini-container .statistics .stats p {
   padding: 0 12px;
   margin: 0;
 }
-.mini-container .statistics .stats .header{
+.mini-container .statistics .stats .header {
   font-weight: 500;
 }
 .menu-links {
@@ -643,7 +642,7 @@ td {
   margin-top: 6px;
   background: #ffffff;
   border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
   overflow: hidden;
   max-height: 320px;
   overflow-y: auto;
@@ -704,12 +703,12 @@ td {
 }
 
 .price-up {
-  color: #16a34a;   /* green */
+  color: #16a34a; /* green */
   font-weight: 600;
 }
 
 .price-down {
-  color: #dc2626;   /* red */
+  color: #dc2626; /* red */
   font-weight: 600;
 }
 
@@ -970,4 +969,245 @@ td {
   border-color: #3b82f6;
 }
 
-/* Search bar button */
+/* Funds */
+.funds {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 12px 6px;
+}
+.funds-info {
+  margin: 4px;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 16px;
+}
+.wallet {
+  margin: 1rem;
+  text-align: left;
+  background-color: #fefafa;
+}
+.wallet h5 {
+  padding: 0;
+  margin: 0;
+  font-size: 0.92rem;
+  color: #393737;
+}
+.wallet p {
+  padding: 0;
+  margin: 4px 0 0 0;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.wallet .deposit-withdraw-btns {
+  display: flex;
+  gap: 36px;
+  margin-top: 12px;
+}
+.wallet .deposit-withdraw-btns button {
+  flex: 1; /* Makes buttons equal width */
+  padding: 10px 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  border: none;
+  border-radius: 8px;
+  color: white;
+}
+.wallet .deposit-withdraw-btns .btn-deposit {
+  background-color: #28a745; /* Success Green */
+}
+.wallet .deposit-withdraw-btns .btn-withdraw {
+  background-color: #dc3545; /* Danger Red */
+}
+.wallet .deposit-withdraw-btns button:hover {
+  opacity: 0.9;
+}
+
+.wallet .deposit-withdraw-btns button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+.modal-content {
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  width: 350px;
+}
+/* Available Funds */
+.modal-content p {
+  font-size: 0.95rem;
+  color: #4d4b4bd3;
+  background: #f8f9fa;
+  padding: 8px 12px;
+  border-radius: 8px;
+  display: inline-block;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+.input-box {
+  display: flex;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 8px;
+  margin: 15px 0;
+}
+.input-box:focus-within {
+  border-color: #308cedf5;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.075);
+}
+.input-box span {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #495057;
+  margin-right: 12px;
+}
+.input-box input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 1.4rem;
+  font-weight: 600;
+  width: 100%;
+  color: #1a1a1b;
+}
+.modal-actions {
+  display: flex;
+  gap: 12px;
+}
+/* Cancel Button */
+.modal-actions button:first-child {
+  padding: 6px 10px;
+  background: #e9ecef;
+  color: #495057;
+  border: 2px solid #363b3fba;
+  border-radius: 8px;
+}
+
+.modal-actions button:first-child:hover {
+  background: #dee2e6;
+}
+
+/* Confirm Buttons (Dynamic Classes) */
+.modal-actions .deposit {
+  padding: 6px 10px;
+  background: #28a745;
+  border: 2px solid #1c7d3394;
+  border-radius: 8px;
+  color: white;
+}
+
+.modal-actions .deposit:hover {
+  background: #218838;
+}
+
+.modal-actions .withdraw {
+  background: #dc3545;
+  color: white;
+  padding: 6px 10px;
+  border: 2px solid #a72532ad;
+  border-radius: 8px;
+}
+
+.modal-actions .withdraw:hover {
+  background: #c82333;
+}
+
+/* Loading State */
+.modal-actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+/* Hide arrows for Chrome, Safari, Edge, Opera */
+.input-box input::-webkit-outer-spin-button,
+.input-box input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Hide arrows for Firefox */
+.input-box input[type="number"] {
+  -moz-appearance: textfield;
+}
+.transactions {
+  margin-top: 25px;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 20px;
+}
+.transactions h5 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.45rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #f0f0f0; /* Subtle underline */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.transactions h5::before {
+  content: "";
+  display: inline-block;
+  width: 4px;
+  height: 18px;
+  background-color: #007bff; /* Primary blue or your brand color */
+  border-radius: 2px;
+}
+
+/* TABLE */
+.transactions table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+/* HEADER */
+.transactions thead {
+  background: #f5f2f223;
+}
+
+.transactions th {
+  text-align: left;
+  color: #666;
+  font-weight: 500;
+  padding: 12px;
+  background-color: #fafafa;
+  border-bottom: none;
+}
+
+/* ROWS */
+.transactions td {
+  padding: 14px 12px;
+  border-bottom: none;
+  font-size: 14px;
+}
+
+/* HOVER EFFECT */
+.transactions tbody tr:hover {
+  background: #c0c2c770;
+  transition: 0.15s ease;
+}
+
+/* color transaction type */
+.withdraw-row {
+  color: #ef4444;
+}
+.deposit-row {
+  color: #22c55e;
+}

@@ -8,7 +8,6 @@ import Funds from "./Funds";
 import Apps from "./Apps";
 import WatchListComponent from "./WatchListComponent";
 
-
 const DashBoard = () => {
   return (
     <div className="container-fluid dashboard">
@@ -16,7 +15,7 @@ const DashBoard = () => {
         <div className="col-4" style={{ margin: "0", padding: "0" }}>
           <WatchListComponent />
         </div>
-        <div className="col-8">
+        <div className="col-8" style={{ padding: 0, margin: 0 }}>
           <div className="content">
             <Routes>
               <Route exact path="/" element={<Summary />} />

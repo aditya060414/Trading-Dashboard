@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import { Tooltip, Grow } from "@mui/material";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+
 import { BarChartOutlined, MoreHoriz } from "@mui/icons-material";
 import BuyComponent from "./BuyComponent";
 import SellComponent from "./SellComponent";
 
-export default function WatchList({ watchlistStocks = [] }) {
+export default function WatchList({ watchlistStocks = [], marketData = {} }) {
   const [tradeState, setTradeState] = useState({
     type: null,
     stock: null,
@@ -34,14 +33,21 @@ export default function WatchList({ watchlistStocks = [] }) {
             {watchlistStocks.length === 0 && (
               <li className="watchlist-empty">No stocks added</li>
             )}
-            {watchlistStocks.map((stock, id) => (
-              <WatchListItem
-                stock={stock}
-                key={id}
-                handleBuyButton={handleBuyButton}
-                handleSellButton={handleSellButton}
-              />
-            ))}
+            {watchlistStocks.map((stock, id) => {
+              const live = marketData[stock.symbol] || {};
+              const mergedStock = {
+                ...stock,
+                ...live,
+              };
+              return (
+                <WatchListItem
+                  key={stock.symbol}
+                  stock={mergedStock}
+                  handleBuyButton={handleBuyButton}
+                  handleSellButton={handleSellButton}
+                />
+              );
+            })}
           </ul>
         </div>
       </div>
@@ -73,7 +79,6 @@ export default function WatchList({ watchlistStocks = [] }) {
 
 const WatchListItem = ({ stock, handleBuyButton, handleSellButton }) => {
   const [showWatchListAction, setShowWatchListAction] = useState(false);
-
   return (
     <li
       className="watchlist-li"

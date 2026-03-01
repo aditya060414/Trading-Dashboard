@@ -6,9 +6,11 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 export default function WatchListComponent() {
-
   const navigate = useNavigate();
+  const [watchlistStocks, setWatchlistStocks] = useState([]);
+  const [marketData, setMarketData] = useState({});
   const [userDetails, setUserDetails] = useState(null);
+  const [selectedStock, setSelectedStock] = useState(null);
   // verify route
   useEffect(() => {
     axios
@@ -41,8 +43,21 @@ export default function WatchListComponent() {
       });
   }, [userDetails]);
 
-  const [selectedStock, setSelectedStock] = useState(null);
-  const [watchlistStocks, setWatchlistStocks] = useState([]);
+
+  useEffect(() => {
+    if (!Array.isArray(watchlistStocks) || !watchlistStocks.length)
+    return;
+    
+    const symbols = watchlistStocks.map((w) => w.symbol);
+    axios
+      .post("http://localhost:3002/getLatestStock", { symbols })
+      .then((res) => {
+        setMarketData(res.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, [watchlistStocks]);
 
   const handleAddToWatchlist = async (stock) => {
     try {
@@ -80,7 +95,7 @@ export default function WatchListComponent() {
         />
       )}
 
-      <WatchList watchlistStocks={watchlistStocks} />
+      <WatchList watchlistStocks={watchlistStocks} marketData={marketData}/>
     </>
   );
 }

@@ -4,6 +4,7 @@ import TopBar from "./TopBar";
 import DashBoard from "./Dashboard";
 import axios from "axios";
 
+
 export default function Home() {
   <TopBar />;
   const navigate = useNavigate();
@@ -23,6 +24,7 @@ export default function Home() {
       <div className="home-container">
         <TopBar />
         <DashBoard />
+        
       </div>
     </>
   );
