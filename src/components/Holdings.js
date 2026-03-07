@@ -64,6 +64,7 @@ export default function Holdings() {
               <th>Symbol</th>
               <th>Qty</th>
               <th>Buy Price</th>
+              <th>Curr Price</th>
               <th>Gross</th>
               <th>Current Value</th>
               <th>P/L</th>
@@ -77,13 +78,17 @@ export default function Holdings() {
               const roundedPnl = Number(pnl.toFixed(3));
 
               return (
-                <tr key={order._id}>
+                <tr
+                  key={order._id}
+                  className={`${current > order.close ? "green" : "red"}`}
+                >
                   <td>{order.symbol}</td>
                   <td>{order.qty}</td>
                   <td>{formatINR(order.close)}</td>
+                  <td>{formatINR(current)}</td>
                   <td>{formatINR(order.gross)}</td>
                   <td>{formatINR(currentValue)}</td>
-                  <td style={{ color: roundedPnl >= 0 ? "green" : "red" }}>
+                  <td>
                     {roundedPnl}
                   </td>
                 </tr>

@@ -166,7 +166,9 @@ export default function Funds() {
           <div className="modal-content">
             <h3>{modalMode} Funds</h3>
             <p>Available Fund: {balance !== null ? formatINR(balance) : "0"}</p>
-            <div className={`input-box ${balance < amount ? "input-text-red" : ""}`}>
+            <div
+              className={`input-box ${modalMode === "Withdraw" && balance < amount ? "input-text-red" : ""}`}
+            >
               <span>₹</span>
               <input
                 type="number"

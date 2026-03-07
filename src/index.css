@@ -1127,7 +1127,7 @@ td {
   background: #c82333;
 }
 
-.input-text-red:focus-within{
+.input-text-red:focus-within {
   border-color: #9c0808f5;
   z-index: 999;
 }
@@ -1209,9 +1209,11 @@ td {
 }
 
 /* color transaction type */
-.withdraw-row {
+.withdraw-row,
+.red {
   color: #ef4444;
 }
-.deposit-row {
+.deposit-row,
+.green {
   color: #22c55e;
 }

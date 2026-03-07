@@ -11,6 +11,7 @@ export default function WatchListComponent() {
   const [marketData, setMarketData] = useState({});
   const [userDetails, setUserDetails] = useState(null);
   const [selectedStock, setSelectedStock] = useState(null);
+
   // verify route
   useEffect(() => {
     axios
@@ -43,11 +44,9 @@ export default function WatchListComponent() {
       });
   }, [userDetails]);
 
-
   useEffect(() => {
-    if (!Array.isArray(watchlistStocks) || !watchlistStocks.length)
-    return;
-    
+    if (!Array.isArray(watchlistStocks) || !watchlistStocks.length) return;
+
     const symbols = watchlistStocks.map((w) => w.symbol);
     axios
       .post("http://localhost:3002/getLatestStock", { symbols })
@@ -95,7 +94,7 @@ export default function WatchListComponent() {
         />
       )}
 
-      <WatchList watchlistStocks={watchlistStocks} marketData={marketData}/>
+      <WatchList watchlistStocks={watchlistStocks} marketData={marketData} />
     </>
   );
 }
