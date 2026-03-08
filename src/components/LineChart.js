@@ -12,7 +12,7 @@ export default function LineChart({ symbol }) {
   useEffect(() => {
     if (!containerRef.current) return;
 
-    /* ✅ CREATE CHART */
+    /*  CREATE CHART */
     const chart = createChart(containerRef.current, {
       width: containerRef.current.clientWidth,
       height: containerRef.current.clientHeight,
@@ -116,7 +116,7 @@ export default function LineChart({ symbol }) {
       {/* CHART */}
       <div
         ref={containerRef}
-        style={{ width: "100%", height: "100%" }}
+        style={{ width: "100%", height: "90%" }}
       />
     </>
   );

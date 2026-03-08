@@ -1,9 +1,5 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
-import ToggleButton from "@mui/material/ToggleButton";
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import Tooltip from "@mui/material/Tooltip";
 import Button from "@mui/material/Button";
 import CloseIcon from "@mui/icons-material/Close";
@@ -12,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 export default function BuyComponent({ stock, closeBuy }) {
   const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState(null);
-  const [alignment, setAlignment] = React.useState("nifty");
+  const [bal, setBal] = useState(0);
 
   useEffect(() => {
     axios
@@ -28,29 +24,52 @@ export default function BuyComponent({ stock, closeBuy }) {
         navigate("/login", { replace: true });
       });
   }, [navigate]);
-  const handleChange = (event, newAlignment) => {
-    setAlignment(newAlignment);
-  };
 
+  useEffect(() => {
+    axios
+      .get(`http://localhost:3002/funds/${userDetails?.email}`)
+      .then((res) => {
+        setBal(res.data.balance || 0);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, [userDetails]);
   const [qty, setQty] = useState(1);
   const handleQtyChange = (event) => {
-    console.log(event.target.value);
     setQty(event.target.value);
   };
+
   const handleSubmitPurchase = async () => {
     if (!qty || qty <= 0) {
       alert("Quantity must be greater than 0");
       closeBuy();
       return;
     }
+
+    const totalAmt = qty * stock.close;
+    const payload = {
+      withdraw: totalAmt,
+    };
+    if (totalAmt > bal) {
+      alert("Purchase failed due to insufficient balance.");
+      closeBuy();
+      return;
+    }
     try {
-      const response = await axios.post("http://localhost:3002/orders", {
-        quantity: qty,
-        symbol: stock.symbol,
-        close: stock.close,
-        email: userDetails?.email,
-        mode: "BUY",
-      });
+      await Promise.all([
+        axios.post("http://localhost:3002/orders", {
+          quantity: qty,
+          symbol: stock.symbol,
+          close: stock.close,
+          email: userDetails?.email,
+          mode: "BUY",
+        }),
+        axios.post(
+          `http://localhost:3002/funds/${userDetails.email}`,
+          payload,
+        ),
+      ]);
       alert("Order Placed Successfully");
       closeBuy();
       setTimeout(() => {
@@ -80,7 +99,6 @@ export default function BuyComponent({ stock, closeBuy }) {
             </p>
           </section>
         </div>
-
         <div className="quantity">
           <label htmlFor="qty">Qty:</label>
           <input

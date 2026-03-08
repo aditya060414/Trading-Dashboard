@@ -51,6 +51,7 @@ export default function SearchBar({ onSelectStock }) {
     const handleClickOutside = (e) => {
       if (!containerRef.current?.contains(e.target)) {
         setResults([]);
+        setQuery("");
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -64,6 +65,7 @@ export default function SearchBar({ onSelectStock }) {
     }
     onSelectStock(stock);
     setResults([]);
+    setQuery("");
   };
   return (
     <>
