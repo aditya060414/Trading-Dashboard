@@ -48,7 +48,7 @@ export default function Menu({ onSelectStock }) {
       .catch(() => {
         navigate("/login", { replace: true });
       });
-  }, []);
+  }, [userDetails]);
   return (
     <div className="menu-container">
       <div className="menu-logo">
@@ -94,34 +94,12 @@ export default function Menu({ onSelectStock }) {
 
           <li>
             <NavLink
-              to="/positions"
-              className={({ isActive }) =>
-                isActive ? activeMenu : notActiveMenu
-              }
-            >
-              Position
-            </NavLink>
-          </li>
-
-          <li>
-            <NavLink
               to="/funds"
               className={({ isActive }) =>
                 isActive ? activeMenu : notActiveMenu
               }
             >
               Funds
-            </NavLink>
-          </li>
-
-          <li>
-            <NavLink
-              to="/apps"
-              className={({ isActive }) =>
-                isActive ? activeMenu : notActiveMenu
-              }
-            >
-              Portfolio
             </NavLink>
           </li>
 

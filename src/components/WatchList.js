@@ -1,236 +1,258 @@
-  import React, { useState } from "react";
-  import { Tooltip, Grow } from "@mui/material";
-  import CloseIcon from "@mui/icons-material/Close";
-  import ToggleButton from "@mui/material/ToggleButton";
-  import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-  import { BarChartOutlined, MoreHoriz } from "@mui/icons-material";
-  import BuyComponent from "./BuyComponent";
-  import SellComponent from "./SellComponent";
-  import CandleChart from "./CandleChart";
-  import LineChart from "./LineChart";
+import React, { useState } from "react";
+import { Tooltip, Grow } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import { BarChartOutlined } from "@mui/icons-material";
+import BuyComponent from "./BuyComponent";
+import SellComponent from "./SellComponent";
+import CandleChart from "./CandleChart";
+import LineChart from "./LineChart";
+import DeleteIcon from "@mui/icons-material/Delete";
+import axios from "axios";
 
-  export default function WatchList({ watchlistStocks = [], marketData = {} }) {
-    const [tradeState, setTradeState] = useState({
-      type: null,
-      stock: null,
+export default function WatchList({ watchlistStocks = [], marketData = {} }) {
+  const [tradeState, setTradeState] = useState({
+    type: null,
+    stock: null,
+  });
+
+  const handleBuyButton = (stock) => {
+    setTradeState({
+      type: "BUY",
+      stock,
     });
+  };
 
-    const handleBuyButton = (stock) => {
-      setTradeState({
-        type: "BUY",
-        stock,
+  const handleSellButton = (stock) => {
+    setTradeState({
+      type: "SELL",
+      stock,
+    });
+  };
+
+  const [analytics, setAnalytics] = useState(false);
+  const [analyticsStock, setAnalyticsStock] = useState(null);
+
+  const handleAnalytics = (stock) => {
+    if (!stock) return;
+    setAnalytics(true);
+    setAnalyticsStock(stock);
+  };
+  const [alignment, setAlignment] = useState("line");
+  const handleChange = (event, newAlignment) => {
+    if (newAlignment !== null) {
+      setAlignment(newAlignment);
+    }
+  };
+  const handleClose = () => {
+    setAnalytics(false);
+  };
+
+  const handleDelete = async (stock) => {
+    try {
+      const email = stock.email;
+      const symbol = stock.symbol;
+
+      axios.delete("http://localhost:3002/watchlist", {
+        data: {
+          symbol: symbol,
+          email: email,
+        },
       });
-    };
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  return (
+    <>
+      <div className="watchlist">
+        <div className="watchlist-data">
+          <p className="watchlist-title">Watchlist</p>
+          <ul>
+            {watchlistStocks.length === 0 && (
+              <li className="watchlist-empty">No stocks added</li>
+            )}
+            {watchlistStocks.map((stock) => {
+              const live = marketData[stock.symbol] || {};
+              const mergedStock = {
+                ...stock,
+                ...live,
+              };
+              return (
+                <WatchListItem
+                  key={stock.symbol}
+                  stock={mergedStock}
+                  handleBuyButton={handleBuyButton}
+                  handleSellButton={handleSellButton}
+                  handleAnalytics={handleAnalytics}
+                  handleDelete={handleDelete}
+                />
+              );
+            })}
+          </ul>
+        </div>
+        {analytics && analyticsStock && (
+          <div className="stock-details-overlay">
+            <div className="stock-details-card">
+              <div className="stock-details-header">
+                <h3>{analyticsStock?.symbol}</h3>
+                <button onClick={handleClose}>
+                  <CloseIcon />
+                </button>
+              </div>
 
-    const handleSellButton = (stock) => {
-      setTradeState({
-        type: "SELL",
-        stock,
-      });
-    };
+              <div className="stock-price">₹{analyticsStock?.close}</div>
 
-    const [analytics, setAnalytics] = useState(false);
-    const [analyticsStock, setAnalyticsStock] = useState(null);
-
-    const handleAnalytics = (stock) => {
-      if (!stock) return;
-      setAnalytics(true);
-      setAnalyticsStock(stock);
-    };
-    const [alignment, setAlignment] = useState("line");
-    const handleChange = (event,newAlignment) => {
-      if (newAlignment !== null) {
-        setAlignment(newAlignment);
-      }
-    };
-    const handleClose = () => {
-      setAnalytics(false);
-    };
-    return (
-      <>
-        <div className="watchlist">
-          <div className="watchlist-data">
-            <p className="watchlist-title">Watchlist</p>
-            <ul>
-              {watchlistStocks.length === 0 && (
-                <li className="watchlist-empty">No stocks added</li>
-              )}
-              {watchlistStocks.map((stock) => {
-                const live = marketData[stock.symbol] || {};
-                const mergedStock = {
-                  ...stock,
-                  ...live,
-                };
-                return (
-                  <WatchListItem
-                    key={stock.symbol}
-                    stock={mergedStock}
-                    handleBuyButton={handleBuyButton}
-                    handleSellButton={handleSellButton}
-                    handleAnalytics={handleAnalytics}
-                  />
-                );
-              })}
-            </ul>
-          </div>
-          {analytics && analyticsStock && (
-            <div className="stock-details-overlay">
-              <div className="stock-details-card">
-                <div className="stock-details-header">
-                  <h3>{analyticsStock?.symbol}</h3>
-                  <button onClick={handleClose}>
-                    <CloseIcon />
-                  </button>
+              <div className="stock-ohlc">
+                <div>
+                  <p>Open</p>
+                  <span>{analyticsStock?.open ?? "--"}</span>
                 </div>
-
-                <div className="stock-price">₹{analyticsStock?.close}</div>
-
-                <div className="stock-ohlc">
-                  <div>
-                    <p>Open</p>
-                    <span>{analyticsStock?.open ?? "--"}</span>
-                  </div>
-                  <div>
-                    <p>High</p>
-                    <span>{analyticsStock?.high ?? "--"}</span>
-                  </div>
-                  <div>
-                    <p>Low</p>
-                    <span>{analyticsStock?.low ?? "--"}</span>
-                  </div>
-                  <div>
-                    <p>Close</p>
-                    <span>{analyticsStock?.close}</span>
-                  </div>
+                <div>
+                  <p>High</p>
+                  <span>{analyticsStock?.high ?? "--"}</span>
                 </div>
-
-                <div className="stock-actions">
-                  <ToggleButtonGroup
-                    color="primary"
-                    value={alignment}
-                    exclusive
-                    onChange={handleChange}
-                    aria-label="Platform"
-                  >
-                    <ToggleButton value="line">Line Chart</ToggleButton>
-                    <ToggleButton value="candle">Candle Chart</ToggleButton>
-                  </ToggleButtonGroup>
+                <div>
+                  <p>Low</p>
+                  <span>{analyticsStock?.low ?? "--"}</span>
                 </div>
-
-                <div className="stock-chart">
-                  {alignment === "line" ? (
-                    <LineChart symbol={analyticsStock?.symbol} />
-                  ) : (
-                    <CandleChart symbol={analyticsStock?.symbol} />
-                  )}
+                <div>
+                  <p>Close</p>
+                  <span>{analyticsStock?.close}</span>
                 </div>
               </div>
+
+              <div className="stock-actions">
+                <ToggleButtonGroup
+                  color="primary"
+                  value={alignment}
+                  exclusive
+                  onChange={handleChange}
+                  aria-label="Platform"
+                >
+                  <ToggleButton value="line">Line Chart</ToggleButton>
+                  <ToggleButton value="candle">Candle Chart</ToggleButton>
+                </ToggleButtonGroup>
+              </div>
+
+              <div className="stock-chart">
+                {alignment === "line" ? (
+                  <LineChart symbol={analyticsStock?.symbol} />
+                ) : (
+                  <CandleChart symbol={analyticsStock?.symbol} />
+                )}
+              </div>
             </div>
-          )}
-        </div>
-        {tradeState.type === "BUY" && (
-          <BuyComponent
-            stock={tradeState.stock}
-            closeBuy={() =>
-              setTradeState({
-                type: null,
-                stock: null,
-              })
-            }
-          />
-        )}
-        {tradeState.type === "SELL" && (
-          <SellComponent
-            stock={tradeState.stock}
-            closeBuy={() =>
-              setTradeState({
-                type: null,
-                stock: null,
-              })
-            }
-          />
-        )}
-      </>
-    );
-  }
-
-  const WatchListItem = ({
-    stock,
-    handleBuyButton,
-    handleSellButton,
-    handleAnalytics,
-  }) => {
-    const [showWatchListAction, setShowWatchListAction] = useState(false);
-    return (
-      <li
-        className="watchlist-li"
-        onMouseEnter={() => setShowWatchListAction(true)}
-        onMouseLeave={() => setShowWatchListAction(false)}
-      >
-        <div className="item">
-          <p>{stock.symbol}</p>
-          <div className="itemInfo">
-            <span className="percent">{stock.close}</span>
           </div>
-          {showWatchListAction && (
-            <WatchListActions
-              handleBuyButton={handleBuyButton}
-              handleSellButton={handleSellButton}
-              stock={stock}
-              handleAnalytics={handleAnalytics}
-            />
-          )}
-        </div>
-      </li>
-    );
-  };
+        )}
+      </div>
+      {tradeState.type === "BUY" && (
+        <BuyComponent
+          stock={tradeState.stock}
+          closeBuy={() =>
+            setTradeState({
+              type: null,
+              stock: null,
+            })
+          }
+        />
+      )}
+      {tradeState.type === "SELL" && (
+        <SellComponent
+          stock={tradeState.stock}
+          closeBuy={() =>
+            setTradeState({
+              type: null,
+              stock: null,
+            })
+          }
+        />
+      )}
+    </>
+  );
+}
 
-  const WatchListActions = ({
-    stock,
-    handleBuyButton,
-    handleSellButton,
-    handleAnalytics,
-  }) => {
-    return (
-      <span className="actions">
-        <span>
-          <Tooltip
-            title="Buy (B)"
-            placement="top"
-            arrowslot={{ transition: Grow }}
-          >
-            <button className="buy" onClick={() => handleBuyButton(stock)}>
-              Buy
-            </button>
-          </Tooltip>
-          <Tooltip
-            title="Sell (s)"
-            placement="top"
-            arrowslot={{ transition: Grow }}
-          >
-            <button className="sell" onClick={() => handleSellButton(stock)}>
-              Sell
-            </button>
-          </Tooltip>
-          <Tooltip
-            title="More (M)"
-            placement="top"
-            arrowslot={{ transition: Grow }}
-          >
-            <button className="more">
-              <MoreHoriz />
-            </button>
-          </Tooltip>
-          <Tooltip
-            title="Analytics (A)"
-            placement="top"
-            arrowslot={{ transition: Grow }}
-          >
-            <button className="analytics" onClick={() => handleAnalytics(stock)}>
-              <BarChartOutlined />
-            </button>
-          </Tooltip>
-        </span>
+const WatchListItem = ({
+  stock,
+  handleBuyButton,
+  handleSellButton,
+  handleAnalytics,
+  handleDelete,
+}) => {
+  const [showWatchListAction, setShowWatchListAction] = useState(false);
+  return (
+    <li
+      className="watchlist-li"
+      onMouseEnter={() => setShowWatchListAction(true)}
+      onMouseLeave={() => setShowWatchListAction(false)}
+    >
+      <div className="item">
+        <p>{stock.symbol}</p>
+        <div className="itemInfo">
+          <span className="percent">{stock.close}</span>
+        </div>
+        {showWatchListAction && (
+          <WatchListActions
+            handleBuyButton={handleBuyButton}
+            handleSellButton={handleSellButton}
+            stock={stock}
+            handleAnalytics={handleAnalytics}
+            handleDelete={handleDelete}
+          />
+        )}
+      </div>
+    </li>
+  );
+};
+
+const WatchListActions = ({
+  stock,
+  handleBuyButton,
+  handleSellButton,
+  handleAnalytics,
+  handleDelete,
+}) => {
+  return (
+    <span className="actions">
+      <span>
+        <Tooltip
+          title="Buy (B)"
+          placement="top"
+          arrowslot={{ transition: Grow }}
+        >
+          <button className="buy" onClick={() => handleBuyButton(stock)}>
+            Buy
+          </button>
+        </Tooltip>
+        <Tooltip
+          title="Sell (s)"
+          placement="top"
+          arrowslot={{ transition: Grow }}
+        >
+          <button className="sell" onClick={() => handleSellButton(stock)}>
+            Sell
+          </button>
+        </Tooltip>
+        <Tooltip
+          title="Delete (D)"
+          placement="top"
+          arrowslot={{ transition: Grow }}
+        >
+          <button className="more" onClick={() => handleDelete(stock)}>
+            <DeleteIcon />
+          </button>
+        </Tooltip>
+        <Tooltip
+          title="Analytics (A)"
+          placement="top"
+          arrowslot={{ transition: Grow }}
+        >
+          <button className="analytics" onClick={() => handleAnalytics(stock)}>
+            <BarChartOutlined />
+          </button>
+        </Tooltip>
       </span>
-    );
-  };
+    </span>
+  );
+};
