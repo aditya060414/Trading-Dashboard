@@ -1,6 +1,17 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Bar } from "react-chartjs-2";
 import axios from "axios";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Tooltip,
+  Legend,
+} from "chart.js";
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 export default function Summary() {
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -64,18 +75,18 @@ export default function Summary() {
 
   let portfolioValue = Number(funds) || 0;
 
-if (holdings && latestPrice) {
-  holdings.forEach((h) => {
-    const stock = latestPrice[h.symbol];
+  if (holdings && latestPrice) {
+    holdings.forEach((h) => {
+      const stock = latestPrice[h.symbol];
 
-    if (!stock) return;
+      if (!stock) return;
 
-    const qty = Number(h.qty) || 0;
-    const price = Number(stock.close) || 0;
+      const qty = Number(h.qty) || 0;
+      const price = Number(stock.close) || 0;
 
-    portfolioValue += qty * price;
-  });
-}
+      portfolioValue += qty * price;
+    });
+  }
 
   const todaysGain = (holdings || []).reduce((total, h) => {
     const stock = latestPrice?.[h.symbol];
@@ -87,6 +98,72 @@ if (holdings && latestPrice) {
 
     return total + (close - prev) * qty;
   }, 0);
+  const [analytics, setAnalytics] = useState(null);
+
+  useEffect(() => {
+    if (!userDetails?.email) return;
+
+    axios
+      .get(`http://localhost:3002/portfolioAnalytics/${userDetails.email}`)
+      .then((res) => setAnalytics(res.data))
+      .catch(console.error);
+  }, [userDetails]);
+
+  const chartData = {
+    labels: analytics?.allocation.map((s) => s.symbol) || [],
+
+    datasets: [
+      {
+        label: "Today's Profit / Loss",
+
+        data: analytics?.allocation.map((s) => s.gain) || [],
+
+        backgroundColor: analytics?.allocation.map((s) =>
+          s.gain >= 0 ? "#2ecc71" : "#ff4d4d",
+        ),
+
+        borderRadius: 6,
+        barThickness: 40,
+      },
+    ],
+  };
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+
+    plugins: {
+      tooltip: {
+        callbacks: {
+          label: (context) => `₹${context.raw.toLocaleString("en-IN")}`,
+        },
+      },
+    },
+
+    scales: {
+    x: {
+      ticks: {
+        color: "#374151",
+        font: {
+          size: 12,
+          weight: "500",
+        },
+      },
+      grid: {
+        display: false,
+      },
+    },
+
+    y: {
+      ticks: {
+        color: "#374151",
+      },
+      grid: {
+        color: "#e5e7eb",
+      },
+    },
+  },
+
+  };
   return (
     <div className="dashboard-container">
       {/* Greeting */}
@@ -121,37 +198,53 @@ if (holdings && latestPrice) {
       <div className="dashboard-grid">
         {/* Portfolio Graph */}
         <div className="graph-card">
-          <h4>Portfolio Performance</h4>
-          <div className="graph-placeholder">Graph</div>
+          <h4>Today's Profit / Loss by Stock</h4>
+          <div className="graph-placeholder">
+            <p>
+              Today's Gain:
+              <span
+                style={{ color: analytics?.todaysGain >= 0 ? "green" : "red" }}
+              >
+                ₹{analytics?.todaysGain?.toLocaleString("en-IN")}
+              </span>
+            </p>
+            <Bar data={chartData} options={chartOptions} />
+          </div>
         </div>
 
         {/* Watchlist */}
-        <div className="watchlist-card">
-          <h4>Watchlist</h4>
+        <div className="news-card">
+          <h4>Market News</h4>
 
-          <div className="watch-item">
-            <span>NIFTY</span>
-            <span className="profit">+0.42%</span>
+          <div className="news-item">
+            <div className="news-title">
+              Reliance shares rise after strong quarterly results
+            </div>
+            <div className="news-meta">
+              <span>Economic Times</span>
+              <span>2h ago</span>
+            </div>
           </div>
 
-          <div className="watch-item">
-            <span>RELIANCE</span>
-            <span className="loss">-0.18%</span>
+          <div className="news-item">
+            <div className="news-title">
+              Nifty closes above 22,000 amid banking rally
+            </div>
+            <div className="news-meta">
+              <span>Moneycontrol</span>
+              <span>4h ago</span>
+            </div>
           </div>
 
-          <div className="watch-item">
-            <span>TCS</span>
-            <span className="profit">+1.12%</span>
+          <div className="news-item">
+            <div className="news-title">
+              TCS announces new AI partnership with global firm
+            </div>
+            <div className="news-meta">
+              <span>Bloomberg</span>
+              <span>6h ago</span>
+            </div>
           </div>
-        </div>
-
-        {/* Activity */}
-        <div className="activity-card">
-          <h4>Recent Activity</h4>
-
-          <p>Deposit ₹5000</p>
-          <p>Withdraw ₹2000</p>
-          <p>Buy INFY</p>
         </div>
       </div>
     </div>
