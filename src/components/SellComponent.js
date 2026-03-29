@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 export default function SellComponent({ stock, closeBuy }) {
   const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState(null);
-
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     axios
       .get("http://localhost:3002/verify", { withCredentials: true })
@@ -67,6 +67,7 @@ export default function SellComponent({ stock, closeBuy }) {
       deposit: totAmt,
     };
     try {
+      setLoading(true);
       await Promise.all([
         axios.post("http://localhost:3002/orders", {
           quantity: qty,
@@ -85,6 +86,8 @@ export default function SellComponent({ stock, closeBuy }) {
     } catch (err) {
       console.error(err);
       alert("Failed to place order");
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -123,8 +126,9 @@ export default function SellComponent({ stock, closeBuy }) {
             variant="contained"
             size="small"
             onClick={handleSubmitPurchase}
+            disabled={loading}
           >
-            Confirm Purchase
+            {loading ? "Processing..." : "Confirm Purchase"}
           </Button>
         </div>
       </div>

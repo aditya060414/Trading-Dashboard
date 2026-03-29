@@ -9,7 +9,7 @@ export default function BuyComponent({ stock, closeBuy }) {
   const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState(null);
   const [bal, setBal] = useState(0);
-
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     axios
       .get("http://localhost:3002/verify", { withCredentials: true })
@@ -57,6 +57,7 @@ export default function BuyComponent({ stock, closeBuy }) {
       return;
     }
     try {
+      setLoading(true);
       await Promise.all([
         axios.post("http://localhost:3002/orders", {
           quantity: qty,
@@ -65,10 +66,7 @@ export default function BuyComponent({ stock, closeBuy }) {
           email: userDetails?.email,
           mode: "BUY",
         }),
-        axios.post(
-          `http://localhost:3002/funds/${userDetails.email}`,
-          payload,
-        ),
+        axios.post(`http://localhost:3002/funds/${userDetails.email}`, payload),
       ]);
       alert("Order Placed Successfully");
       closeBuy();
@@ -78,6 +76,8 @@ export default function BuyComponent({ stock, closeBuy }) {
     } catch (err) {
       console.error(err);
       alert("Failed to place order");
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -113,8 +113,9 @@ export default function BuyComponent({ stock, closeBuy }) {
             variant="contained"
             size="small"
             onClick={handleSubmitPurchase}
+            disabled={loading}
           >
-            Confirm Purchase
+            {loading ? "Processing..." : "Confirm Purchase"}
           </Button>
         </div>
       </div>
