@@ -32,7 +32,7 @@ export default function SignUp() {
     e.preventDefault();
     try {
       const { data } = await axios.post(
-        "http://localhost:3002/signUP",
+        "http://localhost:3002/api/v1/auth/signUp",
         {
           ...inputValue,
         },

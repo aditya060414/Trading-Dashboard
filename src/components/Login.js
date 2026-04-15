@@ -32,7 +32,7 @@ export default function Login() {
     e.preventDefault();
     try {
       const { data } = await axios.post(
-        "http://localhost:3002/login",
+        "http://localhost:3002/api/v1/login",
         {
           ...inputValue,
         },
@@ -78,11 +78,12 @@ export default function Login() {
             onChange={handleOnChange}
             required
           />
-          <Button type="submit" variant="contained" className="auth-btn" >
+          <Button type="submit" variant="contained" className="auth-btn-login" >
             Login
           </Button>
         </form>
         <ToastContainer />
+
       </div>
     </>
   );
