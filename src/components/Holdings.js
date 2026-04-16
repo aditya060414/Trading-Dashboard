@@ -4,34 +4,21 @@ import { useNavigate } from "react-router-dom";
 export default function Holdings() {
   const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState(null);
-  useEffect(() => {
-    axios
-      .get("http://localhost:3002/verify", { withCredentials: true })
-      .then((res) => {
-        if (!res.data.authenticated) {
-          navigate("/login", { replace: true });
-        } else {
-          setUserDetails(res.data.user);
-        }
-      })
-      .catch(() => {
-        navigate("/login", { replace: true });
-      });
-  }, [navigate]);
+
   const [orders, setOrders] = useState([]);
   const [latestPrice, setLatestPrice] = useState({});
 
-  useEffect(() => {
-    if (!userDetails?.email) return;
-    axios
-      .get(`http://localhost:3002/fetchOrders/${userDetails.email}`)
-      .then((res) => {
-        setOrders(res.data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, [userDetails]);
+  // useEffect(() => {
+  //   if (!userDetails?.email) return;
+  //   axios
+  //     .get(`http://localhost:3002/fetchOrders/${userDetails.email}`)
+  //     .then((res) => {
+  //       setOrders(res.data);
+  //     })
+  //     .catch((err) => {
+  //       console.error(err);
+  //     });
+  // }, [userDetails]);
 
   useEffect(() => {
     if (!orders.length) return;

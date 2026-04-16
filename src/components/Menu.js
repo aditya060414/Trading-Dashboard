@@ -2,16 +2,21 @@ import React from "react";
 import { useState, useRef, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useAuth } from "../Auth";
+
 export default function Menu({ onSelectStock }) {
   const notActiveMenu = "menu-links";
   const activeMenu = "menu-links-active";
   const [open, setOpen] = useState(false);
   const menuRef = useRef(null);
   const navigate = useNavigate();
+  const {user} = useAuth();
+
+
   const handleButtonClick = () => {
     setOpen((prev) => !prev);
   };
-  const [userDetails, setUserDetails] = useState(null);
+  
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -24,7 +29,7 @@ export default function Menu({ onSelectStock }) {
   const handleLogout = async () => {
     try {
       await axios.post(
-        "http://localhost:3002/logout",
+        "http://localhost:3002/api/v1/auth/logout",
         {},
         { withCredentials: true },
       );
@@ -35,20 +40,7 @@ export default function Menu({ onSelectStock }) {
       console.error(err);
     }
   };
-  useEffect(() => {
-    axios
-      .get("http://localhost:3002/verify", { withCredentials: true })
-      .then((res) => {
-        if (!res.data.authenticated) {
-          navigate("/login", { replace: true });
-        } else {
-          setUserDetails(res.data.user);
-        }
-      })
-      .catch(() => {
-        navigate("/login", { replace: true });
-      });
-  }, [userDetails]);
+
   return (
     <div className="menu-container">
       <div className="menu-logo">
@@ -113,10 +105,10 @@ export default function Menu({ onSelectStock }) {
               <div className="user-menu">
                 <div className="user-menu-header">
                   <span className="material-symbols-outlined">person</span>
-                  {userDetails && (
+                  {user && (
                     <div>
-                      <p className="username">{userDetails.username}</p>
-                      <p className="email">{userDetails.email}</p>
+                      <p className="username">{user.username}</p>
+                      <p className="email">{user.email}</p>
                     </div>
                   )}
                 </div>

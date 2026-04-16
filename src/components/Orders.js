@@ -5,31 +5,18 @@ export default function Orders() {
   const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState(null);
   const [orders, setOrders] = useState([]);
-  useEffect(() => {
-    axios
-      .get("http://localhost:3002/verify", { withCredentials: true })
-      .then((res) => {
-        if (!res.data.authenticated) {
-          navigate("/login", { replace: true });
-        } else {
-          setUserDetails(res.data.user);
-        }
-      })
-      .catch(() => {
-        navigate("/login", { replace: true });
-      });
-  }, [navigate]);
-  useEffect(() => {
-    axios
-      .get(`http://localhost:3002/orderHistory/${userDetails?.email}`)
-      .then((res) => {
-        setOrders(res.data);
-        // console.log(res.data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, [userDetails]);
+ 
+  // useEffect(() => {
+  //   axios
+  //     .get(`http://localhost:3002/orderHistory/${userDetails?.email}`)
+  //     .then((res) => {
+  //       setOrders(res.data);
+  //       // console.log(res.data);
+  //     })
+  //     .catch((err) => {
+  //       console.error(err);
+  //     });
+  // }, [userDetails]);
   const formatINR = (amount) => {
     return new Intl.NumberFormat("en-IN", {
       style: "currency",

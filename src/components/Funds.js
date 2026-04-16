@@ -9,31 +9,14 @@ export default function Funds() {
   const [modalMode, setModalMode] = useState("Deposit");
   const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
-  //auth check
-  useEffect(() => {
-    axios
-      .get("http://localhost:3002/verify", { withCredentials: true })
-      .then((res) => {
-        if (!res.data.authenticated) {
-          navigate("/login", { replace: true });
-        } else {
-          setUser(res.data.user);
-        }
-      })
-      .catch((err) => {
-        navigate("/login", { replace: true });
-      });
-  }, [navigate]);
-
-  //fetch balance and history
+  // fetch balance and history
   const fetchData = async () => {
     if (!user?.email) return;
     try {
       const [balRes, histRes] = await Promise.all([
-        axios.get(`http://localhost:3002/funds/${user.email}`),
-        axios.get(`http://localhost:3002/fundshistory/${user.email}`),
+        axios.get(`http://localhost:3002/api/v1/funds/balance`),
+        axios.get(`http://localhost:3002/api/v1/funds/history`),
       ]);
       setBalance(balRes.data.balance || 0);
       setHistory(histRes.data || []);
@@ -45,7 +28,7 @@ export default function Funds() {
     fetchData();
   }, [user]);
 
-  //   Transaction Handler
+    // Transaction Handler
   const handleTransaction = async () => {
     if (!amount || amount <= 0) return alert("Enter a valid amount");
     setLoading(true);

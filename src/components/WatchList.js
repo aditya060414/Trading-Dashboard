@@ -64,6 +64,21 @@ export default function WatchList({ watchlistStocks = [], marketData = {} }) {
       console.error(err);
     }
   };
+  // const handleDelete = async (stock) => {
+  //   try {
+  //     const email = stock.email;
+  //     const symbol = stock.symbol;
+
+  //     axios.delete("http://localhost:3002/watchlist", {
+  //       data: {
+  //         symbol: symbol,
+  //         email: email,
+  //       },
+  //     });
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
   return (
     <>
       <div className="watchlist">

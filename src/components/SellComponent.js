@@ -6,42 +6,28 @@ import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 export default function SellComponent({ stock, closeBuy }) {
-  const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState(null);
   const [loading, setLoading] = useState(false);
-  useEffect(() => {
-    axios
-      .get("http://localhost:3002/verify", { withCredentials: true })
-      .then((res) => {
-        if (!res.data.authenticated) {
-          navigate("/login", { replace: true });
-        } else {
-          setUserDetails(res.data.user);
-        }
-      })
-      .catch(() => {
-        navigate("/login", { replace: true });
-      });
-  }, [navigate]);
+ 
 
   const [holdingsData, setHoldingsData] = useState(null);
-  useEffect(() => {
-    if (!stock?.symbol || !userDetails?.email) return;
-    try {
-      axios
-        .get(`http://localhost:3002/fetchOrders/${userDetails.email}`)
-        .then((res) => {
-          const stockDetail = res.data.find(
-            (item) => item.symbol === stock.symbol,
-          );
-          console.log(stockDetail);
-          setHoldingsData(stockDetail || null);
-        });
-    } catch (err) {
-      console.error(err);
-      alert("Failed to fetch holdings data!");
-    }
-  }, [stock, userDetails]);
+  // useEffect(() => {
+  //   if (!stock?.symbol || !userDetails?.email) return;
+  //   try {
+  //     axios
+  //       .get(`http://localhost:3002/fetchOrders/${userDetails.email}`)
+  //       .then((res) => {
+  //         const stockDetail = res.data.find(
+  //           (item) => item.symbol === stock.symbol,
+  //         );
+  //         console.log(stockDetail);
+  //         setHoldingsData(stockDetail || null);
+  //       });
+  //   } catch (err) {
+  //     console.error(err);
+  //     alert("Failed to fetch holdings data!");
+  //   }
+  // }, [stock, userDetails]);
   const [qty, setQty] = useState(1);
   const handleQtyChange = (event) => {
     setQty(Number(event.target.value));

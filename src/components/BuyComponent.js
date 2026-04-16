@@ -6,24 +6,10 @@ import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 export default function BuyComponent({ stock, closeBuy }) {
-  const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState(null);
   const [bal, setBal] = useState(0);
   const [loading, setLoading] = useState(false);
-  useEffect(() => {
-    axios
-      .get("http://localhost:3002/verify", { withCredentials: true })
-      .then((res) => {
-        if (!res.data.authenticated) {
-          navigate("/login", { replace: true });
-        } else {
-          setUserDetails(res.data.user);
-        }
-      })
-      .catch(() => {
-        navigate("/login", { replace: true });
-      });
-  }, [navigate]);
+
 
   useEffect(() => {
     axios
@@ -35,6 +21,7 @@ export default function BuyComponent({ stock, closeBuy }) {
         console.error(err);
       });
   }, [userDetails]);
+  
   const [qty, setQty] = useState(1);
   const handleQtyChange = (event) => {
     setQty(event.target.value);

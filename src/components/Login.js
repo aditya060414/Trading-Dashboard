@@ -32,12 +32,13 @@ export default function Login() {
     e.preventDefault();
     try {
       const { data } = await axios.post(
-        "http://localhost:3002/api/v1/login",
+        "http://localhost:3002/api/v1/auth/login",
         {
           ...inputValue,
         },
         { withCredentials: true },
       );
+      console.log(data);
       const { success, message } = data;
       if (success) {
         handleSuccess(message);

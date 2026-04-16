@@ -13,36 +13,22 @@ export default function WatchListComponent() {
   const [selectedStock, setSelectedStock] = useState(null);
 
   // verify route
-  useEffect(() => {
-    axios
-      .get("http://localhost:3002/verify", { withCredentials: true })
-      .then((res) => {
-        if (!res.data.authenticated) {
-          navigate("/login", { replace: true });
-        } else {
-          setUserDetails(res.data.user);
-        }
-      })
-      .catch(() => {
-        navigate("/login", { replace: true });
-      });
-  }, [navigate]);
 
   // set watchlist data
-  useEffect(() => {
-    if (!userDetails?.email) return;
-    axios
-      .get("http://localhost:3002/watchlistData", {
-        params: { email: userDetails.email },
-        withCredentials: true,
-      })
-      .then((res) => {
-        setWatchlistStocks(res.data);
-      })
-      .catch((err) => {
-        console.error("Failed to load watchlist", err);
-      });
-  }, [userDetails]);
+  // useEffect(() => {
+  //   if (!userDetails?.email) return;
+  //   axios
+  //     .get("http://localhost:3002/watchlistData", {
+  //       params: { email: userDetails.email },
+  //       withCredentials: true,
+  //     })
+  //     .then((res) => {
+  //       setWatchlistStocks(res.data);
+  //     })
+  //     .catch((err) => {
+  //       console.error("Failed to load watchlist", err);
+  //     });
+  // }, [userDetails]);
 
   useEffect(() => {
     if (!Array.isArray(watchlistStocks) || !watchlistStocks.length) return;
