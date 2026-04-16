@@ -33,7 +33,7 @@ export default function AuthLayout() {
             <Button variant="contained" onClick={handleButtonClick} className="toggle-Btn">
               {isSignUp ? "Login" : "SignUp"}
             </Button>
-            <p>Forgot Password?</p>
+            {isSignUp ? <p style={{"display":"flex","position":"relative","justifyContent":"flex-end","right":"60px"}} className="toggle-text">Already have an account?</p> : <p style={{"display":"flex","position":"relative","justifyContent":"flex-end","right":"60px"}} className="toggle-text">Forgot Password?</p>}
           </div>
         </div>
       </div>
