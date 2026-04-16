@@ -611,8 +611,12 @@ td {
   transform: translate(-50%, 50%);
 }
 .signup-login {
+  display: flex;
+  position: relative;
   margin-bottom: 15px;
 }
+
+
 @media (max-width: 1024px) {
   .auth-layout-container .authbrandf-info .brand-tagline p {
     font-size: 1rem;
@@ -728,7 +732,7 @@ td {
   }
 }
 
-@media (max-width:300px){
+@media (max-width:325px){
   .auth-layout-container {
     width: 100vw;
     grid-template-columns: 1fr;
@@ -741,6 +745,9 @@ td {
     display: flex;
     position: relative;
     justify-content: space-between;
+  }
+  .signup-login .toggle-text{
+    font-size: 0.9rem !important;
   }
 }
 
