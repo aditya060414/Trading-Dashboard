@@ -30,9 +30,7 @@ export default function SearchBar({ onSelectStock }) {
     };
 
     socket.onerror = (error) => {
-      // SILENCE THE ERROR:
-      // Only log the error if it's a real error and NOT a result of 
-      // us closing the connection during React's double-render.
+      // closing the connection during React's double-render.
       if (!isClosing && socket.readyState !== WebSocket.CLOSED) {
         console.error("WebSocket Error:", error);
       }
@@ -87,7 +85,6 @@ export default function SearchBar({ onSelectStock }) {
     const handleClickOutside = (e) => {
       if (!containerRef.current?.contains(e.target)) {
         setResults([]);
-        // Keep the query if you want, or clear it:
         // setQuery(""); 
       }
     };

@@ -1,28 +1,45 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; 
+import { useState, useEffect } from "react";
 import axios from "axios";
+import { LoaderCircle } from "lucide-react";
+
 export default function Orders() {
-  const navigate = useNavigate();
-  const [userDetails, setUserDetails] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [orders, setOrders] = useState([]);
- 
-  // useEffect(() => {
-  //   axios
-  //     .get(`http://localhost:3002/orderHistory/${userDetails?.email}`)
-  //     .then((res) => {
-  //       setOrders(res.data);
-  //       // console.log(res.data);
-  //     })
-  //     .catch((err) => {
-  //       console.error(err);
-  //     });
-  // }, [userDetails]);
+
+  useEffect(() => {
+    const fetchOrder = async () => {
+      try {
+        setLoading(true);
+        const res = await axios.get(`http://localhost:3002/api/v1/orders/history`, {
+          withCredentials: true,
+        });
+        setOrders(res.data.data);
+      } catch (error) {
+        console.log("Error fetching data.", error.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchOrder();
+  }, [])
+
   const formatINR = (amount) => {
     return new Intl.NumberFormat("en-IN", {
       style: "currency",
       currency: "INR",
     }).format(amount);
   };
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "COMPLETED": return "#4CAF50"; // Green
+      case "PENDING": return "#FF9800"; // Orange
+      case "FAILED": return "#f44336"; // Red
+      default: return "#c62828"; // Default Dark Red
+    }
+  };
+
+  if (loading) return <div className="load-circle" ><LoaderCircle className="spinner" /></div>;
+  if (!orders || !orders.length) return <div className="p-10" style={{ display: 'flex', position: 'absolute', top: '50%', left: '50%' }}>No orders found.</div>;
   return (
     <div className="orders-container">
       <div className="order-hero">
@@ -34,10 +51,10 @@ export default function Orders() {
             <tr>
               <th>Symbol</th>
               <th>Quantity</th>
-              <th>close</th>
               <th>Mode</th>
               <th>Date</th>
-              <th>TIme</th>
+              <th>Time</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>
@@ -60,7 +77,6 @@ export default function Orders() {
                 <tr key={order._id}>
                   <td>{order.symbol}</td>
                   <td>{order.qty}</td>
-                  <td>{formatINR(order.close)}</td>
                   <td
                     style={{
                       color: order.mode === "BUY" ? "#4CAF50" : "#c62828",
@@ -70,6 +86,9 @@ export default function Orders() {
                   </td>
                   <td>{date}</td>
                   <td>{time}</td>
+                  <td style={{
+                    color: getStatusColor(order.status),
+                  }}>{order.status}</td>
                 </tr>
               );
             })}

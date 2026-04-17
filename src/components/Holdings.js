@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { useAuth } from '../Auth';
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { LoaderCircle } from "lucide-react";
 export default function Holdings() {
-  const navigate = useNavigate();
   const { user } = useAuth();
 
   const [portfolio, setPortfolio] = useState(null);
@@ -15,7 +14,7 @@ export default function Holdings() {
 
     const fetchPortfolio = async () => {
       try {
-        setLoading(true); // 2. ONLY start loading when we actually have a user
+        setLoading(true);
 
         const res = await axios.get(`http://localhost:3002/api/v1/portfolio/${user.id}`, {
           withCredentials: true,
@@ -24,7 +23,6 @@ export default function Holdings() {
       } catch (error) {
         console.error("Error fetching portfolio:", error);
       } finally {
-        // 3. This ALWAYS runs, whether the request succeeds or fails
         setLoading(false);
       }
     };
@@ -38,8 +36,8 @@ export default function Holdings() {
       currency: "INR",
     }).format(amount || 0);
   };
-  if (loading) return <div className="p-10">Loading Portfolio...</div>;
-  if (!portfolio || !portfolio.allocation.length) return <div className="p-10">No holdings found.</div>;
+  if (loading) return <div className="load-circle" ><LoaderCircle className="spinner" /></div>;
+  if (!portfolio || !portfolio.allocation.length) return <div className="p-10" style={{ display: 'flex', position: 'absolute', top: '50%', left: '50%' }}>No holdings found.</div>;
   return (
     <div className="orders-container">
       <div className="order-hero">

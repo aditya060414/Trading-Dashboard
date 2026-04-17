@@ -2,7 +2,7 @@ import { Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "./Auth";
-
+import { LoaderCircle } from "lucide-react";
 export default function ProtectedRoute({ children }) {
   const [loading, setLoading] = useState(true);
   const [auth, setAuth] = useState(false);
@@ -23,7 +23,12 @@ export default function ProtectedRoute({ children }) {
       .catch(() => setLoading(false));
   }, []);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading)
+    return (
+      <div className="load-circle">
+        <LoaderCircle className="spinner" />
+      </div>
+    );
 
   return auth ? children : <Navigate to="/login" replace />;
 }
