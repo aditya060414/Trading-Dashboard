@@ -1,48 +1,58 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { useAuth } from '../Auth';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 export default function Holdings() {
   const navigate = useNavigate();
-  const [userDetails, setUserDetails] = useState(null);
+  const { user } = useAuth();
 
-  const [orders, setOrders] = useState([]);
-  const [latestPrice, setLatestPrice] = useState({});
-
-  // useEffect(() => {
-  //   if (!userDetails?.email) return;
-  //   axios
-  //     .get(`http://localhost:3002/fetchOrders/${userDetails.email}`)
-  //     .then((res) => {
-  //       setOrders(res.data);
-  //     })
-  //     .catch((err) => {
-  //       console.error(err);
-  //     });
-  // }, [userDetails]);
+  const [portfolio, setPortfolio] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!orders.length) return;
-    const symbols = orders.map((o) => o.symbol);
-    axios
-      .post("http://localhost:3002/getLatestStock", { symbols })
-      .then((res) => {
-        setLatestPrice(res.data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, [orders]);
+    if (!user?._id) return;
+    const fetchPorfolio = async () => {
+      try {
+        const res = await axios.get(`http://localhost:3002/api/v1/portfolio/${user._id}`);
+        setPortfolio(res.data);
+      } catch (error) {
+        console.error("Error fetching portfolio:", error);
+      }
+    }
+    fetchPorfolio();
+    console.log(portfolio)
+  }, [user]);
+
   const formatINR = (amount) => {
     return new Intl.NumberFormat("en-IN", {
       style: "currency",
       currency: "INR",
-    }).format(amount);
+    }).format(amount || 0);
   };
-
+  if (loading) return <div className="p-10">Loading Portfolio...</div>;
+  if (!portfolio || !portfolio.allocation.length) return <div className="p-10">No holdings found.</div>;
   return (
     <div className="orders-container">
       <div className="order-hero">
-        <p className="order-title">Holdings</p>
+        <p className="order-title">Holdings ({portfolio.allocation.length})</p>
+        <div className="portfolio-summary" style={{ display: 'flex', gap: '20px', marginBottom: '20px' }}>
+          <div>
+            <small>Invested</small>
+            <p>{formatINR(portfolio.investedAmount)}</p>
+          </div>
+          <div>
+            <small>Current Value</small>
+            <p style={{ color: portfolio.portfolioValue >= portfolio.investedAmount ? 'green' : 'red' }}>
+              {formatINR(portfolio.portfolioValue)}
+            </p>
+          </div>
+          <div>
+            <small>Today's Profit/Loss</small>
+            <p style={{ color: portfolio.todaysGain >= 0 ? 'green' : 'red' }}>
+              {formatINR(portfolio.todaysGain)}
+            </p>
+          </div>
+        </div>
       </div>
       <div className="order-details">
         <table>
@@ -50,33 +60,29 @@ export default function Holdings() {
             <tr>
               <th>Symbol</th>
               <th>Qty</th>
-              <th>Buy Price</th>
-              <th>Curr Price</th>
-              <th>Gross</th>
+              <th>Avg. Price</th>
+              <th>LTP (Current)</th>
+              <th>Invested Value</th>
               <th>Current Value</th>
-              <th>P/L</th>
+              <th>Total P&L</th>
             </tr>
           </thead>
           <tbody>
-            {orders.map((order) => {
-              const current = latestPrice?.[order.symbol]?.close ?? 0;
-              const currentValue = current * order.qty;
-              const pnl = currentValue - order.gross;
-              const roundedPnl = Number(pnl.toFixed(3));
+            {portfolio.allocation.map((stock) => {
+              const isProfit = stock.totalGain >= 0;
+              const pnlPercentage = ((stock.totalGain / stock.totalInvestment) * 100).toFixed(2);
 
               return (
-                <tr
-                  key={order._id}
-                  className={`${current > order.close ? "green" : "red"}`}
-                >
-                  <td>{order.symbol}</td>
-                  <td>{order.qty}</td>
-                  <td>{formatINR(order.close)}</td>
-                  <td>{formatINR(current)}</td>
-                  <td>{formatINR(order.gross)}</td>
-                  <td>{formatINR(currentValue)}</td>
-                  <td>
-                    {roundedPnl}
+                <tr key={stock.symbol}>
+                  <td><strong>{stock.symbol}</strong> <small style={{ display: 'block', color: '#888' }}>{stock.mode}</small></td>
+                  <td>{stock.qty}</td>
+                  <td>{formatINR(stock.avgPrice)}</td>
+                  <td>{formatINR(stock.currPrice)}</td>
+                  <td>{formatINR(stock.totalInvestment)}</td>
+                  <td>{formatINR(stock.currentValue)}</td>
+                  <td style={{ color: isProfit ? '#4caf50' : '#f44336' }}>
+                    {formatINR(stock.totalGain)}
+                    <div style={{ fontSize: '11px' }}>({pnlPercentage}%)</div>
                   </td>
                 </tr>
               );
@@ -84,6 +90,6 @@ export default function Holdings() {
           </tbody>
         </table>
       </div>
-    </div>
+    </div >
   );
 }
