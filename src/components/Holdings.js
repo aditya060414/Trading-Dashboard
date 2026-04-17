@@ -10,17 +10,26 @@ export default function Holdings() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user?._id) return;
-    const fetchPorfolio = async () => {
+    // If no user, don't fetch and don't show loading
+    if (!user?.id) return;
+
+    const fetchPortfolio = async () => {
       try {
-        const res = await axios.get(`http://localhost:3002/api/v1/portfolio/${user._id}`);
+        setLoading(true); // 2. ONLY start loading when we actually have a user
+
+        const res = await axios.get(`http://localhost:3002/api/v1/portfolio/${user.id}`, {
+          withCredentials: true,
+        });
         setPortfolio(res.data);
       } catch (error) {
         console.error("Error fetching portfolio:", error);
+      } finally {
+        // 3. This ALWAYS runs, whether the request succeeds or fails
+        setLoading(false);
       }
-    }
-    fetchPorfolio();
-    console.log(portfolio)
+    };
+
+    fetchPortfolio();
   }, [user]);
 
   const formatINR = (amount) => {

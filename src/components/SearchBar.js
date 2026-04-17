@@ -11,35 +11,46 @@ export default function SearchBar({ onSelectStock }) {
 
   /* WebSocket connection */
   useEffect(() => {
-    // 1. Create the socket and assign it to the REF
-    ws.current = new WebSocket('ws://localhost:4000/');
+    let isClosing = false; // Flag to track if we intentionally closed it
+    const socket = new WebSocket('ws://localhost:4000/');
 
-    ws.current.onopen = () => {
-      console.log("WebSocket Connected");
-    };
-    ws.current.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-
-      // Check if it's a raw array (what your backend currently sends)
-      if (Array.isArray(data)) {
-        setResults(data);
+    socket.onopen = () => {
+      // Only log if we haven't already started closing this connection
+      if (!isClosing) {
+        ws.current = socket;
+        console.log("WebSocket Connected");
       }
-      // Or check if it's the wrapped object format
-      else if (data.type === "SEARCH_RESULTS") {
+    };
+
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.type === "SEARCH_RESULTS") {
         setResults(data.data || []);
       }
     };
 
-    ws.current.onerror = (error) => {
-      if (ws.current?.readyState !== WebSocket.CLOSING && ws.current?.readyState !== WebSocket.CLOSED) {
+    socket.onerror = (error) => {
+      // SILENCE THE ERROR:
+      // Only log the error if it's a real error and NOT a result of 
+      // us closing the connection during React's double-render.
+      if (!isClosing && socket.readyState !== WebSocket.CLOSED) {
         console.error("WebSocket Error:", error);
       }
     };
 
     return () => {
-      if (ws.current?.readyState === WebSocket.OPEN || ws.current?.readyState === WebSocket.CONNECTING) {
-        ws.current.close();
-      }
+        isClosing = true; 
+        
+        if (socket.readyState === WebSocket.OPEN) {
+            // If it's already open, close it normally
+            socket.close();
+        } else if (socket.readyState === WebSocket.CONNECTING) {
+            // If it's still connecting, wait for it to finish opening 
+            // before closing it. This prevents the "closed before established" warning.
+            socket.onopen = () => {
+                socket.close();
+            };
+        }
     };
   }, []);
 
