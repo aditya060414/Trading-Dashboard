@@ -12,10 +12,10 @@ export default function Funds() {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "BUY": return "#358f38ff";
-      case "ADD": return "#4CAF50";
+      case "BUY": return "#276e29ff";
+      case "ADD": return "#358f38ff";
       case "SELL": return "#f44336";
-      case "WITHDRAW": return "#f44336";
+      case "WITHDRAW": return "#da660eff";
       default: return "#6f1a1aff"; // Default Dark Red
     }
   };
