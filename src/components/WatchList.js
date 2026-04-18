@@ -60,9 +60,9 @@ export default function WatchList({ watchlistStocks = [] }) {
 
       // Await the delete request
       await axios.delete("http://localhost:3002/api/v1/watchlist/remove", {
-      data: { symbol: symbol }, 
-      withCredentials: true,
-    });
+        data: { symbol: symbol },
+        withCredentials: true,
+      });
 
       // Update local state to remove the stock from UI immediately
       setDisplayStocks((prev) => prev.filter((s) => s.symbol !== symbol));
