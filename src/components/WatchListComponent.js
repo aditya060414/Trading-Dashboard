@@ -3,64 +3,45 @@ import SearchBar from "./SearchBar";
 import StockDetails from "./StockDetails";
 import WatchList from "./WatchList";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 export default function WatchListComponent() {
-  const navigate = useNavigate();
   const [watchlistStocks, setWatchlistStocks] = useState([]);
-  const [marketData, setMarketData] = useState({});
-  const [userDetails, setUserDetails] = useState(null);
   const [selectedStock, setSelectedStock] = useState(null);
 
   // verify route
 
-  // set watchlist data
-  // useEffect(() => {
-  //   if (!userDetails?.email) return;
-  //   axios
-  //     .get("http://localhost:3002/watchlistData", {
-  //       params: { email: userDetails.email },
-  //       withCredentials: true,
-  //     })
-  //     .then((res) => {
-  //       setWatchlistStocks(res.data);
-  //     })
-  //     .catch((err) => {
-  //       console.error("Failed to load watchlist", err);
-  //     });
-  // }, [userDetails]);
-
   useEffect(() => {
-    if (!Array.isArray(watchlistStocks) || !watchlistStocks.length) return;
-
-    const symbols = watchlistStocks.map((w) => w.symbol);
-    axios
-      .post("http://localhost:3002/getLatestStock", { symbols })
-      .then((res) => {
-        setMarketData(res.data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, [watchlistStocks]);
+    const fetchWatchlist = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3002/api/v1/watchlist/get`, {
+          withCredentials: true,
+        });
+        if (!response.data.stock) {
+          setWatchlistStocks([]);
+        } else {
+          setWatchlistStocks(response.data.stock);
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    }
+    fetchWatchlist();
+  }, [])
 
   const handleAddToWatchlist = async (stock) => {
     try {
-      setWatchlistStocks((prev) => {
-        if (prev.some((s) => s.symbol === stock.symbol)) return prev;
-        return [...prev, stock];
-      });
-
-      await axios.post(
-        "http://localhost:3002/watchlist",
+      const res = await axios.post(
+        `http://localhost:3002/api/v1/watchlist/add`,
         {
           symbol: stock.symbol,
           high: stock.high,
           close: stock.close,
-          email: userDetails?.email,
+          low: stock.low,
         },
         { withCredentials: true },
       );
+
+      console.log(res.data)
     } catch (err) {
       console.error("Failed to add to watchlist", err);
     }
@@ -80,7 +61,7 @@ export default function WatchListComponent() {
         />
       )}
 
-      <WatchList watchlistStocks={watchlistStocks} marketData={marketData} />
+      <WatchList watchlistStocks={watchlistStocks} />
     </>
   );
 }

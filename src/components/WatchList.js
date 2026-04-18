@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Tooltip, Grow } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import ToggleButton from "@mui/material/ToggleButton";
@@ -9,9 +9,7 @@ import SellComponent from "./SellComponent";
 import CandleChart from "./CandleChart";
 import LineChart from "./LineChart";
 import DeleteIcon from "@mui/icons-material/Delete";
-import axios from "axios";
-
-export default function WatchList({ watchlistStocks = [], marketData = {} }) {
+export default function WatchList({ watchlistStocks = [] }) {
   const [tradeState, setTradeState] = useState({
     type: null,
     stock: null,
@@ -49,21 +47,21 @@ export default function WatchList({ watchlistStocks = [], marketData = {} }) {
     setAnalytics(false);
   };
 
-  const handleDelete = async (stock) => {
-    try {
-      const email = stock.email;
-      const symbol = stock.symbol;
+  // const handleDelete = async (stock) => {
+  //   try {
+  //     const email = stock.email;
+  //     const symbol = stock.symbol;
 
-      axios.delete("http://localhost:3002/watchlist", {
-        data: {
-          symbol: symbol,
-          email: email,
-        },
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  //     axios.delete("http://localhost:3002/watchlist", {
+  //       data: {
+  //         symbol: symbol,
+  //         email: email,
+  //       },
+  //     });
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
   // const handleDelete = async (stock) => {
   //   try {
   //     const email = stock.email;
@@ -88,20 +86,17 @@ export default function WatchList({ watchlistStocks = [], marketData = {} }) {
             {watchlistStocks.length === 0 && (
               <li className="watchlist-empty">No stocks added</li>
             )}
+
             {watchlistStocks.map((stock) => {
-              const live = marketData[stock.symbol] || {};
-              const mergedStock = {
-                ...stock,
-                ...live,
-              };
+              const mergedStock = stock; // or your merge logic later
+
               return (
                 <WatchListItem
-                  key={stock.symbol}
+                  key={stock._id}
                   stock={mergedStock}
                   handleBuyButton={handleBuyButton}
                   handleSellButton={handleSellButton}
                   handleAnalytics={handleAnalytics}
-                  handleDelete={handleDelete}
                 />
               );
             })}
@@ -193,7 +188,7 @@ const WatchListItem = ({
   handleBuyButton,
   handleSellButton,
   handleAnalytics,
-  handleDelete,
+  // handleDelete,
 }) => {
   const [showWatchListAction, setShowWatchListAction] = useState(false);
   return (
@@ -213,7 +208,7 @@ const WatchListItem = ({
             handleSellButton={handleSellButton}
             stock={stock}
             handleAnalytics={handleAnalytics}
-            handleDelete={handleDelete}
+          // handleDelete={handleDelete}
           />
         )}
       </div>
@@ -226,7 +221,7 @@ const WatchListActions = ({
   handleBuyButton,
   handleSellButton,
   handleAnalytics,
-  handleDelete,
+  // handleDelete,
 }) => {
   return (
     <span className="actions">
@@ -249,7 +244,7 @@ const WatchListActions = ({
             Sell
           </button>
         </Tooltip>
-        <Tooltip
+        {/* <Tooltip
           title="Delete (D)"
           placement="top"
           arrowslot={{ transition: Grow }}
@@ -257,7 +252,7 @@ const WatchListActions = ({
           <button className="more" onClick={() => handleDelete(stock)}>
             <DeleteIcon />
           </button>
-        </Tooltip>
+        </Tooltip> */}
         <Tooltip
           title="Analytics (A)"
           placement="top"
