@@ -1,51 +1,66 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { LoaderCircle } from "lucide-react";
+
 export default function Funds() {
   const [balance, setBalance] = useState(null);
-  const [user, setUser] = useState(null);
   const [history, setHistory] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState("Deposit");
   const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "BUY": return "#358f38ff";
+      case "ADD": return "#4CAF50";
+      case "SELL": return "#f44336";
+      case "WITHDRAW": return "#f44336";
+      default: return "#6f1a1aff"; // Default Dark Red
+    }
+  };
+
   // fetch balance and history
   const fetchData = async () => {
-    if (!user?.email) return;
     try {
       const [balRes, histRes] = await Promise.all([
-        axios.get(`http://localhost:3002/api/v1/funds/balance`),
-        axios.get(`http://localhost:3002/api/v1/funds/history`),
+        axios.get(`http://localhost:3002/api/v1/funds/balance`, {
+          withCredentials: true
+        }),
+        axios.get(`http://localhost:3002/api/v1/funds/history`, {
+          withCredentials: true
+        }),
       ]);
       setBalance(balRes.data.balance || 0);
-      setHistory(histRes.data || []);
+      setHistory(histRes.data.history || []);
     } catch (err) {
       console.error("Data fetch error", err);
     }
   };
   useEffect(() => {
     fetchData();
-  }, [user]);
+  }, []);
 
-    // Transaction Handler
+  console.log(balance, history)
+
+  // Transaction Handler
   const handleTransaction = async () => {
     if (!amount || amount <= 0) return alert("Enter a valid amount");
     setLoading(true);
 
     try {
       const type = modalMode.toLowerCase(); // "deposit" or "withdraw"
-      const payload = { [type]: Number(amount) };
-
-      const res = await axios.post(
-        `http://localhost:3002/funds/${user.email}`,
-        payload,
-      );
-      alert(res.data.message);
+      const payload = { amount: Number(amount) };
+      if (type === "deposit") {
+        await axios.post(`http://localhost:3002/api/v1/funds/add`, payload, { withCredentials: true });
+      } else {
+        const res = await axios.post(`http://localhost:3002/api/v1/funds/withdraw`, payload, { withCredentials: true });
+        alert(res.data.message);
+      }
 
       setIsModalOpen(false);
       setAmount("");
-      fetchData(); // Refresh UI
+      fetchData();
     } catch (err) {
       alert(err.response?.data?.message || "Transaction failed");
     } finally {
@@ -63,6 +78,7 @@ export default function Funds() {
       currency: "INR",
     }).format(amount);
   };
+  if (loading) return <div className="load-circle" ><LoaderCircle className="spinner" /></div>;
   return (
     <div className="funds">
       <div className="funds-info">
@@ -123,13 +139,9 @@ export default function Funds() {
               return (
                 <tr
                   key={h._id}
-                  className={
-                    h.transaction === "Withdraw"
-                      ? "withdraw-row"
-                      : "deposit-row"
-                  }
+                  className={h.type === "WITHDRAW" ? "withdraw-row" : "deposit-row"}
                 >
-                  <td>{h.transaction}</td>
+                  <td style={{ color: getStatusColor(h.type) }}>{h.type}</td>
                   <td className="amount">₹ {h.amount}</td>
                   <td>{date}</td>
                   <td>{time}</td>
