@@ -32,7 +32,7 @@ export default function Login() {
     e.preventDefault();
     try {
       const { data } = await axios.post(
-        "http://localhost:3002/api/v1/auth/login",
+        "https://trading-backend-tf3j.onrender.com/api/v1/auth/login",
         {
           ...inputValue,
         },

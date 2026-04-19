@@ -33,10 +33,10 @@ export default function Summary() {
     try {
       setLoading(true);
       const [portfolioRes, fundsRes] = await Promise.all([
-        axios.get(`http://localhost:3002/api/v1/portfolio/${user.id}`, {
+        axios.get(`https://trading-backend-tf3j.onrender.com/api/v1/portfolio/${user.id}`, {
           withCredentials: true,
         }),
-        axios.get(`http://localhost:3002/api/v1/funds/balance`, {
+        axios.get(`https://trading-backend-tf3j.onrender.com/api/v1/funds/balance`, {
           withCredentials: true,
         }),
       ]);
@@ -46,6 +46,9 @@ export default function Summary() {
       setFunds(fundsRes.data.balance || 0);
     } catch (err) {
       console.error("Data fetch error", err);
+      if(err.response.data.message){
+        alert(err.response.data.message);
+      }
     } finally {
       setLoading(false);
     }

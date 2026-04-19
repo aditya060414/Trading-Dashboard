@@ -1,8 +1,9 @@
-import React from "react";
+
 import { useState, useRef, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../Auth";
+import { LoaderCircle } from "lucide-react";
 
 export default function Menu({ onSelectStock }) {
   const notActiveMenu = "menu-links";
@@ -10,13 +11,14 @@ export default function Menu({ onSelectStock }) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef(null);
   const navigate = useNavigate();
-  const {user} = useAuth();
+  const { user } = useAuth();
 
 
   const handleButtonClick = () => {
     setOpen((prev) => !prev);
+
   };
-  
+
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -28,13 +30,14 @@ export default function Menu({ onSelectStock }) {
   }, []);
   const handleLogout = async () => {
     try {
-      await axios.post(
-        "http://localhost:3002/api/v1/auth/logout",
+      const res = await axios.post(
+        "https://trading-backend-tf3j.onrender.com/api/v1/auth/logout",
         {},
         { withCredentials: true },
       );
-
-      navigate("/login", { replace: true });
+      if(res.data.message){
+        alert(res.data.message);
+      }
       window.location.reload();
     } catch (err) {
       console.error(err);
@@ -105,19 +108,21 @@ export default function Menu({ onSelectStock }) {
               <div className="user-menu">
                 <div className="user-menu-header">
                   <span className="material-symbols-outlined">person</span>
-                  {user && (
+                  {user ? (
                     <div>
                       <p className="username">{user.username}</p>
                       <p className="email">{user.email}</p>
                     </div>
+                  ) : (
+                    <p><LoaderCircle className="spinner" /></p>
                   )}
                 </div>
 
                 <ul className="user-menu-list">
-                  <li>Profile</li>
-                  <li>Orders</li>
-                  <li>Holdings</li>
-                  <li>Settings</li>
+                  <li onClick={() => navigate("/")}>Profile</li>
+                  <li onClick={() => navigate("/orders")}>Orders</li>
+                  <li onClick={() => navigate("/holdings")}>Holdings</li>
+                  <li onClick={() => navigate("/settings")}>Settings</li>
                   <li>
                     <button className="logout-btn" onClick={handleLogout}>
                       Logout

@@ -24,15 +24,21 @@ export default function Funds() {
   const fetchData = async () => {
     try {
       const [balRes, histRes] = await Promise.all([
-        axios.get(`http://localhost:3002/api/v1/funds/balance`, {
+        axios.get(`https://trading-backend-tf3j.onrender.com/api/v1/funds/balance`, {
           withCredentials: true
         }),
-        axios.get(`http://localhost:3002/api/v1/funds/history`, {
+        axios.get(`https://trading-backend-tf3j.onrender.com/api/v1/funds/history`, {
           withCredentials: true
         }),
       ]);
       setBalance(balRes.data.balance || 0);
       setHistory(histRes.data.history || []);
+      if(balRes.error){
+        alert(balRes.error.message);
+      }  
+      if(histRes.error){
+        alert(histRes.error.message);
+      } 
     } catch (err) {
       console.error("Data fetch error", err);
     }
@@ -52,9 +58,10 @@ export default function Funds() {
       const type = modalMode.toLowerCase(); // "deposit" or "withdraw"
       const payload = { amount: Number(amount) };
       if (type === "deposit") {
-        await axios.post(`http://localhost:3002/api/v1/funds/add`, payload, { withCredentials: true });
+        const res = await axios.post(`https://trading-backend-tf3j.onrender.com/api/v1/funds/add`, payload, { withCredentials: true });
+        alert(res.data.message);
       } else {
-        const res = await axios.post(`http://localhost:3002/api/v1/funds/withdraw`, payload, { withCredentials: true });
+        const res = await axios.post(`https://trading-backend-tf3j.onrender.com/api/v1/funds/withdraw`, payload, { withCredentials: true });
         alert(res.data.message);
       }
 
@@ -107,7 +114,7 @@ export default function Funds() {
             </button>
           </div>
         </div>
-        <div className="investment-graph">graph</div>
+        {/* <div className="investment-graph">graph</div> */}
       </div>
       <div className="transactions">
         <h5>Transactions</h5>
@@ -118,6 +125,7 @@ export default function Funds() {
               <th>Amount</th>
               <th>Date</th>
               <th>Time</th>
+              <th>Stock</th>
             </tr>
           </thead>
           <tbody>
@@ -145,6 +153,7 @@ export default function Funds() {
                   <td className="amount">₹ {h.amount}</td>
                   <td>{date}</td>
                   <td>{time}</td>
+                  <td style={{ color: getStatusColor(h.type) }}>{h.type === "BUY" || h.type === "SELL" ? h.symbol : "-"}</td>
                 </tr>
               );
             })}

@@ -1,27 +1,14 @@
-import * as React from "react";
-import { useState, useEffect } from "react";
+
+import { useState} from "react";
 import Tooltip from "@mui/material/Tooltip";
 import Button from "@mui/material/Button";
 import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { LoaderCircle } from "lucide-react";
+
 export default function BuyComponent({ stock, closeBuy }) {
-  const [userDetails, setUserDetails] = useState(null);
-  const [bal, setBal] = useState(0);
   const [loading, setLoading] = useState(false);
 
-
-  useEffect(() => {
-    axios
-      .get(`http://localhost:3002/funds/${userDetails?.email}`)
-      .then((res) => {
-        setBal(res.data.balance || 0);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, [userDetails]);
-  
   const [qty, setQty] = useState(1);
   const handleQtyChange = (event) => {
     setQty(event.target.value);
@@ -34,39 +21,31 @@ export default function BuyComponent({ stock, closeBuy }) {
       return;
     }
 
-    const totalAmt = qty * stock.close;
-    const payload = {
-      withdraw: totalAmt,
-    };
-    if (totalAmt > bal) {
-      alert("Purchase failed due to insufficient balance.");
-      closeBuy();
-      return;
-    }
     try {
       setLoading(true);
-      await Promise.all([
-        axios.post("http://localhost:3002/orders", {
-          quantity: qty,
-          symbol: stock.symbol,
-          close: stock.close,
-          email: userDetails?.email,
-          mode: "BUY",
-        }),
-        axios.post(`http://localhost:3002/funds/${userDetails.email}`, payload),
-      ]);
-      alert("Order Placed Successfully");
+
+      const result = await axios.post("https://trading-backend-tf3j.onrender.com/api/v1/orders/placeOrder", {
+        quantity: qty,
+        symbol: stock.symbol,
+        close: stock.close,
+        mode: "BUY",
+      }, {
+        withCredentials: true
+      })
+
+      alert(result.data.message);
       closeBuy();
       setTimeout(() => {
         window.location.reload();
       }, 500);
     } catch (err) {
       console.error(err);
-      alert("Failed to place order");
+      alert(err.message);
     } finally {
       setLoading(false);
     }
   };
+  if (loading) return <div className="load-circle" ><LoaderCircle className="spinner" /></div>;
   return (
     <div className="buy-sell-component">
       <div className="container">

@@ -59,7 +59,7 @@ export default function WatchList({ watchlistStocks = [] }) {
       const symbol = stock.symbol;
 
       // Await the delete request
-      await axios.delete("http://localhost:3002/api/v1/watchlist/remove", {
+      await axios.delete("https://trading-backend-tf3j.onrender.com/api/v1/watchlist/remove", {
         data: { symbol: symbol },
         withCredentials: true,
       });

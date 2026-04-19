@@ -1,10 +1,9 @@
-import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Summary from "./Summary";
 import Orders from "./Orders";
 import Holdings from "./Holdings";
 import Funds from "./Funds";
-import Apps from "./Apps";
+import Settings from "./Setting";
 import WatchListComponent from "./WatchListComponent";
 
 const DashBoard = () => {
@@ -21,7 +20,7 @@ const DashBoard = () => {
               <Route path="/orders" element={<Orders />} />
               <Route path="/holdings" element={<Holdings />} />
               <Route path="/funds" element={<Funds />} />
-              <Route path="/apps" element={<Apps />} />
+              <Route path="/settings" element={<Settings />} />
             </Routes>
           </div>
         </div>

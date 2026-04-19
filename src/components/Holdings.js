@@ -16,12 +16,15 @@ export default function Holdings() {
       try {
         setLoading(true);
 
-        const res = await axios.get(`http://localhost:3002/api/v1/portfolio/${user.id}`, {
+        const res = await axios.get(`https://trading-backend-tf3j.onrender.com/api/v1/portfolio/${user.id}`, {
           withCredentials: true,
         });
         setPortfolio(res.data);
       } catch (error) {
         console.error("Error fetching portfolio:", error);
+        if(error.response.data.message){
+          alert(error.response.data.message);
+        }
       } finally {
         setLoading(false);
       }

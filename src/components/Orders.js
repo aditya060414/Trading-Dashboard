@@ -10,12 +10,15 @@ export default function Orders() {
     const fetchOrder = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`http://localhost:3002/api/v1/orders/history`, {
+        const res = await axios.get(`https://trading-backend-tf3j.onrender.com/api/v1/orders/history`, {
           withCredentials: true,
         });
         setOrders(res.data.data);
       } catch (error) {
         console.log("Error fetching data.", error.message);
+        if(error.response.data.message){
+          alert(error.response.data.message);
+        }
       } finally {
         setLoading(false);
       }
@@ -23,12 +26,6 @@ export default function Orders() {
     fetchOrder();
   }, [])
 
-  const formatINR = (amount) => {
-    return new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
-    }).format(amount);
-  };
   const getStatusColor = (status) => {
     switch (status) {
       case "COMPLETED": return "#4CAF50"; // Green

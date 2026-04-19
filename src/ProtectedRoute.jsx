@@ -10,7 +10,7 @@ export default function ProtectedRoute({ children }) {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3002/api/v1/auth/verify", {
+      .get("https://trading-backend-tf3j.onrender.com/api/v1/auth/verify", {
         withCredentials: true,
       })
       .then((res) => {

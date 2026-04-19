@@ -12,7 +12,7 @@ export default function WatchListComponent() {
 
   const fetchWatchlist = useCallback(async () => {
     try {
-      const response = await axios.get(`http://localhost:3002/api/v1/watchlist/get`, {
+      const response = await axios.get(`https://trading-backend-tf3j.onrender.com/api/v1/watchlist/get`, {
         withCredentials: true,
       });
       setWatchlistStocks(response.data.stock || []);
@@ -30,8 +30,8 @@ export default function WatchListComponent() {
   const handleAddToWatchlist = async (stock) => {
     setLoading(true);
     try {
-      await axios.post(
-        `http://localhost:3002/api/v1/watchlist/add`,
+       await axios.post(
+        `https://trading-backend-tf3j.onrender.com/api/v1/watchlist/add`,
         {
           symbol: stock.symbol,
           high: stock.high,

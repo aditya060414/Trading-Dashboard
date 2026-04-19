@@ -1,77 +1,38 @@
-import * as React from "react";
-import { useState, useEffect } from "react";
+
+import { useState } from "react";
 import Tooltip from "@mui/material/Tooltip";
 import Button from "@mui/material/Button";
 import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 export default function SellComponent({ stock, closeBuy }) {
-  const [userDetails, setUserDetails] = useState(null);
   const [loading, setLoading] = useState(false);
- 
 
-  const [holdingsData, setHoldingsData] = useState(null);
-  // useEffect(() => {
-  //   if (!stock?.symbol || !userDetails?.email) return;
-  //   try {
-  //     axios
-  //       .get(`http://localhost:3002/fetchOrders/${userDetails.email}`)
-  //       .then((res) => {
-  //         const stockDetail = res.data.find(
-  //           (item) => item.symbol === stock.symbol,
-  //         );
-  //         console.log(stockDetail);
-  //         setHoldingsData(stockDetail || null);
-  //       });
-  //   } catch (err) {
-  //     console.error(err);
-  //     alert("Failed to fetch holdings data!");
-  //   }
-  // }, [stock, userDetails]);
-  const [qty, setQty] = useState(1);
+  const [qty, setQty] = useState(null);
   const handleQtyChange = (event) => {
     setQty(Number(event.target.value));
   };
   const handleSubmitPurchase = async () => {
-    if (!holdingsData || holdingsData.qty === 0) {
-      alert(`You don't have any holdings of ${stock.symbol}`);
-      closeBuy();
-      return;
-    }
-    if (!qty || qty <= 0) {
-      alert("Quantity must be greater than 0");
-      closeBuy();
-      return;
-    }
-    if (qty > holdingsData.qty) {
-      alert("Entered quantity exceeds available holdings.");
-      closeBuy();
-      return;
-    }
-    const totAmt = qty * stock.close;
-    const payload = {
-      deposit: totAmt,
-    };
+    let result;
     try {
       setLoading(true);
-      await Promise.all([
-        axios.post("http://localhost:3002/orders", {
-          quantity: qty,
-          symbol: stock.symbol,
-          close: stock.close,
-          mode: "SELL",
-          email: userDetails?.email,
-        }),
-        axios.post(`http://localhost:3002/funds/${userDetails.email}`, payload),
-      ]);
-      alert("Order Placed Successfully");
+
+      result = await axios.post("https://trading-backend-tf3j.onrender.com/api/v1/orders/placeOrder", {
+        quantity: qty,
+        symbol: stock.symbol,
+        close: stock.close,
+        mode: "SELL",
+      }, {
+        withCredentials: true
+      });
+
+      alert(result.data.message);
       closeBuy();
       setTimeout(() => {
         window.location.reload();
       }, 500);
     } catch (err) {
       console.error(err);
-      alert("Failed to place order");
+      alert(err.message);
     } finally {
       setLoading(false);
     }
@@ -105,7 +66,7 @@ export default function SellComponent({ stock, closeBuy }) {
             onChange={handleQtyChange}
             placeholder="Quantity"
           />
-          <p>Max Qty. : {holdingsData?.qty ?? 0}</p>
+          {/* <p>Max Qty. : {holdingsData?.qty ?? 0}</p> */}
         </div>
         <div className="sell-purchase-button">
           <Button
