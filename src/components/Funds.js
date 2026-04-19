@@ -47,8 +47,6 @@ export default function Funds() {
     fetchData();
   }, []);
 
-  console.log(balance, history)
-
   // Transaction Handler
   const handleTransaction = async () => {
     if (!amount || amount <= 0) return alert("Enter a valid amount");
