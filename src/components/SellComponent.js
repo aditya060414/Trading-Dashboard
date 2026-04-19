@@ -27,6 +27,9 @@ export default function SellComponent({ stock, closeBuy }) {
 
       alert(result.data.message);
       closeBuy();
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
     } catch (err) {
       console.error(err);
       alert(err.message);
