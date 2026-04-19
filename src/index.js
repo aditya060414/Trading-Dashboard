@@ -24,7 +24,7 @@ function AppRoutes() {
     <Routes>
       <Route
         path="/login"
-        element={user ? <Navigate to="/" replace /> : <AuthLayout />}
+        element={user ? <Navigate to="" replace /> : <AuthLayout />}
       />
       <Route
         path="/*"
