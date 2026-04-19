@@ -11,7 +11,6 @@ export default function Holdings() {
   useEffect(() => {
     // If no user, don't fetch and don't show loading
     if (!user?.id) return;
-
     const fetchPortfolio = async () => {
       try {
         setLoading(true);
