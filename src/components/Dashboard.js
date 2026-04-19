@@ -5,8 +5,10 @@ import Holdings from "./Holdings";
 import Funds from "./Funds";
 import Settings from "./Setting";
 import WatchListComponent from "./WatchListComponent";
-
+import AuthLayout from "./AuthLayout";
+import { useAuth } from "../Auth";
 const DashBoard = () => {
+  const { user } = useAuth();
   return (
     <div className="container-fluid dashboard">
       <div className="row dashboard-row">
@@ -21,6 +23,7 @@ const DashBoard = () => {
               <Route path="/holdings" element={<Holdings />} />
               <Route path="/funds" element={<Funds />} />
               <Route path="/settings" element={<Settings />} />
+              {!user && <Route path="/login" element={<AuthLayout />} />}
             </Routes>
           </div>
         </div>
