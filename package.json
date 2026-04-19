@@ -21,14 +21,15 @@
     "react-chartjs-2": "^5.3.1",
     "react-dom": "^19.2.3",
     "react-router-dom": "^7.13.0",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "react-toastify": "^11.0.5",
+    "serve": "^14.2.6",
     "web-vitals": "^2.1.4",
     "ws": "^8.19.0"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "npm run build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
