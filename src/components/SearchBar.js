@@ -12,7 +12,7 @@ export default function SearchBar({ onSelectStock }) {
   /* WebSocket connection */
   useEffect(() => {
     let isClosing = false; // Flag to track if we intentionally closed it
-    const socket = new WebSocket('ws://localhost:4000/');
+    const socket = new WebSocket('wss://websocket-n5rb.onrender.com');
 
     socket.onopen = () => {
       // Only log if we haven't already started closing this connection
