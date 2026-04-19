@@ -1,11 +1,12 @@
 import Button from "@mui/material/Button";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { useAuth } from "../Auth";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 export default function Login() {
   const navigate = useNavigate();
+  const { setUser } = useAuth();
   const [inputValue, setInputValue] = useState({
     email: "",
     password: "",
@@ -38,6 +39,7 @@ export default function Login() {
         },
         { withCredentials: true },
       );
+      setUser(data.user);
       const { success, message } = data;
       if (success) {
         handleSuccess(message);
