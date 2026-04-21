@@ -39,11 +39,11 @@ export default function AuthLayout() {
   };
   return (
     <>
-      <button onClick={handleTheme} className="theme-button">{!dark ? <Sun className="lightheme" /> : <Moon className="darktheme" />}</button>
       <div className="auth-layout">
+          <button onClick={handleTheme} className="theme-button-auth">{!dark ? <Sun className="lightheme" /> : <Moon className="darktheme" />}</button>
         <div className="auth-layout-container">
           <div className="authbrandf-info">
-            <h4>MarketEx</h4>
+            <h4 className="brand-logo">Market<span>Ex</span></h4>
             <div className="brand-tagline">
               <p>Smart.&nbsp;Secure.&nbsp;Confident Trading.</p>
             </div>
@@ -62,7 +62,7 @@ export default function AuthLayout() {
             <Button variant="contained" onClick={handleButtonClick} className="toggle-Btn">
               {isSignUp ? "Login" : "SignUp"}
             </Button>
-            {isSignUp ? <p style={{ "display": "flex", "position": "relative", "justifyContent": "flex-end", "right": "60px" }} className="toggle-text">Already have an account?</p> : <p style={{ "display": "flex", "position": "relative", "justifyContent": "flex-end", "right": "60px" }} className="toggle-text">Forgot Password?</p>}
+            {isSignUp ? <p className="toggle-text">Already have an account?</p> : <p className="toggle-text">Forgot Password?</p>}
           </div>
         </div>
       </div>
