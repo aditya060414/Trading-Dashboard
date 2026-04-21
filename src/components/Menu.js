@@ -4,8 +4,9 @@ import { NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../Auth";
 import { LoaderCircle } from "lucide-react";
+import { Sun, Moon } from 'lucide-react';
 
-export default function Menu({ onSelectStock }) {
+export default function Menu({ dark, handleTheme }) {
   const notActiveMenu = "menu-links";
   const activeMenu = "menu-links-active";
   const [open, setOpen] = useState(false);
@@ -35,7 +36,7 @@ export default function Menu({ onSelectStock }) {
         {},
         { withCredentials: true },
       );
-      if(res.data.message){
+      if (res.data.message) {
         alert(res.data.message);
       }
       window.location.reload();
@@ -43,16 +44,19 @@ export default function Menu({ onSelectStock }) {
       console.error(err);
     }
   };
-
+  const handleRoute = (path)=>{
+    setOpen(false);
+    navigate(path);
+  }
   return (
     <div className="menu-container">
       <div className="menu-logo">
-        <h2>
+        <h4 className="brand-logo">
           Market<span>Ex</span>
-        </h2>
+        </h4>
       </div>
-      <div className="menu-items-top">
-        <ul style={{ margin: "10px 2px 5px 0", padding: "0" }}>
+      <div className="menu-items">
+        <ul>
           <li>
             <NavLink
               to="/"
@@ -98,7 +102,7 @@ export default function Menu({ onSelectStock }) {
             </NavLink>
           </li>
 
-          <li>|</li>
+          <li className="separator" style={{ color: 'var(--border)' }}>|</li>
 
           <li className="user-logo" ref={menuRef}>
             <button className="user-details" onClick={handleButtonClick}>
@@ -114,15 +118,16 @@ export default function Menu({ onSelectStock }) {
                       <p className="email">{user.email}</p>
                     </div>
                   ) : (
-                    <p><LoaderCircle className="spinner" /></p>
+                    <div className="spinner-container"><LoaderCircle className="spinner" /></div>
                   )}
                 </div>
 
                 <ul className="user-menu-list">
-                  <li onClick={() => navigate("/")}>Profile</li>
-                  <li onClick={() => navigate("/orders")}>Orders</li>
-                  <li onClick={() => navigate("/holdings")}>Holdings</li>
-                  <li onClick={() => navigate("/settings")}>Settings</li>
+                  <li onClick={() => handleRoute("/")}>Profile</li>
+                  <li onClick={() => handleRoute("/orders")}>Orders</li>
+                  <li onClick={() => handleRoute("/holdings")}>Holdings</li>
+                  <li onClick={() => handleRoute("/funds")}>Funds</li>
+                  <li onClick={() => handleRoute("/settings")}>Settings</li>
                   <li>
                     <button className="logout-btn" onClick={handleLogout}>
                       Logout
@@ -131,6 +136,9 @@ export default function Menu({ onSelectStock }) {
                 </ul>
               </div>
             )}
+          </li>
+          <li>
+            <button onClick={handleTheme} className="theme-button">{!dark ? <Sun className="lightheme" /> : <Moon className="darktheme" />}</button>
           </li>
         </ul>
       </div>

@@ -1,10 +1,10 @@
 import React from "react";
 import Menu from "./Menu"
-const TopBar = () => {
+const TopBar = ({ dark, handleTheme }) => {
   return (
     <>
       <div className="top-bar">
-      <Menu />
+      <Menu dark={dark} handleTheme={handleTheme} />
       </div>
     </>
   );

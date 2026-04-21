@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import Button from "@mui/material/Button";
-
+import { LoaderCircle } from "lucide-react";
 export default function SignUp() {
   const navigate = useNavigate();
   const [inputValue, setInputValue] = useState({
@@ -12,6 +12,7 @@ export default function SignUp() {
     username: "",
     contact: "",
   });
+  const [loader, setLoader] = useState(false);
   const { email, password, username, contact } = inputValue;
   const handleOnchange = (e) => {
     const { name, value } = e.target;
@@ -31,6 +32,7 @@ export default function SignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setLoader(true);
       const { data } = await axios.post(
         "https://trading-backend-tf3j.onrender.com/api/v1/auth/signUp",
         {
@@ -38,7 +40,7 @@ export default function SignUp() {
         },
         { withCredentials: true },
       );
-      console.log(data);
+
       const { success, message } = data;
       if (success) {
         handleSuccess(message);
@@ -49,8 +51,9 @@ export default function SignUp() {
         handleError(message);
       }
     } catch (err) {
-      console.error(err);
       handleError(err.response.data.message);
+    } finally {
+      setLoader(false);
     }
   };
 
@@ -93,7 +96,7 @@ export default function SignUp() {
             required
           />
           <Button type="submit" variant="contained" className="auth-btn">
-            SignUp
+            {loader ? <LoaderCircle className="spinner" /> : "SignUp"}
           </Button>
         </form>
         <ToastContainer />
