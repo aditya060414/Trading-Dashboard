@@ -58,7 +58,7 @@ export default function AuthLayout() {
             </div>
           </div>
           <div className="signup-login toggle">
-            {isSignUp ? <SignUp theme={dark} /> : <Login theme={dark} />}
+            {isSignUp ? <SignUp /> : <Login />}
             <Button variant="contained" onClick={handleButtonClick} className="toggle-Btn">
               {isSignUp ? "Login" : "SignUp"}
             </Button>
