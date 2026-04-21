@@ -53,6 +53,7 @@ export default function SignUp() {
       handleError(err.response.data.message);
     }
   };
+
   return (
     <>
       <div className="auth-container">
