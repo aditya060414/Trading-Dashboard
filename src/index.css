@@ -10,7 +10,9 @@ body {
   overflow: hidden;
   background-color: var(--bg);
   color: var(--text);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 /* Safe & Premium Global Loader System */
@@ -79,13 +81,24 @@ body {
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.6; transform: scale(0.98); }
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(0.98);
+  }
 }
 
 /* Global Custom Scrollbar */
@@ -452,12 +465,12 @@ body {
 
 /* Fix browser autofill background clashing with theme */
 .auth-form input:-webkit-autofill,
-.auth-form input:-webkit-autofill:hover, 
-.auth-form input:-webkit-autofill:focus, 
+.auth-form input:-webkit-autofill:hover,
+.auth-form input:-webkit-autofill:focus,
 .auth-form input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 30px var(--bg) inset !important;
-    -webkit-text-fill-color: var(--text) !important;
-    transition: background-color 5000s ease-in-out 0s;
+  -webkit-box-shadow: 0 0 0 30px var(--bg) inset !important;
+  -webkit-text-fill-color: var(--text) !important;
+  transition: background-color 5000s ease-in-out 0s;
 }
 
 .auth-form input:focus {
@@ -829,16 +842,6 @@ input[type="number"] {
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
-/* Responsive breakpoints*/
-@media (max-width: 1200px) {
-  .dashboard {
-    grid-template-columns: 260px 1fr;
-    overflow-y: auto;
-  }
-  .my-details-card {
-    margin-top: 5px;
-  }
-}
 .mobile-watchlist-toggle {
   display: none;
   position: fixed;
@@ -880,90 +883,6 @@ input[type="number"] {
   animation: fadeIn 0.3s ease;
 }
 
-@media (max-width: 1150px) {
-  .portfolio-cards {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 1024px) {
-  .dashboard {
-    grid-template-columns: 240px 1fr;
-  }
-  .summary-grid {
-    grid-template-columns: 1fr;
-  }
-  .auth-layout-container .authbrandf-info .brand-tagline p {
-    font-size: 1rem;
-    letter-spacing: normal;
-  }
-  .auth-layout-container .authbrandf-info .brand-bio {
-    width: 70%;
-    font-size: 0.9rem;
-  }
-}
-
-@media (max-width: 900px) {
-  .dashboard {
-    display: flex;
-    flex-direction: column;
-    position: relative;
-  }
-
-  .mobile-watchlist-toggle {
-    display: flex;
-  }
-
-  .dashboard .watchlist {
-    position: fixed;
-    top: 70px; /* Below TopBar */
-    left: -100%;
-    width: 320px;
-    height: calc(100vh - 70px);
-    background-color: var(--bg);
-    z-index: 1000;
-    transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 10px 0 20px rgba(0, 0, 0, 0.1);
-    border-right: 1px solid var(--border);
-    margin: 0;
-    padding: 0;
-  }
-
-  .dashboard .watchlist.show-mobile {
-    left: 0;
-  }
-
-  .dashboard .watchlist.show-mobile + .watchlist-overlay {
-    display: block;
-  }
-
-  .dashboard .content-container {
-    width: 100%;
-    height: calc(100vh - 70px);
-    overflow-y: auto;
-  }
-
-  .search-container {
-    margin: 10px 0;
-    padding: 0 15px;
-    display: flex;
-    position: relative;
-    justify-content: center;
-    align-items: center;
-    border: none;
-  }
-
-  .watchlist-container {
-    display: block !important; /* Force display in the drawer */
-    height: 100%;
-    overflow-y: auto;
-  }
-
-  .modal-content {
-    padding: 24px;
-    width: 95%;
-  }
-}
 .watchlist-data {
   padding: 0;
 }
@@ -1123,6 +1042,8 @@ input[type="number"] {
   position: fixed;
   top: 0;
   left: 0;
+  right: 0;
+  bottom: 0;
   width: 100vw;
   height: 100vh;
   background: rgba(0, 0, 0, 0.4);
@@ -1130,8 +1051,12 @@ input[type="number"] {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 9000;
+  z-index: 100000; /* Extremely high to beat any drawer */
   padding: 20px;
+}
+
+body.modal-open {
+  overflow: hidden !important;
 }
 
 /* Ensure Toast notifications are above everything */
@@ -1140,8 +1065,12 @@ input[type="number"] {
 }
 
 @keyframes modalFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .modal-content {
@@ -1157,8 +1086,14 @@ input[type="number"] {
 }
 
 @keyframes modalScaleUp {
-  from { transform: scale(0.9); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .buy-sell-component {
@@ -1547,228 +1482,6 @@ input[type="number"] {
   filter: brightness(1.1);
 }
 
-@media (max-width: 770px) {
-  .portfolio-cards {
-    grid-template-columns: 1fr;
-  }
-  .stock-details-card {
-    width: 95%;
-    height: 95vh;
-    padding: 16px;
-  }
-  .menu-items > ul > li:nth-child(-n + 5) {
-    display: none;
-  }
-
-  .menu-items > ul > .separator {
-    display: none;
-  }
-  .user-menu {
-    top: 40px;
-    left: -160px;
-    height: 250px;
-    overflow: auto;
-  }
-  .user-menu-header .username {
-    font-size: 1rem;
-  }
-  .user-menu-header .email {
-    font-size: 0.72rem;
-  }
-  .user-menu-list li {
-    font-size: 1rem;
-  }
-  .auth-layout-container {
-    width: 90vw;
-    grid-template-columns: 1fr;
-    height: 550px;
-    overflow: auto;
-  }
-  .auth-layout-container::-webkit-scrollbar {
-    width: 4px;
-  }
-  .auth-layout-container::-webkit-scrollbar-track {
-    margin: 20px 0;
-  }
-  .auth-layout-container::-webkit-scrollbar-thumb {
-    background: #dad5d5;
-    border-radius: 10px;
-  }
-  .authbrandf-info {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    align-items: start;
-    margin: 0;
-  }
-
-  .authbrandf-info h4,
-  .authbrandf-info .brand-tagline,
-  .authbrandf-info .brand-bio {
-    grid-column: 1;
-  }
-  .authbrandf-info h4 {
-    margin: 24px 0 0 30px;
-    padding: 0 0 0 24px;
-  }
-  .authbrandf-info .brand-tagline,
-  .authbrandf-info .brand-bio {
-    margin: 0 0 0 30px;
-    padding: 0 0 0 24px;
-  }
-  .authbrandf-info .brand-tagline p {
-    font-size: 0.85rem !important;
-    letter-spacing: normal;
-    margin: 0;
-  }
-  .authbrandf-info .brand-bio {
-    width: 90% !important;
-  }
-  .authbrandf-info .brand-bio p {
-    margin: 0;
-  }
-  .graph-img {
-    grid-column: 2;
-    grid-row: 1 / span 3;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .toggle-Btn {
-    display: flex;
-    position: absolute;
-    left: 27%;
-    transform: translate(-50%, 50%);
-  }
-  .auth-btn-login {
-    display: flex;
-    position: absolute;
-    left: 50%;
-    transform: translate(-50%, 50%);
-  }
-}
-
-@media (max-width: 585px) {
-  .theme-button {
-    display: none;
-  }
-  .user-menu-header .username {
-    font-size: 1.1rem;
-    text-align: center;
-  }
-  .user-menu-header .email {
-    display: none;
-  }
-  .auth-layout-container {
-    width: 100vw;
-    grid-template-columns: 1fr;
-    height: 100vh;
-    overflow: auto;
-    border: none;
-    padding: 0 0 10px 0;
-  }
-  .authbrandf-info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 6px;
-  }
-  .authbrandf-info h4 {
-    margin: 24px 0 0 0;
-    padding: 0;
-  }
-  .authbrandf-info .brand-tagline,
-  .authbrandf-info .brand-bio {
-    margin: 0;
-    padding: 0;
-  }
-  .toggle-Btn {
-    display: flex;
-    position: absolute;
-    left: 40%;
-    transform: translate(-50%, 50%);
-  }
-  .my-details-card {
-    flex-direction: column;
-    text-align: center;
-    gap: 24px;
-    padding: 30px 20px;
-  }
-
-  .modal-content {
-    padding: 20px;
-    border-radius: 12px;
-  }
-  .stock-details-card {
-    width: 100vw;
-    height: 100vh;
-    border-radius: 0;
-    padding: 24px 16px;
-    gap: 16px;
-  }
-  .header-info h3 {
-    font-size: 1.8rem;
-  }
-  .price-main {
-    font-size: 2.2rem;
-  }
-  .stock-ohlc-grid {
-    grid-template-columns: repeat(2, 1fr);
-    padding: 12px;
-    gap: 12px;
-  }
-  .stock-chart-container {
-    height: 350px;
-  }
-  .details-pop {
-    width: 100vw;
-    height: 100vh;
-    max-height: 100vh;
-    border-radius: 0;
-    padding: 24px 16px;
-    gap: 16px;
-  }
-  .stock-unified-actions {
-    flex-direction: column-reverse;
-    align-items: stretch;
-    gap: 20px;
-  }
-  .trading-btns {
-    flex-direction: row;
-    justify-content: space-between;
-  }
-  .trading-btns button {
-    flex: 1;
-    padding: 10px !important;
-  }
-}
-@media (max-width: 325px) {
-  .auth-layout-container {
-    width: 100vw;
-    grid-template-columns: 1fr;
-    height: 100vh;
-    overflow: auto;
-    border: none;
-    padding: 0 0 20px 0;
-  }
-  .auth-btn {
-    display: flex;
-    position: relative;
-    justify-content: space-between;
-  }
-  .signup-login .toggle-text {
-    font-size: 0.9rem !important;
-  }
-
-  .modal-content {
-    padding: 15px;
-  }
-  .buy-sell-component .hero-section h5 {
-    font-size: 1.1rem !important;
-  }
-}
-
 /* Orders Page Premium Design */
 .orders-wrapper {
   padding: 40px;
@@ -1889,7 +1602,7 @@ input[type="number"] {
 
 .qty-value {
   font-weight: 700;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: "JetBrains Mono", monospace;
 }
 
 .status-badge {
@@ -1944,7 +1657,7 @@ input[type="number"] {
   text-align: center;
 }
 
-.orders-empty-state p{
+.orders-empty-state p {
   text-align: center !important;
 }
 
@@ -1983,27 +1696,6 @@ input[type="number"] {
   justify-content: center;
   height: 60vh;
   gap: 16px;
-}
-
-@media (max-width: 585px) {
-  .orders-wrapper {
-    padding: 20px 12px;
-  }
-  .orders-header h2 {
-    font-size: 1.8rem;
-  }
-  .orders-table {
-    min-width: 650px; 
-  }
-  .orders-table td, .orders-table th {
-    padding: 12px 16px;
-    white-space: nowrap;
-  }
-  .orders-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
 }
 
 /* Holdings Page Premium Design */
@@ -2104,10 +1796,10 @@ input[type="number"] {
   align-items: baseline;
   gap: 12px;
 }
-.pnl-main .profit{
+.pnl-main .profit {
   color: var(--profit);
 }
-.pnl-main .loss{
+.pnl-main .loss {
   color: var(--loss);
 }
 
@@ -2148,11 +1840,11 @@ input[type="number"] {
   display: flex;
   flex-direction: column;
 }
-.pnl-cell .profit{
-  color:var(--profit);
+.pnl-cell .profit {
+  color: var(--profit);
 }
-.pnl-cell .loss{
-  color:var(--loss);
+.pnl-cell .loss {
+  color: var(--loss);
 }
 .pnl-amount {
   font-weight: 700;
@@ -2161,12 +1853,6 @@ input[type="number"] {
 .pnl-percent {
   font-size: 0.75rem;
   font-weight: 800;
-}
-
-@media (max-width: 770px) {
-  .portfolio-summary-grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 /* Funds Page Premium Design */
@@ -2327,12 +2013,14 @@ input[type="number"] {
   justify-content: center;
 }
 
-.transaction-type-cell.buy .type-icon, .transaction-type-cell.withdraw .type-icon {
+.transaction-type-cell.buy .type-icon,
+.transaction-type-cell.withdraw .type-icon {
   background: rgba(239, 68, 68, 0.1);
   color: #ef4444;
 }
 
-.transaction-type-cell.sell .type-icon, .transaction-type-cell.add .type-icon {
+.transaction-type-cell.sell .type-icon,
+.transaction-type-cell.add .type-icon {
   background: rgba(34, 197, 94, 0.1);
   color: #22c55e;
 }
@@ -2342,8 +2030,12 @@ input[type="number"] {
   font-size: 1.05rem;
 }
 
-.transaction-amount.credit { color: #22c55e; }
-.transaction-amount.debit { color: #ef4444; }
+.transaction-amount.credit {
+  color: #22c55e;
+}
+.transaction-amount.debit {
+  color: #ef4444;
+}
 
 .asset-tag {
   display: inline-flex;
@@ -2480,13 +2172,13 @@ input[type="number"] {
   border-radius: 12px !important;
 }
 
-.confirm-btn.deposit { background: #22c55e !important; color: white !important; }
-.confirm-btn.withdraw { background: #ef4444 !important; color: white !important; }
-
-@media (max-width: 900px) {
-  .funds-top-section {
-    grid-template-columns: 1fr;
-  }
+.confirm-btn.deposit {
+  background: #22c55e !important;
+  color: white !important;
+}
+.confirm-btn.withdraw {
+  background: #ef4444 !important;
+  color: white !important;
 }
 
 /* Premium Trade Component (Buy/Sell) */
@@ -2502,8 +2194,14 @@ input[type="number"] {
 }
 
 @keyframes slideUp {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .close-trade-btn {
@@ -2611,7 +2309,7 @@ input[type="number"] {
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .qty-control .control-btn:hover {
@@ -2682,8 +2380,14 @@ input[type="number"] {
   box-shadow: 0 10px 20px rgba(65, 108, 184, 0.2) !important;
 }
 
-.buy-mode .confirm-trade-btn { background: #22c55e !important; color: white !important; }
-.sell-mode .confirm-trade-btn { background: #ef4444 !important; color: white !important; }
+.buy-mode .confirm-trade-btn {
+  background: #22c55e !important;
+  color: white !important;
+}
+.sell-mode .confirm-trade-btn {
+  background: #ef4444 !important;
+  color: white !important;
+}
 
 .trade-loading-overlay {
   display: flex;
@@ -2693,18 +2397,6 @@ input[type="number"] {
   padding: 40px;
   gap: 16px;
   text-align: center;
-}
-
-@media (max-width: 480px) {
-  .trade-component {
-    padding: 24px;
-    border-radius: 0;
-    height: 100%;
-    max-width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
 }
 
 /* Settings Page Premium Design */
@@ -2814,7 +2506,7 @@ input[type="number"] {
 }
 
 .status-verified::before {
-  content: '';
+  content: "";
   width: 8px;
   height: 8px;
   background: #22c55e;
@@ -2914,16 +2606,6 @@ input[type="number"] {
   color: #ef4444;
 }
 
-@media (max-width: 600px) {
-  .settings-wrapper {
-    padding: 20px;
-  }
-  .profile-top {
-    flex-direction: column;
-    text-align: center;
-  }
-}
-
 /* Unified Chart Styling */
 .chart-unified-wrapper {
   background: var(--bg);
@@ -2981,11 +2663,6 @@ input[type="number"] {
   height: 100%;
 }
 
-@media (max-width: 600px) {
-  .chart-viewport {
-    height: 300px;
-  }
-}
 /* Order History Actions */
 .symbol-column {
   position: relative;
@@ -3008,8 +2685,14 @@ input[type="number"] {
 }
 
 @keyframes fadeInRight {
-  from { opacity: 0; transform: translateY(-50%) translateX(10px); }
-  to { opacity: 1; transform: translateY(-50%) translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-50%) translateX(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
 }
 
 .order-row-actions .action-btn {
@@ -3034,8 +2717,8 @@ input[type="number"] {
 
 .order-row-actions .action-btn.buy:hover {
   background: rgba(76, 175, 80, 0.1);
-  border-color: #4CAF50;
-  color: #4CAF50;
+  border-color: #4caf50;
+  color: #4caf50;
 }
 
 .order-row-actions .action-btn.sell:hover {
@@ -3046,6 +2729,520 @@ input[type="number"] {
 
 .order-row-actions .action-btn.analytics:hover {
   background: rgba(33, 150, 243, 0.1);
-  border-color: #2196F3;
-  color: #2196F3;
+  border-color: #2196f3;
+  color: #2196f3;
 }
+
+/* Responsive breakpoints*/
+@media (max-width: 1200px) {
+  .dashboard {
+    grid-template-columns: 260px 1fr;
+    overflow-y: auto;
+  }
+  .my-details-card {
+    margin-top: 5px;
+  }
+}
+
+@media (max-width: 1150px) {
+  .portfolio-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 1024px) {
+  .dashboard {
+    grid-template-columns: 240px 1fr;
+  }
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+  .auth-layout-container .authbrandf-info .brand-tagline p {
+    font-size: 1rem;
+    letter-spacing: normal;
+  }
+  .auth-layout-container .authbrandf-info .brand-bio {
+    width: 70%;
+    font-size: 0.9rem;
+  }
+}
+@media (max-width: 992px) {
+  .portfolio-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .details-pop {
+    max-width: 90%;
+  }
+}
+@media (max-width: 900px) {
+  .dashboard {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .dashboard .watchlist {
+    border-right: none;
+  }
+  .mobile-watchlist-toggle {
+    display: flex;
+  }
+
+  .dashboard .watchlist {
+    position: fixed;
+    top: 70px; /* Below TopBar */
+    left: -100%;
+    width: 320px;
+    height: calc(100vh - 70px);
+    background-color: var(--bg);
+    z-index: 1000;
+    transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 10px 0 20px rgba(0, 0, 0, 0.1);
+    border-right: 1px solid var(--border);
+    margin: 0;
+    padding: 0;
+  }
+
+  .dashboard .watchlist.show-mobile {
+    left: 0;
+  }
+
+  .dashboard .watchlist.show-mobile + .watchlist-overlay {
+    display: block;
+  }
+
+  .dashboard .content-container {
+    width: 100%;
+    height: calc(100vh - 70px);
+    overflow-y: auto;
+  }
+
+  .search-container {
+    margin: 10px 0;
+    padding: 0 15px;
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    border: none;
+  }
+
+  .watchlist-container {
+    display: block !important; /* Force display in the drawer */
+    height: 100%;
+    overflow-y: auto;
+  }
+
+  .modal-content {
+    padding: 24px;
+    width: 95%;
+  }
+  .funds-top-section {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 770px) {
+  .portfolio-cards {
+    grid-template-columns: 1fr;
+  }
+  .stock-details-card {
+    width: 95%;
+    height: 95vh;
+    padding: 16px;
+  }
+  .menu-items > ul > li:nth-child(-n + 5) {
+    display: none;
+  }
+
+  .menu-items > ul > .separator {
+    display: none;
+  }
+  .user-menu {
+    top: 40px;
+    left: -160px;
+    height: 250px;
+    overflow: auto;
+  }
+  .user-menu-header .username {
+    font-size: 1rem;
+  }
+  .user-menu-header .email {
+    font-size: 0.72rem;
+  }
+  .user-menu-list li {
+    font-size: 1rem;
+  }
+  .auth-layout-container {
+    width: 90vw;
+    grid-template-columns: 1fr;
+    height: 550px;
+    overflow: auto;
+  }
+  .auth-layout-container::-webkit-scrollbar {
+    width: 4px;
+  }
+  .auth-layout-container::-webkit-scrollbar-track {
+    margin: 20px 0;
+  }
+  .auth-layout-container::-webkit-scrollbar-thumb {
+    background: #dad5d5;
+    border-radius: 10px;
+  }
+  .authbrandf-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    margin: 0;
+  }
+
+  .authbrandf-info h4,
+  .authbrandf-info .brand-tagline,
+  .authbrandf-info .brand-bio {
+    grid-column: 1;
+  }
+  .authbrandf-info h4 {
+    margin: 24px 0 0 30px;
+    padding: 0 0 0 24px;
+  }
+  .authbrandf-info .brand-tagline,
+  .authbrandf-info .brand-bio {
+    margin: 0 0 0 30px;
+    padding: 0 0 0 24px;
+  }
+  .authbrandf-info .brand-tagline p {
+    font-size: 0.85rem !important;
+    letter-spacing: normal;
+    margin: 0;
+  }
+  .authbrandf-info .brand-bio {
+    width: 90% !important;
+  }
+  .authbrandf-info .brand-bio p {
+    margin: 0;
+  }
+  .graph-img {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .toggle-Btn {
+    display: flex;
+    position: absolute;
+    left: 27%;
+    transform: translate(-50%, 50%);
+  }
+  .auth-btn-login {
+    display: flex;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 50%);
+  }
+  .portfolio-summary-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 768px) {
+  .portfolio-cards {
+    grid-template-columns: 1fr;
+  }
+  
+  .stock-ohlc-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 15px;
+  }
+  
+  .header-info h3 {
+    font-size: 1.6rem;
+  }
+  
+  .price-main {
+    font-size: 2rem;
+  }
+  
+  .details-pop {
+    width: 100%;
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+    padding: 20px;
+    gap: 16px;
+  }
+  
+  .trading-btns {
+    width: 100%;
+    gap: 8px;
+  }
+  
+  .trading-btns button {
+    flex: 1;
+    padding: 8px 4px !important;
+    font-size: 0.8rem !important;
+    min-width: 0;
+  }
+
+  .stock-unified-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .MuiToggleButtonGroup-root {
+    justify-content: center;
+  }
+
+  .my-details-card {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+  
+  .owner-links {
+    justify-content: center;
+  }
+}
+@media (max-width: 600px) {
+  .settings-wrapper {
+    padding: 20px;
+  }
+  .profile-top {
+    flex-direction: column;
+    text-align: center;
+  }
+  .chart-viewport {
+    height: 300px;
+  }
+}
+
+@media (max-width: 585px) {
+  .theme-button {
+    display: none;
+  }
+  .user-menu-header .username {
+    font-size: 1.1rem;
+    text-align: center;
+  }
+  .user-menu-header .email {
+    display: none;
+  }
+  .auth-layout-container {
+    width: 100vw;
+    grid-template-columns: 1fr;
+    height: 100vh;
+    overflow: auto;
+    border: none;
+    padding: 0 0 10px 0;
+  }
+  .authbrandf-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 6px;
+  }
+  .authbrandf-info h4 {
+    margin: 24px 0 0 0;
+    padding: 0;
+  }
+  .authbrandf-info .brand-tagline,
+  .authbrandf-info .brand-bio {
+    margin: 0;
+    padding: 0;
+  }
+  .toggle-Btn {
+    display: flex;
+    position: absolute;
+    left: 40%;
+    transform: translate(-50%, 50%);
+  }
+  .my-details-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 24px;
+    padding: 30px 20px;
+  }
+
+  .modal-content {
+    padding: 20px;
+    border-radius: 12px;
+  }
+  .stock-details-card {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+    padding: 24px 16px;
+    gap: 16px;
+  }
+  .header-info h3 {
+    font-size: 1.8rem;
+  }
+  .price-main {
+    font-size: 2.2rem;
+  }
+  .stock-ohlc-grid {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 12px;
+    gap: 12px;
+  }
+  .stock-chart-container {
+    height: 350px;
+  }
+  .details-pop {
+    width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+    padding: 24px 16px;
+    gap: 16px;
+  }
+  .stock-unified-actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 20px;
+  }
+  .trading-btns {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  .trading-btns button {
+    flex: 1;
+    padding: 10px !important;
+  }
+  .orders-wrapper {
+    padding: 20px 12px;
+  }
+  .orders-header h2 {
+    font-size: 1.8rem;
+  }
+  .orders-table {
+    min-width: 650px;
+  }
+  .orders-table td,
+  .orders-table th {
+    padding: 12px 16px;
+    white-space: nowrap;
+  }
+  .orders-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
+@media (max-width: 500px) {
+  .summary-container,
+  .orders-wrapper,
+  .holdings-wrapper,
+  .settings-wrapper {
+    padding: 16px 12px !important;
+  }
+
+  .summary-header h2,
+  .orders-header h2,
+  .holdings-header h2 {
+    font-size: 1.6rem !important;
+  }
+
+  .portfolio-cards .card {
+    padding: 12px;
+  }
+
+  .portfolio-cards .card h3 {
+    font-size: 1.25rem;
+  }
+
+  .stock-ohlc-grid {
+    gap: 8px;
+    padding: 12px;
+  }
+  
+  .ohlc-item p {
+    font-size: 0.65rem;
+  }
+
+  .ohlc-item span {
+    font-size: 0.9rem;
+  }
+  
+  .price-main {
+    font-size: 1.6rem;
+  }
+
+  .exchange-label {
+    font-size: 0.75rem;
+  }
+
+  .trading-btns {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .trading-btns .watchlist-add-btn {
+    width: 100%;
+    order: 3;
+    padding: 10px !important;
+  }
+
+  .details-pop {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .chart-controls-bar {
+    margin-bottom: 8px;
+  }
+
+  .range-buttons button {
+    padding: 4px 8px;
+    font-size: 0.7rem;
+  }
+}
+@media (max-width: 480px) {
+  .trade-component {
+    padding: 24px;
+    border-radius: 0;
+    height: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
+@media (max-width: 325px) {
+  .auth-layout-container {
+    width: 100vw;
+    grid-template-columns: 1fr;
+    height: 100vh;
+    overflow: auto;
+    border: none;
+    padding: 0 0 20px 0;
+  }
+  .auth-btn {
+    display: flex;
+    position: relative;
+    justify-content: space-between;
+  }
+  .signup-login .toggle-text {
+    font-size: 0.9rem !important;
+  }
+
+  .modal-content {
+    padding: 15px;
+  }
+  .buy-sell-component .hero-section h5 {
+    font-size: 1.1rem !important;
+  }
+}
+
+
+
+
+
+
