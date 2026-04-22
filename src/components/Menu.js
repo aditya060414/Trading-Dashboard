@@ -1,11 +1,9 @@
 
 import { useState, useRef, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useAuth } from "../Auth";
 import { LoaderCircle } from "lucide-react";
 import { Sun, Moon } from 'lucide-react';
-import { toast } from "react-toastify";
 
 export default function Menu({ dark, handleTheme }) {
   const notActiveMenu = "menu-links";
@@ -13,7 +11,7 @@ export default function Menu({ dark, handleTheme }) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef(null);
   const navigate = useNavigate();
-  const { user, setUser } = useAuth();
+  const { user, setUser, logout } = useAuth();
 
 
   const handleButtonClick = () => {
@@ -30,26 +28,8 @@ export default function Menu({ dark, handleTheme }) {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-  const handleLogout = async () => {
-    try {
-      const res = await axios.post(
-        "https://trading-backend-tf3j.onrender.com/api/v1/auth/logout",
-        {},
-        { withCredentials: true },
-      );
-      if (res.data.success || res.data.message) {
-        toast.success(res.data.message || "Logged out successfully");
-        setTimeout(() => {
-          setUser(null);
-          window.location.reload();
-        }, 1000);
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error("Logout failed. Please try again.");
-    }
-  };
-  const handleRoute = (path)=>{
+
+  const handleRoute = (path) => {
     setOpen(false);
     navigate(path);
   }
@@ -134,7 +114,7 @@ export default function Menu({ dark, handleTheme }) {
                   <li onClick={() => handleRoute("/funds")}>Funds</li>
                   <li onClick={() => handleRoute("/settings")}>Settings</li>
                   <li>
-                    <button className="logout-btn" onClick={handleLogout}>
+                    <button className="logout-btn" onClick={logout}>
                       Logout
                     </button>
                   </li>
