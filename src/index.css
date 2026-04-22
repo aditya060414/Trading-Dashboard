@@ -24,21 +24,27 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: var(--bg);
+  background-color: transparent;
   z-index: 10000;
   gap: 16px;
   transition: background-color 0.3s ease;
   text-align: center;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border-radius: inherit;
+  overflow: hidden;
 }
 
 .loader-overlay.fixed {
   position: fixed;
   width: 100vw;
   height: 100vh;
+  background-color: var(--bg);
 }
 
 .loader-overlay.blur {
-  background-color: rgba(var(--bg-rgb), 0.7);
+  background-color: rgba(var(--bg-rgb), 0.5);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
@@ -124,7 +130,7 @@ body {
     0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   --profit: #2ecc71;
   --loss: #ff4d4d;
-  --active: #1e293b;
+  --active: #ffffff;
 }
 
 .dark {
@@ -444,6 +450,16 @@ body {
     box-shadow 0.2s ease;
 }
 
+/* Fix browser autofill background clashing with theme */
+.auth-form input:-webkit-autofill,
+.auth-form input:-webkit-autofill:hover, 
+.auth-form input:-webkit-autofill:focus, 
+.auth-form input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px var(--bg) inset !important;
+    -webkit-text-fill-color: var(--text) !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
 .auth-form input:focus {
   border-color: #1e90ff;
   box-shadow: 0 0 0 2px rgba(30, 144, 255, 0.15);
@@ -453,13 +469,14 @@ body {
   color: var(--text);
 }
 
-.auth-form input[type="number"]::-webkit-inner-spin-button,
-.auth-form input[type="number"]::-webkit-outer-spin-button {
+/* Global Number Input Spin Button Removal */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-.auth-form input[type="number"] {
+input[type="number"] {
   -moz-appearance: textfield;
 }
 .auth-btn {
@@ -533,84 +550,120 @@ body {
   border-right: 1px solid var(--border);
 }
 .search-container {
-  padding: 10px 0 0 6px;
-}
-.search-container input {
-  width: 90%;
-  padding: 6px;
-  background-color: var(--bg);
-  border: 1px solid var(--border);
-  color: var(--text);
-  border-radius: 6px;
-  text-align: center;
-}
-.search-container .search-input::placeholder {
-  color: var(--text-muted);
-}
-.search-container .search-input:focus {
-  border-color: #1e90ff;
-  box-shadow: 0 0 0 2px rgba(30, 144, 255, 0.15);
-}
-.search-dropdown {
-  width: 90%;
-  max-width: 400px;
-  margin-top: 6px;
-  background-color: var(--bg);
-  border-radius: 6px;
-  box-shadow: var(--shadow);
-  color: var(--text);
-}
-.search-dropdown table thead,
-.search-dropdown table tbody tr {
-  display: table;
-  width: 100%;
-  table-layout: fixed;
-}
-.search-dropdown table {
-  width: 100%;
-}
-.search-dropdown th:nth-child(1),
-.search-dropdown td:nth-child(1) {
-  width: 40%;
+  padding: 16px 12px;
+  background: var(--bg);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
-.search-dropdown th:nth-child(2),
-.search-dropdown th:nth-child(3) {
-  width: 30%;
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
-.search-dropdown table tbody {
-  display: block;
+
+.search-container .search-input {
   width: 100%;
-  height: 400px;
-  overflow-y: auto;
-}
-.search-dropdown table tbody::-webkit-scrollbar {
-  width: 2px;
+  padding: 12px 16px;
+  background-color: var(--hover-bg);
+  border: 1px solid var(--border);
   color: var(--text);
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  text-align: left;
 }
-.search-dropdown table tbody::-webkit-scrollbar-track {
-  margin: 5px 0;
+
+.search-container .search-input:focus {
+  background-color: var(--bg);
+  border-color: var(--primary);
+  box-shadow: var(--shadow);
+  outline: none;
 }
-.search-dropdown table tbody::-webkit-scrollbar-thumb {
-  background: #dad5d5;
+
+.search-dropdown {
+  position: absolute;
+  top: 90%;
+  left: 12px;
+  right: 12px;
+  margin-top: 8px;
+  background-color: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  z-index: 1000;
+  backdrop-filter: blur(20px);
+}
+
+.search-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.search-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  background: var(--hover-bg);
+}
+
+.search-results-body {
+  max-height: 400px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Custom scrollbar for search results */
+.search-results-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.search-results-body::-webkit-scrollbar-thumb {
+  background: var(--border);
   border-radius: 10px;
 }
-.search-dropdown table th {
-  padding: 6px;
-  background-color: var(--bg);
-  color: var(--text);
-}
-.search-dropdown table td {
-  padding: 6px;
-  background-color: var(--bg);
-  color: var(--text);
+
+.mx-search-row {
   cursor: pointer;
+  transition: all 0.2s ease;
 }
-.search-dropdown table tr:hover {
+
+.mx-search-row:hover {
   background-color: var(--hover-bg);
 }
-.search-dropdown table tr:hover td {
-  background-color: var(--hover-bg);
+
+.mx-search-row td {
+  padding: 14px 16px;
+  font-size: 0.9rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.mx-search-row:last-child td {
+  border-bottom: none;
+}
+
+.mx-symbol {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.price-up {
+  color: var(--profit);
+  font-weight: 600;
+}
+
+.price-down {
+  color: var(--loss);
+  font-weight: 600;
 }
 
 .dashboard .content {
@@ -1776,13 +1829,13 @@ body {
   background-clip: content-box;
 }
 
-.funds-orders-table {
+.orders-table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
 }
 
-.funds-orders-table th {
+.orders-table th {
   padding: 16px 24px;
   font-size: 0.75rem;
   font-weight: 700;
@@ -1793,18 +1846,18 @@ body {
   letter-spacing: 1px;
 }
 
-.funds-orders-table td {
+.orders-table td {
   padding: 20px 24px;
   border-bottom: 1px solid var(--border);
   color: var(--text);
   vertical-align: middle;
 }
 
-.funds-orders-table tr:last-child td {
+.orders-table tr:last-child td {
   border-bottom: none;
 }
 
-.funds-orders-table tr:hover td {
+.orders-table tr:hover td {
   background: var(--hover-bg);
 }
 
@@ -1939,10 +1992,10 @@ body {
   .orders-header h2 {
     font-size: 1.8rem;
   }
-  .modern-orders-table {
-    min-width: 650px; /* Force enough width for all columns */
+  .orders-table {
+    min-width: 650px; 
   }
-  .modern-orders-table td, .modern-orders-table th {
+  .orders-table td, .orders-table th {
     padding: 12px 16px;
     white-space: nowrap;
   }
@@ -2305,7 +2358,7 @@ body {
 }
 
 /* Fund Modal Refinement */
-.fund-modal-premium {
+.fund-modal {
   max-width: 450px !important;
 }
 
@@ -2455,8 +2508,8 @@ body {
 
 .close-trade-btn {
   position: absolute;
-  top: 24px;
-  right: 24px;
+  top: -10px;
+  right: -10px;
   background: var(--hover-bg);
   border: none;
   width: 36px;
@@ -2524,8 +2577,13 @@ body {
   flex-direction: column;
   gap: 24px;
 }
+.trade-input-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
 
-.input-group label {
+.trade-field-group label {
   display: block;
   font-size: 0.85rem;
   font-weight: 700;
@@ -2533,16 +2591,15 @@ body {
   color: var(--text-muted);
 }
 
-.premium-qty-control {
+.qty-control {
   display: flex;
   align-items: center;
   background: var(--hover-bg);
   padding: 8px;
-  border-radius: 16px;
   border: 1px solid var(--border);
 }
 
-.premium-qty-control .control-btn {
+.qty-control .control-btn {
   width: 44px;
   height: 44px;
   border-radius: 12px;
@@ -2557,13 +2614,13 @@ body {
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
-.premium-qty-control .control-btn:hover {
+.qty-control .control-btn:hover {
   background: var(--primary);
   color: white;
   transform: scale(1.05);
 }
 
-.premium-qty-control input {
+.qty-control input {
   flex: 1;
   background: transparent;
   border: none;
@@ -2577,10 +2634,11 @@ body {
 .order-info-card {
   background: var(--hover-bg);
   padding: 20px;
-  border-radius: 16px;
+  border-radius: 8px;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  border: 1px solid var(--border);
 }
 
 .info-row {
@@ -2600,7 +2658,7 @@ body {
   margin-top: 8px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px;
 }
 
 .margin-notice {
