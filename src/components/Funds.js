@@ -91,9 +91,9 @@ export default function Funds() {
     }).format(amount);
   };
   if (loading && balance === null) return (
-    <div className="orders-loading-container">
+    <div className="loader-overlay blur">
       <LoaderCircle className="spinner" size={48} />
-      <p>Fetching your wallet details...</p>
+      <p className="loader-message">Fetching your wallet details...</p>
     </div>
   );
 
@@ -159,7 +159,7 @@ export default function Funds() {
         </div>
         
         <div className="orders-table-container">
-          <table className="funds-orders-table">
+          <table className="orders-table">
             <thead>
               <tr>
                 <th>Activity</th>
@@ -227,7 +227,7 @@ export default function Funds() {
 
       {isModalOpen && (
         <div className="modal-overlay">
-          <div className="trade-component fund-modal-premium">
+          <div className="trade-component fund-modal">
             {loading && (
               <div className="loader-overlay blur">
                 <LoaderCircle className="spinner" />

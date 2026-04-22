@@ -54,7 +54,7 @@ export default function Orders() {
       </div>
       
       <div className="orders-table-container">
-        <table className="modern-orders-table">
+        <table className="orders-table">
           <thead>
             <tr>
               <th>Stock</th>

@@ -7,10 +7,13 @@ import BuyComponent from "./BuyComponent";
 import SellComponent from "./SellComponent";
 import StockDetails from "./StockDetails";
 
+import { toast } from "react-toastify";
+
 export default function Holdings() {
   const { user } = useAuth();
 
   const [portfolio, setPortfolio] = useState(null);
+  const [watchlistStocks, setWatchlistStocks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [hoveredSymbol, setHoveredSymbol] = useState(null);
 
@@ -21,8 +24,18 @@ export default function Holdings() {
     stock: null,
   });
 
+  const fetchWatchlist = async () => {
+    try {
+      const response = await axios.get(`https://trading-backend-tf3j.onrender.com/api/v1/watchlist/get`, {
+        withCredentials: true,
+      });
+      setWatchlistStocks(response.data.stock || []);
+    } catch (error) {
+      console.error("Error fetching watchlist:", error.message);
+    }
+  };
+
   useEffect(() => {
-    // If no user, don't fetch and don't show loading
     if (!user?.id) return;
     const fetchPortfolio = async () => {
       try {
@@ -40,7 +53,29 @@ export default function Holdings() {
     };
 
     fetchPortfolio();
+    fetchWatchlist();
   }, [user]);
+
+  const handleAddToWatchlist = async (stock) => {
+    try {
+       await axios.post(
+        `https://trading-backend-tf3j.onrender.com/api/v1/watchlist/add`,
+        {
+          symbol: stock.symbol,
+          high: stock.high,
+          open: stock.open,
+          close: stock.close,
+          low: stock.low,
+        },
+        { withCredentials: true },
+      );
+
+      toast.success(`${stock.symbol} added to watchlist!`);
+      await fetchWatchlist();
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to add to watchlist");
+    }
+  };
 
   const handleBuy = (stock) => setTradeState({ type: "BUY", stock });
   const handleSell = (stock) => setTradeState({ type: "SELL", stock });
@@ -112,7 +147,7 @@ export default function Holdings() {
       </div>
 
       <div className="orders-table-container">
-        <table className="modern-orders-table">
+        <table className="orders-table">
           <thead>
             <tr>
               <th>Stock</th>
@@ -196,8 +231,8 @@ export default function Holdings() {
           onClose={() => setSelectedStock(null)}
           onBuy={handleBuy}
           onSell={handleSell}
-          onAddToWatchlist={() => {}} // Placeholder
-          isInWatchlist={false}
+          onAddToWatchlist={handleAddToWatchlist}
+          isInWatchlist={watchlistStocks.some(s => s.symbol === selectedStock.symbol)}
         />
       )}
 
