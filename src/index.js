@@ -14,16 +14,6 @@ import 'react-toastify/dist/ReactToastify.css';
 function AppRoutes() {
   const { user, loading } = useAuth();
 
-  // Apply theme immediately to body
-  React.useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme === "dark") {
-      document.body.classList.add("dark");
-    } else {
-      document.body.classList.remove("dark");
-    }
-  }, []);
-
   if (loading) {
     return (
       <div className="loader-overlay fixed">
