@@ -54,7 +54,7 @@ export default function WatchListComponent() {
 
   return (
     <>
-      <div className="mx-navbar-search">
+      <div className="search-bar-container">
         <SearchBar onSelectStock={setSelectedStock} />
       </div>
 
