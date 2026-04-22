@@ -63,9 +63,9 @@ export default function SellComponent({ stock, closeBuy }) {
 
       <div className="trade-body">
         <div className="trade-input-section">
-          <div className="input-group">
+          <div className="trade-field-group">
             <label>Quantity</label>
-            <div className="premium-qty-control">
+            <div className="qty-control">
               <button 
                 className="control-btn" 
                 onClick={() => setQty(Math.max(1, Number(qty) - 1))}

@@ -16,40 +16,40 @@ const DashBoard = () => {
   };
 
   return (
-      <div className="dashboard">
-        <button 
-          className="mobile-watchlist-toggle" 
-          onClick={toggleWatchlist}
-          aria-label="Toggle Watchlist"
-        >
-          {showWatchlist ? <X size={20} /> : <LayoutList size={20} />}
-          <span>Watchlist</span>
-        </button>
+    <div className="dashboard">
+      <button
+        className="mobile-watchlist-toggle"
+        onClick={toggleWatchlist}
+        aria-label="Toggle Watchlist"
+      >
+        {showWatchlist ? <X size={20} /> : <LayoutList size={20} />}
+        <span>Watchlist</span>
+      </button>
 
-        <div className={`watchlist ${showWatchlist ? "show-mobile" : ""}`}>
-          <WatchListComponent />
-        </div>
-        {/* Overlay for closing drawer on mobile */}
-        {showWatchlist && (
-          <div 
-            className="watchlist-overlay" 
-            onClick={() => setShowWatchlist(false)}
-          ></div>
-        )}
+      <div className={`watchlist ${showWatchlist ? "show-mobile" : ""}`}>
+        <WatchListComponent />
+      </div>
+      {/* Overlay for closing drawer on mobile */}
+      {showWatchlist && (
+        <div
+          className="watchlist-overlay"
+          onClick={() => setShowWatchlist(false)}
+        ></div>
+      )}
 
-        
-        <div className="content-container">
-          <div className="content">
-            <Routes>
-              <Route exact path="/" element={<Summary />} />
-              <Route path="/orders" element={<Orders />} />
-              <Route path="/holdings" element={<Holdings />} />
-              <Route path="/funds" element={<Funds />} />
-              <Route path="/settings" element={<Settings />} />
-            </Routes>
-          </div>
+
+      <div className="content-container">
+        <div className="content">
+          <Routes>
+            <Route exact path="/" element={<Summary />} />
+            <Route path="/orders" element={<Orders />} />
+            <Route path="/holdings" element={<Holdings />} />
+            <Route path="/funds" element={<Funds />} />
+            <Route path="/settings" element={<Settings />} />
+          </Routes>
         </div>
       </div>
+    </div>
   );
 };
 

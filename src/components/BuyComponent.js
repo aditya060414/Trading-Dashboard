@@ -36,7 +36,7 @@ export default function BuyComponent({ stock, closeBuy }) {
       setTimeout(() => {
         closeBuy();
       }, 500);
-      
+
     } catch (err) {
       console.error(err);
       toast.error(err.response?.data?.message || err.message || "Order failed");
@@ -63,18 +63,18 @@ export default function BuyComponent({ stock, closeBuy }) {
           <span className="exchange-label">NSE</span>
         </div>
         <div className="price-badge">
-          <small>LTP</small>
           <p>₹{stock.close}</p>
+          <small>LTP</small>
         </div>
       </div>
 
       <div className="trade-body">
         <div className="trade-input-section">
-          <div className="input-group">
+          <div className="trade-field-group">
             <label>Quantity</label>
-            <div className="premium-qty-control">
-              <button 
-                className="control-btn" 
+            <div className="qty-control">
+              <button
+                className="control-btn"
                 onClick={() => setQty(Math.max(1, Number(qty) - 1))}
               >
                 <Minus size={16} />
@@ -85,8 +85,8 @@ export default function BuyComponent({ stock, closeBuy }) {
                 onChange={handleQtyChange}
                 min="1"
               />
-              <button 
-                className="control-btn" 
+              <button
+                className="control-btn"
                 onClick={() => setQty(Number(qty) + 1)}
               >
                 <Plus size={16} />
