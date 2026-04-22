@@ -3,6 +3,11 @@ import { Bar } from "react-chartjs-2";
 import axios from "axios";
 import { useAuth } from "../Auth";
 import { LoaderCircle } from "lucide-react";
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import InstagramIcon from '@mui/icons-material/Instagram';
+import EmailIcon from '@mui/icons-material/Email';
+
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -224,6 +229,23 @@ export default function Summary() {
               </div>
             )}
           </div>
+        </div>
+      </div>
+      <div className="my-details-card">
+        <div className="owner-details">
+          <h4>Project Owner</h4>
+          <p>Aditya Kumar</p>
+        </div>
+        <div className="owner-links">
+          <a href="https://www.linkedin.com/in/aditya-singh-0604adi/" target="_blank" rel="noopener noreferrer" title="LinkedIn">
+            <LinkedInIcon />
+          </a>
+          <a href="https://www.instagram.com/aditya___029/?hl=en" target="_blank" rel="noopener noreferrer" title="Instagram">
+            <InstagramIcon />
+          </a>
+          <a href="mailto:singh.aditya.44618@gmail.com?subject=Contact from MarketEx" title="Email">
+            <EmailIcon />
+          </a>
         </div>
       </div>
     </div>
