@@ -51,7 +51,7 @@ export default function WatchListComponent() {
       setLoading(false);
     }
   };
-
+  
   return (
     <>
       <div className="search-bar-container">
