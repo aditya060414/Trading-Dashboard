@@ -109,33 +109,35 @@ export default function SearchBar({ onSelectStock }) {
       />
       {results.length > 0 && (
         <div className="search-dropdown">
-          <table className="search-table">
-            <thead>
-              <tr>
-                <th>Symbol</th>
-                <th>Open</th>
-                <th>Close</th>
-              </tr>
-            </thead>
-            <tbody>
-              {results.map((s) => {
-                const isPositive = s.close >= s.open;
-                return (
-                  <tr
-                    key={s._id || s.symbol}
-                    className="mx-search-row"
-                    onClick={() => handleSelectStock(s)}
-                  >
-                    <td className="mx-symbol">{s.symbol}</td>
-                    <td>₹{s.open}</td>
-                    <td className={isPositive ? "price-up" : "price-down"}>
-                      ₹{s.close}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <div className="search-results-body">
+            <table className="search-table">
+              <thead>
+                <tr>
+                  <th style={{ width: '40%' }}>Symbol</th>
+                  <th style={{ width: '30%' }}>Open</th>
+                  <th style={{ width: '30%' }}>Close</th>
+                </tr>
+              </thead>
+              <tbody>
+                {results.map((s) => {
+                  const isPositive = s.close >= s.open;
+                  return (
+                    <tr
+                      key={s._id || s.symbol}
+                      className="mx-search-row"
+                      onClick={() => handleSelectStock(s)}
+                    >
+                      <td className="mx-symbol">{s.symbol}</td>
+                      <td>₹{s.open.toFixed(2)}</td>
+                      <td className={isPositive ? "price-up" : "price-down"}>
+                        ₹{s.close.toFixed(2)}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>
