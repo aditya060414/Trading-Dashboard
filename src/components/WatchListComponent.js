@@ -56,7 +56,6 @@ export default function WatchListComponent() {
       toast.success(`${stock.symbol} added to watchlist!`);
       // Refresh the list from backend to get the "Live" data version of this stock
       await fetchWatchlist();
-      setSelectedStock(null); // Close the modal/details after adding
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to add to watchlist");
     } finally {
