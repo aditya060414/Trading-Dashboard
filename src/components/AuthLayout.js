@@ -1,46 +1,22 @@
-
-import { useState, useEffect } from "react";
+import { useAuth } from "../Auth";
 import SignUp from "./SignUp";
 import Login from "./Login";
 import Button from "@mui/material/Button";
 import { Sun, Moon } from 'lucide-react';
+import { useState } from "react";
 
 export default function AuthLayout() {
   const [isSignUp, setIsSignUp] = useState(false);
-  const [dark, setDark] = useState(false);
+  const { theme, toggleTheme } = useAuth();
+  const dark = theme === "dark";
 
-  useEffect(() => {
-    const theme = localStorage.getItem("theme");
-
-    if (theme === "dark") {
-      setDark(true);
-      document.body.classList.add("dark");
-    } else {
-      setDark(false);
-      document.body.classList.remove("dark");
-    }
-  }, []);
-
-  const handleTheme = () => {
-    const newTheme = !dark;
-
-    setDark(newTheme);
-
-    if (newTheme) {
-      document.body.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.body.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  };
   const handleButtonClick = () => {
     setIsSignUp(!isSignUp);
   };
   return (
     <>
       <div className="auth-layout">
-          <button onClick={handleTheme} className="theme-button-auth">{!dark ? <Sun className="lightheme" /> : <Moon className="darktheme" />}</button>
+        <button onClick={toggleTheme} className="theme-button-auth">{!dark ? <Sun className="lightheme" /> : <Moon className="darktheme" />}</button>
         <div className="auth-layout-container">
           <div className="authbrandf-info">
             <h4 className="brand-logo">Market<span>Ex</span></h4>
