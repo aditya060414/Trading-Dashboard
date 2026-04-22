@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { LoaderCircle } from "lucide-react";
+import { LoaderCircle, ArrowUpRight, ArrowDownRight, Inbox } from "lucide-react";
 
 export default function Orders() {
   const [loading, setLoading] = useState(false);
@@ -26,66 +26,90 @@ export default function Orders() {
     fetchOrder();
   }, [])
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "COMPLETED": return "#4CAF50"; // Green
-      case "PENDING": return "#FF9800"; // Orange
-      case "FAILED": return "#f44336"; // Red
-      default: return "#c62828"; // Default Dark Red
-    }
-  };
+  
 
-  if (loading) return <div className="load-circle" ><LoaderCircle className="spinner" /></div>;
-  if (!orders || !orders.length) return <div className="p-10" style={{ display: 'flex', position: 'absolute', top: '50%', left: '50%' }}>No orders found.</div>;
-  return (
-    <div className="orders-container">
-      <div className="order-hero">
-        <p className="order-title">Orders</p>
+  if (loading) return (
+    <div className="loader-overlay">
+      <LoaderCircle className="spinner" size={48} />
+      <h4 className="loader-brand">Market<span>Ex</span></h4>
+      <p className="loader-message">Loading your trade history...</p>
+    </div>
+  );
+
+  if (!orders || !orders.length) return (
+    <div className="orders-empty-state">
+      <div className="empty-icon-wrapper">
+        <Inbox size={64} strokeWidth={1} />
       </div>
-      <div className="order-details">
-        <table>
+      <h3>No Orders Yet</h3>
+      <p>Your trade history will appear here once you start trading.</p>
+    </div>
+  );
+
+  return (
+    <div className="orders-wrapper">
+      <div className="orders-header">
+        <h2>Order History</h2>
+        <div className="orders-count">{orders.length} Total Trades</div>
+      </div>
+      
+      <div className="orders-table-container">
+        <table className="modern-orders-table">
           <thead>
             <tr>
-              <th>Symbol</th>
-              <th>Quantity</th>
-              <th>Mode</th>
-              <th>Date</th>
-              <th>Time</th>
+              <th>Stock</th>
+              <th>Type</th>
+              <th>Qty</th>
               <th>Status</th>
+              <th>Amount</th>
+              <th>Date & Time</th>
             </tr>
           </thead>
           <tbody>
             {orders.map((order) => {
               const dateObj = new Date(order.createdAt);
-
-              const date = dateObj.toLocaleDateString("en-IN", {
-                timeZone: "Asia/Kolkata",
+              const formattedDate = dateObj.toLocaleDateString("en-IN", {
                 day: "2-digit",
                 month: "short",
                 year: "numeric",
               });
-              const time = dateObj.toLocaleTimeString("en-IN", {
-                timeZone: "Asia/Kolkata",
+              const formattedTime = dateObj.toLocaleTimeString("en-IN", {
                 hour: "2-digit",
                 minute: "2-digit",
-                second: "2-digit",
               });
+
               return (
                 <tr key={order._id}>
-                  <td>{order.symbol}</td>
-                  <td>{order.qty}</td>
-                  <td
-                    style={{
-                      color: order.mode === "BUY" ? "#4CAF50" : "#c62828",
-                    }}
-                  >
-                    {order.mode}
+                  <td>
+                    <div className="stock-cell">
+                      <span className="symbol-main">{order.symbol}</span>
+                    </div>
                   </td>
-                  <td>{date}</td>
-                  <td>{time}</td>
-                  <td style={{
-                    color: getStatusColor(order.status),
-                  }}>{order.status}</td>
+                  <td>
+                    <div className={`mode-badge ${order.mode === "BUY" ? "buy" : "sell"}`}>
+                      {order.mode === "BUY" ? (
+                        <ArrowUpRight size={14} />
+                      ) : (
+                        <ArrowDownRight size={14} />
+                      )}
+                      {order.mode}
+                    </div>
+                  </td>
+                  <td>
+                    <span className="qty-value">{order.qty}</span>
+                  </td>
+                  <td>
+                    <div className={`status-badge ${order.status.toLowerCase()}`}>
+                      {order.status}
+                    </div>
+                  </td>
+                  <td>₹{order.totalAmount}</td>
+                  <td>
+                    <div className="time-cell">
+                      <span className="date-part">{formattedDate}</span>
+                      <span className="time-part">{formattedTime}</span>
+                    </div>
+                  </td>
                 </tr>
               );
             })}
