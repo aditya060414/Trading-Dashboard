@@ -3,11 +3,22 @@ import SearchBar from "./SearchBar";
 import StockDetails from "./StockDetails";
 import WatchList from "./WatchList";
 import axios from "axios";
+import BuyComponent from "./BuyComponent";
+import SellComponent from "./SellComponent";
+import { toast } from "react-toastify";
 
 export default function WatchListComponent() {
   const [watchlistStocks, setWatchlistStocks] = useState([]);
   const [selectedStock, setSelectedStock] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [tradeState, setTradeState] = useState({
+    type: null,
+    stock: null,
+  });
+
+  const handleBuy = (stock) => setTradeState({ type: "BUY", stock });
+  const handleSell = (stock) => setTradeState({ type: "SELL", stock });
+  const closeTrade = () => setTradeState({ type: null, stock: null });
 
 
   const fetchWatchlist = useCallback(async () => {
@@ -42,11 +53,12 @@ export default function WatchListComponent() {
         { withCredentials: true },
       );
 
+      toast.success(`${stock.symbol} added to watchlist!`);
       // Refresh the list from backend to get the "Live" data version of this stock
       await fetchWatchlist();
       setSelectedStock(null); // Close the modal/details after adding
     } catch (err) {
-      alert(err.response?.data?.message || "Failed to add to watchlist");
+      toast.error(err.response?.data?.message || "Failed to add to watchlist");
     } finally {
       setLoading(false);
     }
@@ -64,11 +76,35 @@ export default function WatchListComponent() {
           loading={loading}
           onClose={() => setSelectedStock(null)}
           onAddToWatchlist={handleAddToWatchlist}
+          onBuy={handleBuy}
+          onSell={handleSell}
+          isInWatchlist={watchlistStocks.some(s => s.symbol === selectedStock.symbol)}
         />
+      )}
+
+      {tradeState.type && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            {tradeState.type === "BUY" ? (
+              <BuyComponent
+                stock={tradeState.stock}
+                closeBuy={closeTrade}
+              />
+            ) : (
+              <SellComponent
+                stock={tradeState.stock}
+                closeBuy={closeTrade}
+              />
+            )}
+          </div>
+        </div>
       )}
 
       <WatchList
         watchlistStocks={watchlistStocks}
+        onBuy={handleBuy}
+        onSell={handleSell}
+        onAnalytics={setSelectedStock}
       />
     </>
   );
