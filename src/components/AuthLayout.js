@@ -54,7 +54,7 @@ export default function AuthLayout() {
               </p>
             </div>
             <div className="graph-img">
-              <img src={`media/${!dark ? "graph" : "darkGraph"}.png`} alt="graph-image" />
+              <img src="media/graph.png" alt="graph-image" />
             </div>
           </div>
           <div className="signup-login toggle">
