@@ -1,12 +1,12 @@
 
 import { useAuth } from '../Auth';
-import { 
-  User, 
-  Shield, 
-  Bell, 
-  Monitor, 
-  Moon, 
-  Sun, 
+import {
+  User,
+  Shield,
+  Bell,
+  Monitor,
+  Moon,
+  Sun,
   ChevronRight,
   LogOut,
   Lock
@@ -14,7 +14,7 @@ import {
 import Switch from "@mui/material/Switch";
 
 export default function Settings() {
-  const { user, logout } = useAuth();
+  const { user, logout, theme, toggleTheme } = useAuth();
 
   return (
     <div className="settings-wrapper">
@@ -38,14 +38,14 @@ export default function Settings() {
             </div>
           </div>
           <div className="profile-details-grid">
-             <div className="detail-item">
-                <small>Email Address</small>
-                <p>{user?.email || "user@marketex.com"}</p>
-             </div>
-             <div className="detail-item">
-                <small>Account Status</small>
-                <p className="status-verified">Verified</p>
-             </div>
+            <div className="detail-item">
+              <small>Email Address</small>
+              <p>{user?.email || "user@marketex.com"}</p>
+            </div>
+            <div className="detail-item">
+              <small>Account Status</small>
+              <p className="status-verified">Verified</p>
+            </div>
           </div>
         </div>
 
@@ -107,7 +107,11 @@ export default function Settings() {
                 </div>
                 <div className="theme-toggle-container">
                   <Sun size={14} />
-                  <Switch size="small" />
+                  <Switch
+                    size="small"
+                    checked={theme === "dark"}
+                    onChange={toggleTheme}
+                  />
                   <Moon size={14} />
                 </div>
               </div>
