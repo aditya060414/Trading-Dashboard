@@ -6,6 +6,7 @@ import axios from "axios";
 import BuyComponent from "./BuyComponent";
 import SellComponent from "./SellComponent";
 import { toast } from "react-toastify";
+import Portal from "./Portal";
 
 export default function WatchListComponent() {
   const [watchlistStocks, setWatchlistStocks] = useState([]);
@@ -70,33 +71,37 @@ export default function WatchListComponent() {
       </div>
 
       {selectedStock && (
-        <StockDetails
-          stock={selectedStock}
-          loading={loading}
-          onClose={() => setSelectedStock(null)}
-          onAddToWatchlist={handleAddToWatchlist}
-          onBuy={handleBuy}
-          onSell={handleSell}
-          isInWatchlist={watchlistStocks.some(s => s.symbol === selectedStock.symbol)}
-        />
+        <Portal>
+          <StockDetails
+            stock={selectedStock}
+            loading={loading}
+            onClose={() => setSelectedStock(null)}
+            onAddToWatchlist={handleAddToWatchlist}
+            onBuy={handleBuy}
+            onSell={handleSell}
+            isInWatchlist={watchlistStocks.some(s => s.symbol === selectedStock.symbol)}
+          />
+        </Portal>
       )}
 
       {tradeState.type && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            {tradeState.type === "BUY" ? (
-              <BuyComponent
-                stock={tradeState.stock}
-                closeBuy={closeTrade}
-              />
-            ) : (
-              <SellComponent
-                stock={tradeState.stock}
-                closeBuy={closeTrade}
-              />
-            )}
+        <Portal>
+          <div className="modal-overlay">
+            <div className="modal-content">
+              {tradeState.type === "BUY" ? (
+                <BuyComponent
+                  stock={tradeState.stock}
+                  closeBuy={closeTrade}
+                />
+              ) : (
+                <SellComponent
+                  stock={tradeState.stock}
+                  closeBuy={closeTrade}
+                />
+              )}
+            </div>
           </div>
-        </div>
+        </Portal>
       )}
 
       <WatchList

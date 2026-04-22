@@ -1,7 +1,7 @@
 import CloseIcon from "@mui/icons-material/Close";
 import CandleChart from "./CandleChart";
 import LineChart from "./LineChart";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import { TrendingUp, TrendingDown, Plus, ShoppingCart, Tag } from "lucide-react";
@@ -16,6 +16,11 @@ export default function StockDetails({
   isInWatchlist 
 }) {
   const [alignment, setAlignment] = useState("line");
+
+  useEffect(() => {
+    document.body.classList.add("modal-open");
+    return () => document.body.classList.remove("modal-open");
+  }, []);
 
   const handleChange = (event, newAlignment) => {
     if (newAlignment !== null) {

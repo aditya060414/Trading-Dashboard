@@ -54,7 +54,7 @@ export default function LineChart({ symbol }) {
 
     const chart = createChart(containerRef.current, {
       width: containerRef.current.clientWidth,
-      height: 400,
+      height: window.innerWidth < 500 ? 300 : 400,
       layout: {
         background: { color: colors.background },
         textColor: colors.text,
@@ -117,6 +117,7 @@ export default function LineChart({ symbol }) {
       if (containerRef.current && chartRef.current) {
         chartRef.current.applyOptions({
           width: containerRef.current.clientWidth,
+          height: window.innerWidth < 500 ? 300 : 400,
         });
       }
     };

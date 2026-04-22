@@ -8,6 +8,7 @@ import SellComponent from "./SellComponent";
 import StockDetails from "./StockDetails";
 
 import { toast } from "react-toastify";
+import Portal from "./Portal";
 
 export default function Holdings() {
   const { user } = useAuth();
@@ -226,33 +227,37 @@ export default function Holdings() {
 
       {/* Analytics Modal */}
       {selectedStock && (
-        <StockDetails
-          stock={selectedStock}
-          onClose={() => setSelectedStock(null)}
-          onBuy={handleBuy}
-          onSell={handleSell}
-          onAddToWatchlist={handleAddToWatchlist}
-          isInWatchlist={watchlistStocks.some(s => s.symbol === selectedStock.symbol)}
-        />
+        <Portal>
+          <StockDetails
+            stock={selectedStock}
+            onClose={() => setSelectedStock(null)}
+            onBuy={handleBuy}
+            onSell={handleSell}
+            onAddToWatchlist={handleAddToWatchlist}
+            isInWatchlist={watchlistStocks.some(s => s.symbol === selectedStock.symbol)}
+          />
+        </Portal>
       )}
 
       {/* Trade Modals */}
       {tradeState.type && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            {tradeState.type === "BUY" ? (
-              <BuyComponent
-                stock={tradeState.stock}
-                closeBuy={closeTrade}
-              />
-            ) : (
-              <SellComponent
-                stock={tradeState.stock}
-                closeBuy={closeTrade}
-              />
-            )}
+        <Portal>
+          <div className="modal-overlay">
+            <div className="modal-content">
+              {tradeState.type === "BUY" ? (
+                <BuyComponent
+                  stock={tradeState.stock}
+                  closeBuy={closeTrade}
+                />
+              ) : (
+                <SellComponent
+                  stock={tradeState.stock}
+                  closeBuy={closeTrade}
+                />
+              )}
+            </div>
           </div>
-        </div>
+        </Portal>
       )}
     </div>
   );
