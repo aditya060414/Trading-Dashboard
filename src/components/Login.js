@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Auth";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import {  toast } from "react-toastify";
 import { LoaderCircle } from "lucide-react";
 
 
@@ -44,18 +44,20 @@ export default function Login() {
         },
         { withCredentials: true },
       );
-      setUser(data.user);
       const { success, message } = data;
       if (success) {
         handleSuccess(message);
         setTimeout(() => {
+          setUser(data.user);
           navigate("/");
-        }, 500);
+        }, 1000);
       } else {
         handleError(message);
       }
     } catch (error) {
-      handleError(error.response.data.message);
+      console.log(error.response?.data?.message || error.response?.data);
+      const errorMsg = error.response?.data?.message || (typeof error.response?.data === 'string' ? error.response.data : null) || error.message || "An error occurred during login";
+      handleError(errorMsg);
     } finally {
       setLoader(false);
     }
@@ -91,8 +93,6 @@ export default function Login() {
             {loader ? <LoaderCircle className="spinner" /> : "Login"}
           </Button>
         </form>
-        <ToastContainer />
-
       </div>
     </>
   );
