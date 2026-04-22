@@ -5,6 +5,7 @@ import axios from "axios";
 import { useAuth } from "../Auth";
 import { LoaderCircle } from "lucide-react";
 import { Sun, Moon } from 'lucide-react';
+import { toast } from "react-toastify";
 
 export default function Menu({ dark, handleTheme }) {
   const notActiveMenu = "menu-links";
@@ -12,7 +13,7 @@ export default function Menu({ dark, handleTheme }) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef(null);
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
 
 
   const handleButtonClick = () => {
@@ -36,12 +37,16 @@ export default function Menu({ dark, handleTheme }) {
         {},
         { withCredentials: true },
       );
-      if (res.data.message) {
-        alert(res.data.message);
+      if (res.data.success || res.data.message) {
+        toast.success(res.data.message || "Logged out successfully");
+        setTimeout(() => {
+          setUser(null);
+          window.location.reload();
+        }, 1000);
       }
-      window.location.reload();
     } catch (err) {
       console.error(err);
+      toast.error("Logout failed. Please try again.");
     }
   };
   const handleRoute = (path)=>{
