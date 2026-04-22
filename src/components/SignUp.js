@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import Button from "@mui/material/Button";
 import { LoaderCircle } from "lucide-react";
 export default function SignUp() {
@@ -46,12 +46,13 @@ export default function SignUp() {
         handleSuccess(message);
         setTimeout(() => {
           navigate("/");
-        }, 500);
+        }, 1000);
       } else {
         handleError(message);
       }
     } catch (err) {
-      handleError(err.response.data.message);
+      const errorMsg = err.response?.data?.message || (typeof err.response?.data === 'string' ? err.response.data : null) || err.message || "An error occurred during registration";
+      handleError(errorMsg);
     } finally {
       setLoader(false);
     }
@@ -99,7 +100,6 @@ export default function SignUp() {
             {loader ? <LoaderCircle className="spinner" /> : "SignUp"}
           </Button>
         </form>
-        <ToastContainer />
       </div>
     </>
   );
