@@ -73,10 +73,10 @@ export default function WatchList({ watchlistStocks = [] }) {
       alert("Error removing stock. Please try again.");
     }
   };
-
+  
   return (
     <>
-      <div className="watchlist">
+      <div className="watchlist-container">
         <div className="watchlist-data">
           <p className="watchlist-title">Watchlist</p>
           <ul>
