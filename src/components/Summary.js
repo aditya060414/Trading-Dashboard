@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Bar } from "react-chartjs-2";
 import axios from "axios";
 import { useAuth } from "../Auth";
@@ -41,12 +41,11 @@ export default function Summary() {
         }),
       ]);
 
-      // portfolioRes.data contains: { portfolioValue, investedAmount, todaysGain, allocation }
       setPortfolioData(portfolioRes.data);
       setFunds(fundsRes.data.balance || 0);
     } catch (err) {
       console.error("Data fetch error", err);
-      if(err.response.data.message){
+      if (err.response.data.message) {
         alert(err.response.data.message);
       }
     } finally {
@@ -57,6 +56,8 @@ export default function Summary() {
   useEffect(() => {
     fetchData();
   }, [user]);
+
+  const profitValue = (portfolioData?.portfolioValue - portfolioData?.investedAmount) || 0;
 
   // Chart Configuration
   const chartData = {
@@ -95,11 +96,58 @@ export default function Summary() {
     },
   };
 
+  const [news, setNews] = useState([]);
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const token = process.env.REACT_APP_FINNHUB_API_KEY;
+        if (!token) {
+          console.warn("Finnhub API key is missing. Please set REACT_APP_FINNHUB_API_KEY in your .env file.");
+          return;
+        }
+        const res = await fetch(
+          `https://finnhub.io/api/v1/news?category=general&token=${token}`
+        );
+        const data = await res.json();
+
+        setNews(data);
+
+      } catch (err) {
+        console.error("Failed to fetch news:", err);
+      }
+    };
+
+    fetchNews();
+  }, []);
+  const containerRef = useRef(null);
+  const [isHovering, setIsHovering] = useState(false);
+
+  useEffect(() => {
+    let interval;
+
+    if (!isHovering && news.length > 0) {
+      interval = setInterval(() => {
+        const container = containerRef.current;
+        if (container) {
+          // Check if we've reached the bottom (with a small buffer for sub-pixel accuracy)
+          if (container.scrollTop + container.clientHeight >= container.scrollHeight - 2) {
+            container.scrollTop = 0;
+          } else {
+            container.scrollTop += 1;
+          }
+        }
+      }, 40);
+    }
+
+    return () => clearInterval(interval);
+  }, [isHovering, news]);
+
   if (loading) return <div className="load-circle" ><LoaderCircle className="spinner" /></div>;
 
   return (
-    <div className="dashboard-container">
-      <div className="dashboard-header">
+    <div className="summary-container">
+      <div className="summary-header">
         <h2>
           {getGreeting()}, <span>{user?.username}</span>
         </h2>
@@ -109,13 +157,13 @@ export default function Summary() {
       <div className="portfolio-cards">
         <div className="card">
           <p className="label">Total Portfolio Value</p>
-          <h3>₹{(portfolioData?.portfolioValue || 0).toLocaleString("en-IN")}</h3>
+          <h3 className={`${(profitValue !== 0) ? (profitValue > 0 ? "profit" : "loss") : ""}`}>{profitValue > 0 ? "+" : ""}₹{(profitValue).toLocaleString("en-IN")}</h3>
         </div>
 
         <div className="card">
-          <p className="label">Today's Gain</p>
-          <h3 className={`profit ${(portfolioData?.todaysGain || 0) >= 0 ? "green" : "red"}`}>
-            ₹{(portfolioData?.todaysGain || 0).toLocaleString("en-IN")}
+          <p className="label">Total Investment</p>
+          <h3>
+            ₹{(portfolioData?.investedAmount || 0).toLocaleString("en-IN")}
           </h3>
         </div>
 
@@ -125,7 +173,7 @@ export default function Summary() {
         </div>
       </div>
 
-      <div className="dashboard-grid">
+      <div className="summary-grid">
         <div className="graph-card">
           <h4>Today's Profit / Loss by Stock</h4>
           <div className="graph-container" style={{ height: "300px", marginTop: "20px" }}>
@@ -139,17 +187,35 @@ export default function Summary() {
 
         <div className="news-card">
           <h4>Market News</h4>
-          <div className="news-item">
-            <div className="news-title">Reliance shares rise after strong quarterly results</div>
-            <div className="news-meta"><span>Economic Times</span> • <span>2h ago</span></div>
-          </div>
-          <div className="news-item">
-            <div className="news-title">Nifty closes above 22,000 amid banking rally</div>
-            <div className="news-meta"><span>Moneycontrol</span> • <span>4h ago</span></div>
-          </div>
-          <div className="news-item">
-            <div className="news-title">TCS announces new AI partnership with global firm</div>
-            <div className="news-meta"><span>Bloomberg</span> • <span>6h ago</span></div>
+
+          <div
+            className="news-container"
+            ref={containerRef}
+            onMouseEnter={() => setIsHovering(true)}
+            onMouseLeave={() => setIsHovering(false)}
+          >
+            {news && news.length > 0 ? (
+              news.map((item, index) => (
+                <div
+                  className="news-item"
+                  key={index}
+                  onClick={() => window.open(item.url, "_blank")}
+                >
+                  <div className="news-title">{item.headline}</div>
+
+                  <div className="news-meta">
+                    <span>{item.source}</span> •{" "}
+                    <span>
+                      {new Date(item.datetime * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </span>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="no-news-message" style={{ padding: '20px', textAlign: 'center', color: 'var(--text-muted)' }}>
+                {process.env.REACT_APP_FINNHUB_API_KEY ? "No news items found." : "Please configure your Finnhub API key to see market news."}
+              </div>
+            )}
           </div>
         </div>
       </div>
