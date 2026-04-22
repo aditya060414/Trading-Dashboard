@@ -6,6 +6,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { TrendingUp, TrendingDown } from "lucide-react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import Portal from "./Portal";
 
 export default function WatchList({
   watchlistStocks = [],
@@ -83,17 +84,24 @@ export default function WatchList({
       </div>
 
       {deleteState.show && (
-        <DeleteConfirmationModal
-          stock={deleteState.stock}
-          onConfirm={handleDelete}
-          onCancel={cancelDelete}
-        />
+        <Portal>
+          <DeleteConfirmationModal
+            stock={deleteState.stock}
+            onConfirm={handleDelete}
+            onCancel={cancelDelete}
+          />
+        </Portal>
       )}
     </>
   );
 }
 
 const DeleteConfirmationModal = ({ stock, onConfirm, onCancel }) => {
+  useEffect(() => {
+    document.body.classList.add("modal-open");
+    return () => document.body.classList.remove("modal-open");
+  }, []);
+
   return (
     <div className="modal-overlay">
       <div className="modal-content delete-modal">

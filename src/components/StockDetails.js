@@ -4,8 +4,9 @@ import LineChart from "./LineChart";
 import { useState, useEffect } from "react";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import { TrendingUp, TrendingDown, Plus, ShoppingCart, Tag } from "lucide-react";
+import { TrendingUp, TrendingDown, Star, ShoppingCart, Tag } from "lucide-react";
 import Button from "@mui/material/Button";
+import Portal from "./Portal";
 
 export default function StockDetails({ 
   stock, 
@@ -97,7 +98,7 @@ export default function StockDetails({
               className={`watchlist-add-btn ${isInWatchlist ? "added" : ""}`} 
               onClick={() => onAddToWatchlist(stock)}
               disabled={isInWatchlist}
-              startIcon={isInWatchlist ? <Tag size={18} /> : <Plus size={18} />}
+              startIcon={isInWatchlist ? <Star size={18} fill="currentColor" /> : <Star size={18} />}
             >
               {isInWatchlist ? "In Watchlist" : "Watchlist"}
             </Button>

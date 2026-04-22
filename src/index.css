@@ -3190,9 +3190,19 @@ body.modal-open {
     padding: 10px !important;
   }
 
+  .modal-overlay {
+    padding: 0;
+  }
+
   .details-pop {
+    width: 100vw;
+    height: 100vh;
+    max-width: 100vw;
+    max-height: 100vh;
+    border-radius: 0;
     padding: 16px;
     gap: 12px;
+    margin: 0;
   }
 
   .chart-controls-bar {
