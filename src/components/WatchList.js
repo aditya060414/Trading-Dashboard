@@ -1,17 +1,17 @@
 import { useState, useEffect } from "react"; // 1. Added useEffect
 import { Tooltip } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import ToggleButton from "@mui/material/ToggleButton";
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import { BarChartOutlined } from "@mui/icons-material";
-import BuyComponent from "./BuyComponent";
-import SellComponent from "./SellComponent";
-import CandleChart from "./CandleChart";
-import LineChart from "./LineChart";
+
 import DeleteIcon from "@mui/icons-material/Delete";
+import { TrendingUp, TrendingDown } from "lucide-react";
 import axios from "axios";
 
-export default function WatchList({ watchlistStocks = [] }) {
+export default function WatchList({
+  watchlistStocks = [],
+  onBuy,
+  onSell,
+  onAnalytics
+}) {
   // 2. Initialize local state with the props
   const [displayStocks, setDisplayStocks] = useState(watchlistStocks);
 
@@ -20,37 +20,17 @@ export default function WatchList({ watchlistStocks = [] }) {
     setDisplayStocks(watchlistStocks);
   }, [watchlistStocks]);
 
-  const [tradeState, setTradeState] = useState({
-    type: null,
+  const [deleteState, setDeleteState] = useState({
+    show: false,
     stock: null,
   });
 
-  const handleBuyButton = (stock) => {
-    setTradeState({ type: "BUY", stock });
+  const handleDeleteClick = (stock) => {
+    setDeleteState({ show: true, stock });
   };
 
-  const handleSellButton = (stock) => {
-    setTradeState({ type: "SELL", stock });
-  };
-
-  const [analytics, setAnalytics] = useState(false);
-  const [analyticsStock, setAnalyticsStock] = useState(null);
-
-  const handleAnalytics = (stock) => {
-    if (!stock) return;
-    setAnalytics(true);
-    setAnalyticsStock(stock);
-  };
-
-  const [alignment, setAlignment] = useState("line");
-  const handleChange = (event, newAlignment) => {
-    if (newAlignment !== null) {
-      setAlignment(newAlignment);
-    }
-  };
-
-  const handleClose = () => {
-    setAnalytics(false);
+  const cancelDelete = () => {
+    setDeleteState({ show: false, stock: null });
   };
 
   // 3. Updated handleDelete to update UI state
@@ -66,6 +46,7 @@ export default function WatchList({ watchlistStocks = [] }) {
 
       // Update local state to remove the stock from UI immediately
       setDisplayStocks((prev) => prev.filter((s) => s.symbol !== symbol));
+      setDeleteState({ show: false, stock: null });
 
       alert(`${symbol} removed from watchlist`);
     } catch (err) {
@@ -73,7 +54,7 @@ export default function WatchList({ watchlistStocks = [] }) {
       alert("Error removing stock. Please try again.");
     }
   };
-  
+
   return (
     <>
       <div className="watchlist-container">
@@ -89,88 +70,48 @@ export default function WatchList({ watchlistStocks = [] }) {
                 <WatchListItem
                   key={stock._id || stock.symbol} // Using symbol as fallback key
                   stock={stock}
-                  handleBuyButton={handleBuyButton}
-                  handleSellButton={handleSellButton}
-                  handleAnalytics={handleAnalytics}
-                  handleDelete={handleDelete}
+                  handleBuyButton={onBuy}
+                  handleSellButton={onSell}
+                  handleAnalytics={onAnalytics}
+                  handleDelete={handleDeleteClick}
                 />
               );
             })}
           </ul>
         </div>
-        {analytics && analyticsStock && (
-          <div className="stock-details-overlay">
-            <div className="stock-details-card">
-              <div className="stock-details-header">
-                <h3>{analyticsStock?.symbol}</h3>
-                <button onClick={handleClose}>
-                  <CloseIcon />
-                </button>
-              </div>
-
-              <div className="stock-price">₹{analyticsStock?.close}</div>
-
-              <div className="stock-ohlc">
-                <div>
-                  <p>Open</p>
-                  <span>{analyticsStock?.open ?? "--"}</span>
-                </div>
-                <div>
-                  <p>High</p>
-                  <span>{analyticsStock?.high ?? "--"}</span>
-                </div>
-                <div>
-                  <p>Low</p>
-                  <span>{analyticsStock?.low ?? "--"}</span>
-                </div>
-                <div>
-                  <p>Close</p>
-                  <span>{analyticsStock?.close}</span>
-                </div>
-              </div>
-
-              <div className="stock-actions">
-                <ToggleButtonGroup
-                  color="primary"
-                  value={alignment}
-                  exclusive
-                  onChange={handleChange}
-                  aria-label="Platform"
-                >
-                  <ToggleButton value="line">Line Chart</ToggleButton>
-                  <ToggleButton value="candle">Candle Chart</ToggleButton>
-                </ToggleButtonGroup>
-              </div>
-
-              <div className="stock-chart">
-                {alignment === "line" ? (
-                  <LineChart symbol={analyticsStock?.symbol} />
-                ) : (
-                  <CandleChart symbol={analyticsStock?.symbol} />
-                )}
-              </div>
-            </div>
-          </div>
-        )}
       </div>
-      {/* ... (Trade components remain the same) */}
-      {tradeState.type === "BUY" && (
-        <BuyComponent
-          stock={tradeState.stock}
-          closeBuy={() => setTradeState({ type: null, stock: null })}
-        />
-      )}
-      {tradeState.type === "SELL" && (
-        <SellComponent
-          stock={tradeState.stock}
-          closeBuy={() => setTradeState({ type: null, stock: null })}
+
+      {deleteState.show && (
+        <DeleteConfirmationModal
+          stock={deleteState.stock}
+          onConfirm={handleDelete}
+          onCancel={cancelDelete}
         />
       )}
     </>
   );
 }
 
-// WatchListItem and WatchListActions components remain largely the same
+const DeleteConfirmationModal = ({ stock, onConfirm, onCancel }) => {
+  return (
+    <div className="modal-overlay">
+      <div className="modal-content delete-modal">
+        <h3>Remove {stock.symbol}?</h3>
+        <p>Are you sure you want to remove this stock from your watchlist?</p>
+        <div className="btn-group">
+          <button className="cancel-btn" onClick={onCancel}>
+            Cancel
+          </button>
+          <button className="confirm-btn" onClick={() => onConfirm(stock)}>
+            Remove
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+
 const WatchListItem = ({
   stock,
   handleBuyButton,
@@ -179,6 +120,13 @@ const WatchListItem = ({
   handleDelete,
 }) => {
   const [showWatchListAction, setShowWatchListAction] = useState(false);
+
+  const close = Number(stock.close) || 0;
+  const open = Number(stock.open) || 0;
+  const change = close - open;
+  const percentChange = open !== 0 ? ((change / open) * 100).toFixed(2) : "0.00";
+  const isUp = change >= 0;
+
   return (
     <li
       className="watchlist-li"
@@ -186,9 +134,19 @@ const WatchListItem = ({
       onMouseLeave={() => setShowWatchListAction(false)}
     >
       <div className="item">
-        <p>{stock.symbol}</p>
+        <div className="symbol-info">
+          <p className={isUp ? "up" : "down"}>{stock.symbol}</p>
+        </div>
         <div className="itemInfo">
-          <span className="percent">{stock.close}</span>
+          <span className="price">₹{close.toFixed(2)}</span>
+          <span className={`percent ${isUp ? "up" : "down"}`}>
+            {isUp ? "+" : ""}{percentChange}%
+            {isUp ? (
+              <TrendingUp size={14} style={{ marginLeft: "4px" }} />
+            ) : (
+              <TrendingDown size={14} style={{ marginLeft: "4px" }} />
+            )}
+          </span>
         </div>
         {showWatchListAction && (
           <WatchListActions
