@@ -8,14 +8,27 @@ import { AuthProvider, useAuth } from "./Auth";
 import AuthLayout from "./components/AuthLayout";
 import { Navigate } from "react-router-dom";
 import { LoaderCircle } from "lucide-react";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function AppRoutes() {
   const { user, loading } = useAuth();
 
+  // Apply theme immediately to body
+  React.useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark") {
+      document.body.classList.add("dark");
+    } else {
+      document.body.classList.remove("dark");
+    }
+  }, []);
+
   if (loading) {
     return (
-      <div className="load-circle">
+      <div className="loader-overlay fixed">
         <LoaderCircle className="spinner" />
+        <h4 className="loader-brand">Market<span>Ex</span></h4>
       </div>
     );
   }
@@ -44,6 +57,7 @@ root.render(
   <React.StrictMode>
     <AuthProvider>
       <BrowserRouter>
+        <ToastContainer position="top-right" theme="colored" autoClose={5000} style={{ zIndex: 99999 }} />
         <AppRoutes />
       </BrowserRouter>
     </AuthProvider>
