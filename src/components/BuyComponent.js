@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import Button from "@mui/material/Button";
 import axios from "axios";
@@ -7,6 +7,11 @@ import { toast } from "react-toastify";
 
 export default function BuyComponent({ stock, closeBuy }) {
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    document.body.classList.add("modal-open");
+    return () => document.body.classList.remove("modal-open");
+  }, []);
 
   const [qty, setQty] = useState(1);
   const handleQtyChange = (event) => {
