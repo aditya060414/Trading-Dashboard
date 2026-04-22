@@ -5,6 +5,7 @@ import { BarChartOutlined } from "@mui/icons-material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { TrendingUp, TrendingDown } from "lucide-react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 export default function WatchList({
   watchlistStocks = [],
@@ -48,10 +49,10 @@ export default function WatchList({
       setDisplayStocks((prev) => prev.filter((s) => s.symbol !== symbol));
       setDeleteState({ show: false, stock: null });
 
-      alert(`${symbol} removed from watchlist`);
+      toast.success(`${symbol} removed from watchlist`);
     } catch (err) {
       console.error("Failed to delete stock:", err);
-      alert("Error removing stock. Please try again.");
+      toast.error(err.response?.data?.message || "Error removing stock. Please try again.");
     }
   };
 
