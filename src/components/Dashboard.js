@@ -7,12 +7,11 @@ import Settings from "./Setting";
 import WatchListComponent from "./WatchListComponent";
 const DashBoard = () => {
   return (
-    <div className="container-fluid dashboard">
-      <div className="row dashboard-row">
-        <div className="col-4" style={{ margin: "0", padding: "0" }}>
+      <div className="dashboard">
+        <div className="watchlist" >
           <WatchListComponent />
         </div>
-        <div className="col-8" style={{ padding: 0, margin: 0 }}>
+        <div className="content-container" >
           <div className="content">
             <Routes>
               <Route exact path="/" element={<Summary />} />
@@ -24,7 +23,6 @@ const DashBoard = () => {
           </div>
         </div>
       </div>
-    </div>
   );
 };
 
