@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { LoaderCircle } from "lucide-react";
+import { LoaderCircle, Wallet, Plus, Minus, History, IndianRupee, X } from "lucide-react";
+import Button from "@mui/material/Button";
+import { PieChart } from "lucide-react";
+import { toast } from "react-toastify";
 
 export default function Funds() {
   const [balance, setBalance] = useState(null);
@@ -10,13 +13,13 @@ export default function Funds() {
   const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "BUY": return "#276e29ff";
-      case "ADD": return "#358f38ff";
-      case "SELL": return "#f44336";
-      case "WITHDRAW": return "#da660eff";
-      default: return "#6f1a1aff"; // Default Dark Red
+  const getStatusClass = (type) => {
+    switch (type) {
+      case "BUY": return "buy";
+      case "ADD": return "add";
+      case "SELL": return "sell";
+      case "WITHDRAW": return "withdraw";
+      default: return "";
     }
   };
 
@@ -34,13 +37,14 @@ export default function Funds() {
       setBalance(balRes.data.balance || 0);
       setHistory(histRes.data.history || []);
       if(balRes.error){
-        alert(balRes.error.message);
+        toast.error(balRes.error.message);
       }  
       if(histRes.error){
-        alert(histRes.error.message);
+        toast.error(histRes.error.message);
       } 
     } catch (err) {
       console.error("Data fetch error", err);
+      toast.error("Failed to fetch wallet data");
     }
   };
   useEffect(() => {
@@ -49,7 +53,10 @@ export default function Funds() {
 
   // Transaction Handler
   const handleTransaction = async () => {
-    if (!amount || amount <= 0) return alert("Enter a valid amount");
+    if (!amount || amount <= 0) {
+      toast.warning("Please enter a valid amount");
+      return;
+    }
     setLoading(true);
 
     try {
@@ -57,17 +64,17 @@ export default function Funds() {
       const payload = { amount: Number(amount) };
       if (type === "deposit") {
         const res = await axios.post(`https://trading-backend-tf3j.onrender.com/api/v1/funds/add`, payload, { withCredentials: true });
-        alert(res.data.message);
+        toast.success(res.data.message || "Funds added successfully!");
       } else {
         const res = await axios.post(`https://trading-backend-tf3j.onrender.com/api/v1/funds/withdraw`, payload, { withCredentials: true });
-        alert(res.data.message);
+        toast.success(res.data.message || "Withdrawal successful!");
       }
 
       setIsModalOpen(false);
       setAmount("");
       fetchData();
     } catch (err) {
-      alert(err.response?.data?.message || "Transaction failed");
+      toast.error(err.response?.data?.message || "Transaction failed");
     } finally {
       setLoading(false);
     }
@@ -83,114 +90,207 @@ export default function Funds() {
       currency: "INR",
     }).format(amount);
   };
-  if (loading) return <div className="load-circle" ><LoaderCircle className="spinner" /></div>;
-  return (
-    <div className="funds">
-      <div className="funds-info">
-        <div className="wallet">
-          <h5>Total fund balance</h5>
-          <p>{balance !== null ? formatINR(balance) : "0"}</p>
+  if (loading && balance === null) return (
+    <div className="orders-loading-container">
+      <LoaderCircle className="spinner" size={48} />
+      <p>Fetching your wallet details...</p>
+    </div>
+  );
 
-          <div className="deposit-withdraw-btns">
-            <button
-              className="btn-deposit"
+  return (
+    <div className="funds-wrapper">
+      <div className="funds-header">
+        <div className="header-left">
+          <h2>Funds</h2>
+          <p className="funds-subtitle">Manage your wallet and trade balance</p>
+        </div>
+      </div>
+
+      <div className="funds-top-section">
+        <div className="wallet-card">
+          <div className="wallet-header">
+            <div className="wallet-icon-bg">
+              <Wallet size={24} />
+            </div>
+            <span>Total Balance</span>
+          </div>
+          <div className="balance-amount">
+            {formatINR(balance || 0)}
+          </div>
+          <div className="wallet-actions">
+            <Button 
+              variant="contained" 
+              className="deposit-action-btn"
               onClick={() => {
                 setModalMode("Deposit");
                 setIsModalOpen(true);
               }}
+              startIcon={<Plus size={18} />}
             >
-              Deposit
-            </button>
-            <button
-              className="btn-withdraw"
+              Add Funds
+            </Button>
+            <Button 
+              variant="contained" 
+              className="withdraw-action-btn"
               onClick={() => {
                 setModalMode("Withdraw");
                 setIsModalOpen(true);
               }}
+              startIcon={<Minus size={18} />}
             >
               Withdraw
-            </button>
+            </Button>
           </div>
         </div>
-        {/* <div className="investment-graph">graph</div> */}
+        
+        <div className="wallet-illustration-card">
+           <PieChart size={120} strokeWidth={1} className="illustration-icon" />
+           <div className="illustration-text">
+              <h4>Safe & Secure</h4>
+              <p>Your funds are protected with bank-grade encryption and real-time monitoring.</p>
+           </div>
+        </div>
       </div>
-      <div className="transactions">
-        <h5>Transactions</h5>
-        <table>
-          <thead>
-            <tr>
-              <th>Type</th>
-              <th>Amount</th>
-              <th>Date</th>
-              <th>Time</th>
-              <th>Stock</th>
-            </tr>
-          </thead>
-          <tbody>
-            {history?.map((h) => {
-              const dateObj = new Date(h.createdAt);
 
-              const date = dateObj.toLocaleDateString("en-IN", {
-                timeZone: "Asia/Kolkata",
-                day: "2-digit",
-                month: "short",
-                year: "numeric",
-              });
-              const time = dateObj.toLocaleTimeString("en-IN", {
-                timeZone: "Asia/Kolkata",
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-              });
-              return (
-                <tr
-                  key={h._id}
-                  className={h.type === "WITHDRAW" ? "withdraw-row" : "deposit-row"}
-                >
-                  <td style={{ color: getStatusColor(h.type) }}>{h.type}</td>
-                  <td className="amount">₹ {h.amount}</td>
-                  <td>{date}</td>
-                  <td>{time}</td>
-                  <td style={{ color: getStatusColor(h.type) }}>{h.type === "BUY" || h.type === "SELL" ? h.symbol : "-"}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-        {(!history || history.length === 0) && (
-          <p style={{ textAlign: "center", padding: "20px", color: "#999" }}>
-            No transactions found.
-          </p>
-        )}
+      <div className="transactions-section">
+        <div className="section-header">
+          <History size={20} />
+          <h3>Transaction History</h3>
+        </div>
+        
+        <div className="orders-table-container">
+          <table className="funds-orders-table">
+            <thead>
+              <tr>
+                <th>Activity</th>
+                <th>Amount</th>
+                <th>Status / Asset</th>
+                <th>Date & Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              {history?.map((h) => {
+                const dateObj = new Date(h.createdAt);
+                const formattedDate = dateObj.toLocaleDateString("en-IN", {
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                });
+                const formattedTime = dateObj.toLocaleTimeString("en-IN", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                });
+
+                return (
+                  <tr key={h._id}>
+                    <td>
+                      <div className={`transaction-type-cell ${getStatusClass(h.type)}`}>
+                        <div className="type-icon">
+                          {h.type === "ADD" || h.type === "SELL" ? <Plus size={14} /> : <Minus size={14} />}
+                        </div>
+                        <span className="type-text">{h.type}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <span className={`transaction-amount ${h.type === "ADD" || h.type === "SELL" ? "credit" : "debit"}`}>
+                        {h.type === "ADD" || h.type === "SELL" ? '+' : '-'}{formatINR(h.amount)}
+                      </span>
+                    </td>
+                    <td>
+                      {h.symbol ? (
+                         <div className="asset-tag">
+                            <IndianRupee size={12} />
+                            <span>{h.symbol}</span>
+                         </div>
+                      ) : (
+                         <span className="status-label-muted">System Transfer</span>
+                      )}
+                    </td>
+                    <td>
+                      <div className="time-cell">
+                        <span className="date-part">{formattedDate}</span>
+                        <span className="time-part">{formattedTime}</span>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          {(!history || history.length === 0) && (
+            <div className="table-empty-state">
+              <p>No transaction records found.</p>
+            </div>
+          )}
+        </div>
       </div>
+
       {isModalOpen && (
         <div className="modal-overlay">
-          <div className="modal-content">
-            <h3>{modalMode} Funds</h3>
-            <p>Available Fund: {balance !== null ? formatINR(balance) : "0"}</p>
-            <div
-              className={`input-box ${modalMode === "Withdraw" && balance < amount ? "input-text-red" : ""}`}
-            >
-              <span>₹</span>
-              <input
-                type="number"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                placeholder="0.00"
-                autoFocus
-              />
+          <div className="trade-component fund-modal-premium">
+            {loading && (
+              <div className="loader-overlay blur">
+                <LoaderCircle className="spinner" />
+                <p className="loader-message">Processing transaction...</p>
+              </div>
+            )}
+            <button className="close-trade-btn" onClick={handleCancel}>
+              <X size={20} />
+            </button>
+
+            <div className="trade-header">
+              <div className="trade-title-group">
+                <h3>{modalMode} Funds</h3>
+                <span className="exchange-label">Wallet</span>
+              </div>
             </div>
-            <div className="modal-actions">
-              <button disabled={loading} onClick={handleCancel}>
-                Cancel
-              </button>
-              <button
-                disabled={loading}
-                className={modalMode.toLowerCase()}
+            
+            <div className="fund-modal-body">
+              <div className="current-balance-preview">
+                <small>Available Balance</small>
+                <p>{formatINR(balance || 0)}</p>
+              </div>
+
+              <div className={`amount-input-wrapper ${modalMode === "Withdraw" && balance < amount ? "error" : ""}`}>
+                <div className="input-field-group">
+                  <span className="currency-symbol">₹</span>
+                  <input
+                    type="number"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    placeholder="0.00"
+                    autoFocus
+                  />
+                </div>
+                
+                <div className="quick-amount-chips">
+                  {[1000, 5000, 10000, 25000].map(val => (
+                    <button 
+                      key={val} 
+                      className="amount-chip"
+                      onClick={() => setAmount(val.toString())}
+                    >
+                      +₹{val >= 1000 ? `${val/1000}k` : val}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              {modalMode === "Withdraw" && balance < amount && (
+                <p className="input-error-msg">Insufficient funds for this withdrawal.</p>
+              )}
+            </div>
+
+            <div className="modal-footer">
+              <Button onClick={handleCancel} className="cancel-btn">Cancel</Button>
+              <Button 
+                variant="contained"
+                className={`confirm-btn ${modalMode.toLowerCase()}`}
+                disabled={loading || (modalMode === "Withdraw" && balance < amount)}
                 onClick={handleTransaction}
               >
-                {loading ? "Processing..." : `Confirm ${modalMode}`}
-              </button>
+                {loading ? <LoaderCircle className="spinner" size={18} /> : `Confirm ${modalMode}`}
+              </Button>
             </div>
           </div>
         </div>
@@ -198,3 +298,5 @@ export default function Funds() {
     </div>
   );
 }
+
+
