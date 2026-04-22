@@ -148,7 +148,13 @@ export default function Summary() {
     return () => clearInterval(interval);
   }, [isHovering, news]);
 
-  if (loading) return <div className="load-circle" ><LoaderCircle className="spinner" /></div>;
+  if (loading) return (
+    <div className="loader-overlay">
+      <LoaderCircle className="spinner" />
+      <h4 className="loader-brand">Market<span>Ex</span></h4>
+      <p className="loader-message">Loading your portfolio...</p>
+    </div>
+  );
 
   return (
     <div className="summary-container">
