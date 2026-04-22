@@ -157,13 +157,20 @@ export default function Summary() {
       <div className="portfolio-cards">
         <div className="card">
           <p className="label">Total Portfolio Value</p>
-          <h3 className={`${(profitValue !== 0) ? (profitValue > 0 ? "profit" : "loss") : ""}`}>{profitValue > 0 ? "+" : ""}₹{(profitValue).toLocaleString("en-IN")}</h3>
+          <h3>₹{(portfolioData?.portfolioValue || 0).toLocaleString("en-IN")}</h3>
         </div>
 
         <div className="card">
           <p className="label">Total Investment</p>
           <h3>
             ₹{(portfolioData?.investedAmount || 0).toLocaleString("en-IN")}
+          </h3>
+        </div>
+
+        <div className="card">
+          <p className="label">Total Profit / Loss</p>
+          <h3 className={`${(profitValue !== 0) ? (profitValue > 0 ? "profit" : "loss") : ""}`}>
+            {profitValue > 0 ? "+" : ""}₹{(profitValue).toLocaleString("en-IN")}
           </h3>
         </div>
 
