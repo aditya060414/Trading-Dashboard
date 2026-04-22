@@ -51,13 +51,13 @@ export default function Holdings() {
           </div>
           <div>
             <small>Current Value</small>
-            <p style={{ color: portfolio.portfolioValue >= portfolio.investedAmount ? 'green' : 'red' }}>
+            <p className={`${portfolio.portfolioValue >= portfolio.investedAmount ? 'profit' : 'loss'}`}>
               {formatINR(portfolio.portfolioValue)}
             </p>
           </div>
           <div>
             <small>Today's Profit/Loss</small>
-            <p style={{ color: portfolio.todaysGain >= 0 ? 'green' : 'red' }}>
+            <p className={`${portfolio.todaysGain >= 0 ? 'profit' : 'loss'}`}>
               {formatINR(portfolio.todaysGain)}
             </p>
           </div>
@@ -89,7 +89,7 @@ export default function Holdings() {
                   <td>{formatINR(stock.currPrice)}</td>
                   <td>{formatINR(stock.totalInvestment)}</td>
                   <td>{formatINR(stock.currentValue)}</td>
-                  <td style={{ color: isProfit ? '#4caf50' : '#f44336' }}>
+                  <td className={`${isProfit ? 'profit' : 'loss'}`}>
                     {formatINR(stock.totalGain)}
                     <div style={{ fontSize: '11px' }}>({pnlPercentage}%)</div>
                   </td>
