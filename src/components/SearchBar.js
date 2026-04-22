@@ -5,7 +5,6 @@ export default function SearchBar({ onSelectStock }) {
   const ws = useRef(null);
   const debounceRef = useRef(null);
   const containerRef = useRef(null);
-
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
 
@@ -37,18 +36,18 @@ export default function SearchBar({ onSelectStock }) {
     };
 
     return () => {
-        isClosing = true; 
-        
-        if (socket.readyState === WebSocket.OPEN) {
-            // If it's already open, close it normally
-            socket.close();
-        } else if (socket.readyState === WebSocket.CONNECTING) {
-            // If it's still connecting, wait for it to finish opening 
-            // before closing it. This prevents the "closed before established" warning.
-            socket.onopen = () => {
-                socket.close();
-            };
-        }
+      isClosing = true;
+
+      if (socket.readyState === WebSocket.OPEN) {
+        // If it's already open, close it normally
+        socket.close();
+      } else if (socket.readyState === WebSocket.CONNECTING) {
+        // If it's still connecting, wait for it to finish opening 
+        // before closing it. This prevents the "closed before established" warning.
+        socket.onopen = () => {
+          socket.close();
+        };
+      }
     };
   }, []);
 
@@ -85,7 +84,7 @@ export default function SearchBar({ onSelectStock }) {
     const handleClickOutside = (e) => {
       if (!containerRef.current?.contains(e.target)) {
         setResults([]);
-        // setQuery(""); 
+        setQuery("");
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -101,22 +100,20 @@ export default function SearchBar({ onSelectStock }) {
   };
 
   return (
-    <div className="mx-search-container" ref={containerRef}>
+    <div className="search-container" ref={containerRef}>
       <input
-        className="mx-search-input"
+        className="search-input"
         placeholder="Search stock (e.g. RELIANCE)..."
         value={query}
         onChange={handleChange}
       />
       {results.length > 0 && (
-        <div className="mx-search-dropdown">
-          <table className="mx-search-table">
+        <div className="search-dropdown">
+          <table className="search-table">
             <thead>
               <tr>
                 <th>Symbol</th>
                 <th>Open</th>
-                <th>High</th>
-                <th>Low</th>
                 <th>Close</th>
               </tr>
             </thead>
@@ -131,8 +128,6 @@ export default function SearchBar({ onSelectStock }) {
                   >
                     <td className="mx-symbol">{s.symbol}</td>
                     <td>₹{s.open}</td>
-                    <td>₹{s.high}</td>
-                    <td>₹{s.low}</td>
                     <td className={isPositive ? "price-up" : "price-down"}>
                       ₹{s.close}
                     </td>
