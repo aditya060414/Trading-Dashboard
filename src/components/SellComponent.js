@@ -36,6 +36,7 @@ export default function SellComponent({ stock, closeBuy }) {
         closeBuy();
       }, 500);
     } catch (err) {
+      closeBuy();
       console.error(err);
       toast.error(err.response?.data?.message || err.message || "Sell failed");
     } finally {

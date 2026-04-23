@@ -41,8 +41,8 @@ export default function BuyComponent({ stock, closeBuy }) {
       setTimeout(() => {
         closeBuy();
       }, 500);
-
     } catch (err) {
+      closeBuy();
       console.error(err);
       toast.error(err.response?.data?.message || err.message || "Order failed");
     } finally {
