@@ -3136,6 +3136,14 @@ body.modal-open {
     gap: 12px;
   }
 }
+@media (max-width: 550px){
+  .qty-control .control-btn{
+    display: none !important;
+  }
+  .qty-control input{
+    width: 100%;
+  }
+}
 @media (max-width: 500px) {
   .summary-container,
   .orders-wrapper,
