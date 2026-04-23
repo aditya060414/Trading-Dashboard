@@ -45,7 +45,7 @@ export default function Orders() {
       <p>Your trade history will appear here once you start trading.</p>
     </div>
   );
-
+  
   return (
     <div className="orders-wrapper">
       <div className="orders-header">
@@ -62,6 +62,7 @@ export default function Orders() {
               <th>Qty</th>
               <th>Status</th>
               <th>Amount</th>
+              <th>Reason</th>
               <th>Date & Time</th>
             </tr>
           </thead>
@@ -104,6 +105,7 @@ export default function Orders() {
                     </div>
                   </td>
                   <td>₹{order.totalAmount}</td>
+                  <td>{order.reason || "- - -"}</td>
                   <td>
                     <div className="time-cell">
                       <span className="date-part">{formattedDate}</span>
