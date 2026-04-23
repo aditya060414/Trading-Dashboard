@@ -99,7 +99,7 @@ export default function LineChart({ symbol }) {
           }));
 
         if (rawData.length > 0) {
-          // If we only have one point, generate history for a "proper" chart look
+          // If only have one point, generate history for a "proper" chart look
           const historicalData = rawData.length === 1 ? generateHistory(rawData[0]) : rawData;
           
           setFullData(historicalData);
