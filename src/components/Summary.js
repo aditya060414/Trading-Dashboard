@@ -240,7 +240,7 @@ export default function Summary() {
       <div className="my-details-card">
         <div className="owner-details">
           <h4>Project Owner</h4>
-          <p>Aditya Kumar</p>
+          <p>Aditya Singh</p>
         </div>
         <div className="owner-links">
           <a href="https://www.linkedin.com/in/aditya-singh-0604adi/" target="_blank" rel="noopener noreferrer" title="LinkedIn">
