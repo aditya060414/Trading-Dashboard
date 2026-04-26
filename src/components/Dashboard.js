@@ -5,6 +5,7 @@ import Orders from "./Orders";
 import Holdings from "./Holdings";
 import Funds from "./Funds";
 import Settings from "./Setting";
+import ChangeUsername from "./changeUsername";
 import WatchListComponent from "./WatchListComponent";
 import { LayoutList, X } from "lucide-react";
 
@@ -46,6 +47,7 @@ const DashBoard = () => {
             <Route path="/holdings" element={<Holdings />} />
             <Route path="/funds" element={<Funds />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/changeUsername" element={<ChangeUsername />} />
           </Routes>
         </div>
       </div>
