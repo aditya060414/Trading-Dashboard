@@ -15,6 +15,7 @@ import {
   Lock
 } from 'lucide-react';
 import Switch from "@mui/material/Switch";
+import ChangePassword from './changePassword';
 
 export default function Settings() {
   const navigate = useNavigate();
@@ -22,8 +23,13 @@ export default function Settings() {
   const [changeUsername, setChangeUsername] = useState(false);
   const [changePassword, setChangePassword] = useState(false);
   const handleChangeClick = (path) => {
-    setChangeUsername(true);
-    navigate(path) 
+    if (path === "/changeUsername") {
+      setChangeUsername(true);
+    }
+    else if (path === "/changePassword") {
+      setChangePassword(true);
+    }
+    navigate(path)
   }
   return (
     <>
@@ -77,7 +83,7 @@ export default function Settings() {
                   </div>
                   <ChevronRight size={18} className="arrow" />
                 </div>
-                <div className="settings-row clickable">
+                <div className="settings-row clickable" onClick={() => handleChangeClick("/changePassword")}>
                   <div className="row-content">
                     <div className="row-icon"><Lock size={18} /></div>
                     <div className="row-info">
@@ -155,7 +161,8 @@ export default function Settings() {
           </div>
         </div>
       </div>
-      {changeUsername && <changeUsername />}
+      {changeUsername && <ChangeUsername />}
+      {changePassword && <ChangePassword />}
     </>
   );
 }
