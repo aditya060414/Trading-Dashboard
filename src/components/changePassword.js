@@ -36,7 +36,7 @@ export default function ChangePassword() {
         if (!validate()) return;
         setLoader(true);
         try {
-            await axios.patch('http://trading-backend-tf3j.onrender.com/api/v1/update/password', {
+            await axios.patch('https://trading-backend-tf3j.onrender.com/api/v1/update/password', {
                 password,
                 newPassword
             }, { withCredentials: true });
