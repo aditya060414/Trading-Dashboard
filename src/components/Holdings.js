@@ -1,12 +1,22 @@
 import { useState, useEffect } from "react";
-import { useAuth } from '../Auth';
+import { useAuth } from "../Auth";
 import axios from "axios";
-import { LoaderCircle, TrendingUp, TrendingDown, Briefcase, IndianRupee, PieChart, ShoppingCart, Tag, BarChart2 } from "lucide-react";
+import {
+  LoaderCircle,
+  TrendingUp,
+  TrendingDown,
+  Briefcase,
+  IndianRupee,
+  PieChart,
+  ShoppingCart,
+  Tag,
+  BarChart2,
+} from "lucide-react";
 import { Tooltip } from "@mui/material";
 import BuyComponent from "./BuyComponent";
 import SellComponent from "./SellComponent";
 import StockDetails from "./StockDetails";
-
+import { api } from "../API";
 import { toast } from "react-toastify";
 import Portal from "./Portal";
 
@@ -27,7 +37,7 @@ export default function Holdings() {
 
   const fetchWatchlist = async () => {
     try {
-      const response = await axios.get(`https://trading-backend-tf3j.onrender.com/api/v1/watchlist/get`, {
+      const response = await axios.get(`${api}watchlist/get`, {
         withCredentials: true,
       });
       setWatchlistStocks(response.data.stock || []);
@@ -42,7 +52,7 @@ export default function Holdings() {
       try {
         setLoading(true);
 
-        const res = await axios.get(`https://trading-backend-tf3j.onrender.com/api/v1/portfolio/${user.id}`, {
+        const res = await axios.get(`${api}portfolio/${user.id}`, {
           withCredentials: true,
         });
         setPortfolio(res.data);
@@ -59,8 +69,8 @@ export default function Holdings() {
 
   const handleAddToWatchlist = async (stock) => {
     try {
-       await axios.post(
-        `https://trading-backend-tf3j.onrender.com/api/v1/watchlist/add`,
+      await axios.post(
+        `${api}watchlist/add`,
         {
           symbol: stock.symbol,
           high: stock.high,
@@ -88,23 +98,30 @@ export default function Holdings() {
       currency: "INR",
     }).format(amount || 0);
   };
-  if (loading) return (
-    <div className="loader-overlay">
-      <LoaderCircle className="spinner" size={48} />
-      <h4 className="loader-brand">Market<span>Ex</span></h4>
-      <p className="loader-message">Analyzing your portfolio...</p>
-    </div>
-  );
-
-  if (!portfolio || !portfolio.allocation.length) return (
-    <div className="orders-empty-state">
-      <div className="empty-icon-wrapper">
-        <Briefcase size={64} strokeWidth={1} />
+  if (loading)
+    return (
+      <div className="loader-overlay">
+        <LoaderCircle className="spinner" size={48} />
+        <h4 className="loader-brand">
+          Market<span>Ex</span>
+        </h4>
+        <p className="loader-message">Analyzing your portfolio...</p>
       </div>
-      <h3>No Holdings Found</h3>
-      <p>Your long-term investments will appear here after your orders are executed.</p>
-    </div>
-  );
+    );
+
+  if (!portfolio || !portfolio.allocation.length)
+    return (
+      <div className="orders-empty-state">
+        <div className="empty-icon-wrapper">
+          <Briefcase size={64} strokeWidth={1} />
+        </div>
+        <h3>No Holdings Found</h3>
+        <p>
+          Your long-term investments will appear here after your orders are
+          executed.
+        </p>
+      </div>
+    );
 
   const totalPnL = portfolio.portfolioValue - portfolio.investedAmount;
   const isTotalProfit = totalPnL >= 0;
@@ -114,32 +131,50 @@ export default function Holdings() {
       <div className="holdings-header">
         <div className="header-left">
           <h2>Holdings</h2>
-          <span className="holdings-count">{portfolio.allocation.length} Stocks</span>
+          <span className="holdings-count">
+            {portfolio.allocation.length} Stocks
+          </span>
         </div>
       </div>
 
       <div className="portfolio-summary-grid">
         <div className="summary-card">
-          <div className="card-icon"><IndianRupee size={20} /></div>
+          <div className="card-icon">
+            <IndianRupee size={20} />
+          </div>
           <div className="card-data">
             <small>Total Invested</small>
             <p>{formatINR(portfolio.investedAmount)}</p>
           </div>
         </div>
         <div className="summary-card">
-          <div className="card-icon"><PieChart size={20} /></div>
+          <div className="card-icon">
+            <PieChart size={20} />
+          </div>
           <div className="card-data">
             <small>Current Value</small>
-            <p className={`${portfolio.portfolioValue >= portfolio.investedAmount ? 'profit' : 'loss'}`}>{formatINR(portfolio.portfolioValue)}</p>
+            <p
+              className={`${portfolio.portfolioValue >= portfolio.investedAmount ? "profit" : "loss"}`}
+            >
+              {formatINR(portfolio.portfolioValue)}
+            </p>
           </div>
         </div>
         <div className="summary-card pnl-card">
           <div className={`card-data `}>
             <small>Total P&L</small>
             <div className="pnl-main">
-              <p className={`pnl-amount ${isTotalProfit ? 'profit' : 'loss'}`}>{formatINR(totalPnL)}</p>
-              <span className={`pnl-indicator ${isTotalProfit ? 'profit' : 'loss'}`}>
-                {isTotalProfit ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
+              <p className={`pnl-amount ${isTotalProfit ? "profit" : "loss"}`}>
+                {formatINR(totalPnL)}
+              </p>
+              <span
+                className={`pnl-indicator ${isTotalProfit ? "profit" : "loss"}`}
+              >
+                {isTotalProfit ? (
+                  <TrendingUp size={16} />
+                ) : (
+                  <TrendingDown size={16} />
+                )}
                 {((totalPnL / portfolio.investedAmount) * 100).toFixed(2)}%
               </span>
             </div>
@@ -162,7 +197,10 @@ export default function Holdings() {
           <tbody>
             {portfolio.allocation.map((stock) => {
               const isProfit = stock.totalGain >= 0;
-              const pnlPercentage = ((stock.totalGain / stock.totalInvestment) * 100).toFixed(2);
+              const pnlPercentage = (
+                (stock.totalGain / stock.totalInvestment) *
+                100
+              ).toFixed(2);
 
               // Create a stock object for the modals
               const stockObj = {
@@ -170,11 +208,11 @@ export default function Holdings() {
                 close: stock.currPrice,
                 open: stock.currPrice, // Approximate for modals
                 high: stock.currPrice,
-                low: stock.currPrice
+                low: stock.currPrice,
               };
 
               return (
-                <tr 
+                <tr
                   key={stock.symbol}
                   onMouseEnter={() => setHoveredSymbol(stock.symbol)}
                   onMouseLeave={() => setHoveredSymbol(null)}
@@ -185,17 +223,26 @@ export default function Holdings() {
                       {hoveredSymbol === stock.symbol && (
                         <div className="order-row-actions">
                           <Tooltip title="Buy More" arrow>
-                            <button className="action-btn buy" onClick={() => handleBuy(stockObj)}>
+                            <button
+                              className="action-btn buy"
+                              onClick={() => handleBuy(stockObj)}
+                            >
                               <ShoppingCart size={14} />
                             </button>
                           </Tooltip>
                           <Tooltip title="Sell" arrow>
-                            <button className="action-btn sell" onClick={() => handleSell(stockObj)}>
+                            <button
+                              className="action-btn sell"
+                              onClick={() => handleSell(stockObj)}
+                            >
                               <Tag size={14} />
                             </button>
                           </Tooltip>
                           <Tooltip title="Analytics" arrow>
-                            <button className="action-btn analytics" onClick={() => setSelectedStock(stockObj)}>
+                            <button
+                              className="action-btn analytics"
+                              onClick={() => setSelectedStock(stockObj)}
+                            >
                               <BarChart2 size={14} />
                             </button>
                           </Tooltip>
@@ -203,7 +250,9 @@ export default function Holdings() {
                       )}
                     </div>
                   </td>
-                  <td><span className="qty-value">{stock.qty}</span></td>
+                  <td>
+                    <span className="qty-value">{stock.qty}</span>
+                  </td>
                   <td>{formatINR(stock.avgPrice)}</td>
                   <td>{formatINR(stock.currPrice)}</td>
                   <td>
@@ -214,8 +263,18 @@ export default function Holdings() {
                   </td>
                   <td>
                     <div className={`pnl-cell `}>
-                      <span className={`pnl-amount ${isProfit ? 'profit' : 'loss'}`}>{isProfit ? '+' : ''}{formatINR(stock.totalGain)}</span>
-                      <span className={`pnl-percent ${isProfit ? 'profit' : 'loss'}`}>{isProfit ? '+' : ''}{pnlPercentage}%</span>
+                      <span
+                        className={`pnl-amount ${isProfit ? "profit" : "loss"}`}
+                      >
+                        {isProfit ? "+" : ""}
+                        {formatINR(stock.totalGain)}
+                      </span>
+                      <span
+                        className={`pnl-percent ${isProfit ? "profit" : "loss"}`}
+                      >
+                        {isProfit ? "+" : ""}
+                        {pnlPercentage}%
+                      </span>
                     </div>
                   </td>
                 </tr>
@@ -234,7 +293,9 @@ export default function Holdings() {
             onBuy={handleBuy}
             onSell={handleSell}
             onAddToWatchlist={handleAddToWatchlist}
-            isInWatchlist={watchlistStocks.some(s => s.symbol === selectedStock.symbol)}
+            isInWatchlist={watchlistStocks.some(
+              (s) => s.symbol === selectedStock.symbol,
+            )}
           />
         </Portal>
       )}
@@ -245,15 +306,9 @@ export default function Holdings() {
           <div className="modal-overlay">
             <div className="modal-content">
               {tradeState.type === "BUY" ? (
-                <BuyComponent
-                  stock={tradeState.stock}
-                  closeBuy={closeTrade}
-                />
+                <BuyComponent stock={tradeState.stock} closeBuy={closeTrade} />
               ) : (
-                <SellComponent
-                  stock={tradeState.stock}
-                  closeBuy={closeTrade}
-                />
+                <SellComponent stock={tradeState.stock} closeBuy={closeTrade} />
               )}
             </div>
           </div>

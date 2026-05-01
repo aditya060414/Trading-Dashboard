@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { LoaderCircle, ArrowUpRight, ArrowDownRight, Inbox } from "lucide-react";
+import {
+  LoaderCircle,
+  ArrowUpRight,
+  ArrowDownRight,
+  Inbox,
+} from "lucide-react";
+import { api } from "../API";
 
 export default function Orders() {
   const [loading, setLoading] = useState(false);
@@ -10,49 +16,51 @@ export default function Orders() {
     const fetchOrder = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`https://trading-backend-tf3j.onrender.com/api/v1/orders/history`, {
+        const res = await axios.get(`${api}orders/history`, {
           withCredentials: true,
         });
         setOrders(res.data.data);
       } catch (error) {
         console.log("Error fetching data.", error.message);
-        if(error.response.data.message){
+        if (error.response.data.message) {
           alert(error.response.data.message);
         }
       } finally {
         setLoading(false);
       }
-    }
+    };
     fetchOrder();
-  }, [])
+  }, []);
 
-  
-
-  if (loading) return (
-    <div className="loader-overlay">
-      <LoaderCircle className="spinner" size={48} />
-      <h4 className="loader-brand">Market<span>Ex</span></h4>
-      <p className="loader-message">Loading your trade history...</p>
-    </div>
-  );
-
-  if (!orders || !orders.length) return (
-    <div className="orders-empty-state">
-      <div className="empty-icon-wrapper">
-        <Inbox size={64} strokeWidth={1} />
+  if (loading)
+    return (
+      <div className="loader-overlay">
+        <LoaderCircle className="spinner" size={48} />
+        <h4 className="loader-brand">
+          Market<span>Ex</span>
+        </h4>
+        <p className="loader-message">Loading your trade history...</p>
       </div>
-      <h3>No Orders Yet</h3>
-      <p>Your trade history will appear here once you start trading.</p>
-    </div>
-  );
-  
+    );
+
+  if (!orders || !orders.length)
+    return (
+      <div className="orders-empty-state">
+        <div className="empty-icon-wrapper">
+          <Inbox size={64} strokeWidth={1} />
+        </div>
+        <h3>No Orders Yet</h3>
+        <p>Your trade history will appear here once you start trading.</p>
+      </div>
+    );
+
   return (
     <div className="orders-wrapper">
       <div className="orders-header">
         <h2>Order History</h2>
         <div className="orders-count">{orders.length} Total Trades</div>
       </div>
-      
+
       <div className="orders-table-container">
         <table className="orders-table">
           <thead>
@@ -87,7 +95,9 @@ export default function Orders() {
                     </div>
                   </td>
                   <td>
-                    <div className={`mode-badge ${order.mode === "BUY" ? "buy" : "sell"}`}>
+                    <div
+                      className={`mode-badge ${order.mode === "BUY" ? "buy" : "sell"}`}
+                    >
                       {order.mode === "BUY" ? (
                         <ArrowUpRight size={14} />
                       ) : (
@@ -100,7 +110,9 @@ export default function Orders() {
                     <span className="qty-value">{order.qty}</span>
                   </td>
                   <td>
-                    <div className={`status-badge ${order.status.toLowerCase()}`}>
+                    <div
+                      className={`status-badge ${order.status.toLowerCase()}`}
+                    >
                       {order.status}
                     </div>
                   </td>

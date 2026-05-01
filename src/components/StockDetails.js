@@ -6,7 +6,6 @@ import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import { TrendingUp, TrendingDown, Star, ShoppingCart, Tag } from "lucide-react";
 import Button from "@mui/material/Button";
-import Portal from "./Portal";
 
 export default function StockDetails({ 
   stock, 

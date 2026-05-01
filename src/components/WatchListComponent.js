@@ -7,6 +7,7 @@ import BuyComponent from "./BuyComponent";
 import SellComponent from "./SellComponent";
 import { toast } from "react-toastify";
 import Portal from "./Portal";
+import { api } from "../API";
 
 export default function WatchListComponent() {
   const [watchlistStocks, setWatchlistStocks] = useState([]);
@@ -21,10 +22,9 @@ export default function WatchListComponent() {
   const handleSell = (stock) => setTradeState({ type: "SELL", stock });
   const closeTrade = () => setTradeState({ type: null, stock: null });
 
-
   const fetchWatchlist = useCallback(async () => {
     try {
-      const response = await axios.get(`https://trading-backend-tf3j.onrender.com/api/v1/watchlist/get`, {
+      const response = await axios.get(`${api}watchlist/get`, {
         withCredentials: true,
       });
       setWatchlistStocks(response.data.stock || []);
@@ -42,8 +42,8 @@ export default function WatchListComponent() {
   const handleAddToWatchlist = async (stock) => {
     setLoading(true);
     try {
-       await axios.post(
-        `https://trading-backend-tf3j.onrender.com/api/v1/watchlist/add`,
+      await axios.post(
+        `${api}watchlist/add`,
         {
           symbol: stock.symbol,
           high: stock.high,
@@ -63,7 +63,7 @@ export default function WatchListComponent() {
       setLoading(false);
     }
   };
-  
+
   return (
     <>
       <div className="search-bar-container">
@@ -79,7 +79,9 @@ export default function WatchListComponent() {
             onAddToWatchlist={handleAddToWatchlist}
             onBuy={handleBuy}
             onSell={handleSell}
-            isInWatchlist={watchlistStocks.some(s => s.symbol === selectedStock.symbol)}
+            isInWatchlist={watchlistStocks.some(
+              (s) => s.symbol === selectedStock.symbol,
+            )}
           />
         </Portal>
       )}
@@ -89,15 +91,9 @@ export default function WatchListComponent() {
           <div className="modal-overlay">
             <div className="modal-content">
               {tradeState.type === "BUY" ? (
-                <BuyComponent
-                  stock={tradeState.stock}
-                  closeBuy={closeTrade}
-                />
+                <BuyComponent stock={tradeState.stock} closeBuy={closeTrade} />
               ) : (
-                <SellComponent
-                  stock={tradeState.stock}
-                  closeBuy={closeTrade}
-                />
+                <SellComponent stock={tradeState.stock} closeBuy={closeTrade} />
               )}
             </div>
           </div>

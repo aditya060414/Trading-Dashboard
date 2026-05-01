@@ -2,7 +2,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-
+import { api } from "./API";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
     // Initial verification only once on mount
     const verifyUser = async () => {
       try {
-        const res = await axios.get("https://trading-backend-tf3j.onrender.com/api/v1/auth/verify", {
+        const res = await axios.get(`${api}auth/verify`, {
           withCredentials: true,
         });
         if (res.data.authenticated) {
@@ -47,9 +47,9 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       const res = await axios.post(
-        "https://trading-backend-tf3j.onrender.com/api/v1/auth/logout",
+        `${api}auth/logout`,
         {},
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       toast.success(res.data.message || "Logged out successfully");
@@ -67,7 +67,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, setUser, loading, theme, toggleTheme, logout }}>
+    <AuthContext.Provider
+      value={{ user, setUser, loading, theme, toggleTheme, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );

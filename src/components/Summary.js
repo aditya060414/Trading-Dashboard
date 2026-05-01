@@ -3,10 +3,11 @@ import { Bar } from "react-chartjs-2";
 import axios from "axios";
 import { useAuth } from "../Auth";
 import { LoaderCircle } from "lucide-react";
-import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import InstagramIcon from '@mui/icons-material/Instagram';
-import EmailIcon from '@mui/icons-material/Email';
-import GitHubIcon from '@mui/icons-material/GitHub';
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import InstagramIcon from "@mui/icons-material/Instagram";
+import EmailIcon from "@mui/icons-material/Email";
+import GitHubIcon from "@mui/icons-material/GitHub";
+import { api } from "../API";
 
 import {
   Chart as ChartJS,
@@ -38,10 +39,10 @@ export default function Summary() {
     try {
       setLoading(true);
       const [portfolioRes, fundsRes] = await Promise.all([
-        axios.get(`https://trading-backend-tf3j.onrender.com/api/v1/portfolio/${user.id}`, {
+        axios.get(`${api}portfolio/${user.id}`, {
           withCredentials: true,
         }),
-        axios.get(`https://trading-backend-tf3j.onrender.com/api/v1/funds/balance`, {
+        axios.get(`${api}funds/balance`, {
           withCredentials: true,
         }),
       ]);
@@ -62,7 +63,8 @@ export default function Summary() {
     fetchData();
   }, [user]);
 
-  const profitValue = (portfolioData?.portfolioValue - portfolioData?.investedAmount) || 0;
+  const profitValue =
+    portfolioData?.portfolioValue - portfolioData?.investedAmount || 0;
 
   // Chart Configuration
   const chartData = {
@@ -72,7 +74,7 @@ export default function Summary() {
         label: "Today's Profit / Loss",
         data: portfolioData?.allocation?.map((s) => s.dailyGain) || [],
         backgroundColor: portfolioData?.allocation?.map((s) =>
-          s.dailyGain >= 0 ? "#2ecc71" : "#ff4d4d"
+          s.dailyGain >= 0 ? "#2ecc71" : "#ff4d4d",
         ),
         borderRadius: 6,
         barThickness: 30,
@@ -108,16 +110,17 @@ export default function Summary() {
       try {
         const token = process.env.REACT_APP_FINNHUB_API_KEY;
         if (!token) {
-          console.warn("Finnhub API key is missing. Please set REACT_APP_FINNHUB_API_KEY in your .env file.");
+          console.warn(
+            "Finnhub API key is missing. Please set REACT_APP_FINNHUB_API_KEY in your .env file.",
+          );
           return;
         }
         const res = await fetch(
-          `https://finnhub.io/api/v1/news?category=general&token=${token}`
+          `https://finnhub.io/api/v1/news?category=general&token=${token}`,
         );
         const data = await res.json();
 
         setNews(data);
-
       } catch (err) {
         console.error("Failed to fetch news:", err);
       }
@@ -136,7 +139,10 @@ export default function Summary() {
         const container = containerRef.current;
         if (container) {
           // Check if we've reached the bottom (with a small buffer for sub-pixel accuracy)
-          if (container.scrollTop + container.clientHeight >= container.scrollHeight - 2) {
+          if (
+            container.scrollTop + container.clientHeight >=
+            container.scrollHeight - 2
+          ) {
             container.scrollTop = 0;
           } else {
             container.scrollTop += 1;
@@ -148,13 +154,16 @@ export default function Summary() {
     return () => clearInterval(interval);
   }, [isHovering, news]);
 
-  if (loading) return (
-    <div className="loader-overlay">
-      <LoaderCircle className="spinner" />
-      <h4 className="loader-brand">Market<span>Ex</span></h4>
-      <p className="loader-message">Loading your portfolio...</p>
-    </div>
-  );
+  if (loading)
+    return (
+      <div className="loader-overlay">
+        <LoaderCircle className="spinner" />
+        <h4 className="loader-brand">
+          Market<span>Ex</span>
+        </h4>
+        <p className="loader-message">Loading your portfolio...</p>
+      </div>
+    );
 
   return (
     <div className="summary-container">
@@ -168,7 +177,9 @@ export default function Summary() {
       <div className="portfolio-cards">
         <div className="card">
           <p className="label">Total Portfolio Value</p>
-          <h3>₹{(portfolioData?.portfolioValue || 0).toLocaleString("en-IN")}</h3>
+          <h3>
+            ₹{(portfolioData?.portfolioValue || 0).toLocaleString("en-IN")}
+          </h3>
         </div>
 
         <div className="card">
@@ -180,8 +191,10 @@ export default function Summary() {
 
         <div className="card">
           <p className="label">Total Profit / Loss</p>
-          <h3 className={`${(profitValue !== 0) ? (profitValue > 0 ? "profit" : "loss") : ""}`}>
-            {profitValue > 0 ? "+" : ""}₹{(profitValue).toLocaleString("en-IN")}
+          <h3
+            className={`${profitValue !== 0 ? (profitValue > 0 ? "profit" : "loss") : ""}`}
+          >
+            {profitValue > 0 ? "+" : ""}₹{profitValue.toLocaleString("en-IN")}
           </h3>
         </div>
 
@@ -194,7 +207,10 @@ export default function Summary() {
       <div className="summary-grid">
         <div className="graph-card">
           <h4>Today's Profit / Loss by Stock</h4>
-          <div className="graph-container" style={{ height: "300px", marginTop: "20px" }}>
+          <div
+            className="graph-container"
+            style={{ height: "300px", marginTop: "20px" }}
+          >
             {portfolioData?.allocation?.length > 0 ? (
               <Bar data={chartData} options={chartOptions} />
             ) : (
@@ -224,14 +240,26 @@ export default function Summary() {
                   <div className="news-meta">
                     <span>{item.source}</span> •{" "}
                     <span>
-                      {new Date(item.datetime * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      {new Date(item.datetime * 1000).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
                     </span>
                   </div>
                 </div>
               ))
             ) : (
-              <div className="no-news-message" style={{ padding: '20px', textAlign: 'center', color: 'var(--text-muted)' }}>
-                {process.env.REACT_APP_FINNHUB_API_KEY ? "No news items found." : "Please configure your Finnhub API key to see market news."}
+              <div
+                className="no-news-message"
+                style={{
+                  padding: "20px",
+                  textAlign: "center",
+                  color: "var(--text-muted)",
+                }}
+              >
+                {process.env.REACT_APP_FINNHUB_API_KEY
+                  ? "No news items found."
+                  : "Please configure your Finnhub API key to see market news."}
               </div>
             )}
           </div>
@@ -243,16 +271,34 @@ export default function Summary() {
           <p>Aditya Singh</p>
         </div>
         <div className="owner-links">
-          <a href="https://www.linkedin.com/in/aditya-singh-0604adi/" target="_blank" rel="noopener noreferrer" title="LinkedIn">
+          <a
+            href="https://www.linkedin.com/in/aditya-singh-0604adi/"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="LinkedIn"
+          >
             <LinkedInIcon />
           </a>
-          <a href="https://www.instagram.com/aditya___029/?hl=en" target="_blank" rel="noopener noreferrer" title="Instagram">
+          <a
+            href="https://www.instagram.com/aditya___029/?hl=en"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Instagram"
+          >
             <InstagramIcon />
           </a>
-          <a href="mailto:singh.aditya.44618@gmail.com?subject=Contact from MarketEx" title="Email">
+          <a
+            href="mailto:singh.aditya.44618@gmail.com?subject=Contact from MarketEx"
+            title="Email"
+          >
             <EmailIcon />
           </a>
-          <a href="https://github.com/aditya060414" target="_blank" rel="noopener noreferrer" title="GitHub">
+          <a
+            href="https://github.com/aditya060414"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="GitHub"
+          >
             <GitHubIcon />
           </a>
         </div>

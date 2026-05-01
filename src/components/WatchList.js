@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"; // 1. Added useEffect
 import { Tooltip } from "@mui/material";
 import { BarChartOutlined } from "@mui/icons-material";
-
+import { api } from "../API";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { TrendingUp, TrendingDown } from "lucide-react";
 import axios from "axios";
@@ -12,7 +12,7 @@ export default function WatchList({
   watchlistStocks = [],
   onBuy,
   onSell,
-  onAnalytics
+  onAnalytics,
 }) {
   // 2. Initialize local state with the props
   const [displayStocks, setDisplayStocks] = useState(watchlistStocks);
@@ -41,7 +41,7 @@ export default function WatchList({
       const symbol = stock.symbol;
 
       // Await the delete request
-      await axios.delete("https://trading-backend-tf3j.onrender.com/api/v1/watchlist/remove", {
+      await axios.delete(`${api}watchlist/remove`, {
         data: { symbol: symbol },
         withCredentials: true,
       });
@@ -53,7 +53,10 @@ export default function WatchList({
       toast.success(`${symbol} removed from watchlist`);
     } catch (err) {
       console.error("Failed to delete stock:", err);
-      toast.error(err.response?.data?.message || "Error removing stock. Please try again.");
+      toast.error(
+        err.response?.data?.message ||
+          "Error removing stock. Please try again.",
+      );
     }
   };
 
@@ -120,7 +123,6 @@ const DeleteConfirmationModal = ({ stock, onConfirm, onCancel }) => {
   );
 };
 
-
 const WatchListItem = ({
   stock,
   handleBuyButton,
@@ -133,7 +135,8 @@ const WatchListItem = ({
   const close = Number(stock.close) || 0;
   const open = Number(stock.open) || 0;
   const change = close - open;
-  const percentChange = open !== 0 ? ((change / open) * 100).toFixed(2) : "0.00";
+  const percentChange =
+    open !== 0 ? ((change / open) * 100).toFixed(2) : "0.00";
   const isUp = change >= 0;
 
   return (
@@ -149,7 +152,8 @@ const WatchListItem = ({
         <div className="itemInfo">
           <span className="price">₹{close.toFixed(2)}</span>
           <span className={`percent ${isUp ? "up" : "down"}`}>
-            {isUp ? "+" : ""}{percentChange}%
+            {isUp ? "+" : ""}
+            {percentChange}%
             {isUp ? (
               <TrendingUp size={14} style={{ marginLeft: "4px" }} />
             ) : (

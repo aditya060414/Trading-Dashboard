@@ -4,6 +4,7 @@ import Button from "@mui/material/Button";
 import axios from "axios";
 import { LoaderCircle, Plus, Minus, X, Info } from "lucide-react";
 import { toast } from "react-toastify";
+import { api } from "../API";
 
 export default function BuyComponent({ stock, closeBuy }) {
   const [loading, setLoading] = useState(false);
@@ -27,8 +28,7 @@ export default function BuyComponent({ stock, closeBuy }) {
 
     try {
       setLoading(true);
-
-      const result = await axios.post("https://trading-backend-tf3j.onrender.com/api/v1/orders/placeOrder", {
+      const result = await axios.post(`${api}orders/placeOrder`, {
         quantity: qty,
         symbol: stock.symbol,
         close: stock.close,

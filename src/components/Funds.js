@@ -1,9 +1,18 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { LoaderCircle, Wallet, Plus, Minus, History, IndianRupee, X } from "lucide-react";
+import {
+  LoaderCircle,
+  Wallet,
+  Plus,
+  Minus,
+  History,
+  IndianRupee,
+  X,
+} from "lucide-react";
 import Button from "@mui/material/Button";
 import { PieChart } from "lucide-react";
 import { toast } from "react-toastify";
+import { api } from "../API";
 
 export default function Funds() {
   const [balance, setBalance] = useState(null);
@@ -15,11 +24,16 @@ export default function Funds() {
 
   const getStatusClass = (type) => {
     switch (type) {
-      case "BUY": return "buy";
-      case "ADD": return "add";
-      case "SELL": return "sell";
-      case "WITHDRAW": return "withdraw";
-      default: return "";
+      case "BUY":
+        return "buy";
+      case "ADD":
+        return "add";
+      case "SELL":
+        return "sell";
+      case "WITHDRAW":
+        return "withdraw";
+      default:
+        return "";
     }
   };
 
@@ -27,21 +41,21 @@ export default function Funds() {
   const fetchData = async () => {
     try {
       const [balRes, histRes] = await Promise.all([
-        axios.get(`https://trading-backend-tf3j.onrender.com/api/v1/funds/balance`, {
-          withCredentials: true
+        axios.get(`${api}funds/balance`, {
+          withCredentials: true,
         }),
-        axios.get(`https://trading-backend-tf3j.onrender.com/api/v1/funds/history`, {
-          withCredentials: true
+        axios.get(`${api}funds/history`, {
+          withCredentials: true,
         }),
       ]);
       setBalance(balRes.data.balance || 0);
       setHistory(histRes.data.history || []);
-      if(balRes.error){
+      if (balRes.error) {
         toast.error(balRes.error.message);
-      }  
-      if(histRes.error){
+      }
+      if (histRes.error) {
         toast.error(histRes.error.message);
-      } 
+      }
     } catch (err) {
       console.error("Data fetch error", err);
       toast.error("Failed to fetch wallet data");
@@ -63,10 +77,14 @@ export default function Funds() {
       const type = modalMode.toLowerCase(); // "deposit" or "withdraw"
       const payload = { amount: Number(amount) };
       if (type === "deposit") {
-        const res = await axios.post(`https://trading-backend-tf3j.onrender.com/api/v1/funds/add`, payload, { withCredentials: true });
+        const res = await axios.post(`${api}funds/add`, payload, {
+          withCredentials: true,
+        });
         toast.success(res.data.message || "Funds added successfully!");
       } else {
-        const res = await axios.post(`https://trading-backend-tf3j.onrender.com/api/v1/funds/withdraw`, payload, { withCredentials: true });
+        const res = await axios.post(`${api}funds/withdraw`, payload, {
+          withCredentials: true,
+        });
         toast.success(res.data.message || "Withdrawal successful!");
       }
 
@@ -90,12 +108,13 @@ export default function Funds() {
       currency: "INR",
     }).format(amount);
   };
-  if (loading && balance === null) return (
-    <div className="loader-overlay blur">
-      <LoaderCircle className="spinner" size={48} />
-      <p className="loader-message">Fetching your wallet details...</p>
-    </div>
-  );
+  if (loading && balance === null)
+    return (
+      <div className="loader-overlay blur">
+        <LoaderCircle className="spinner" size={48} />
+        <p className="loader-message">Fetching your wallet details...</p>
+      </div>
+    );
 
   return (
     <div className="funds-wrapper">
@@ -114,12 +133,10 @@ export default function Funds() {
             </div>
             <span>Total Balance</span>
           </div>
-          <div className="balance-amount">
-            {formatINR(balance || 0)}
-          </div>
+          <div className="balance-amount">{formatINR(balance || 0)}</div>
           <div className="wallet-actions">
-            <Button 
-              variant="contained" 
+            <Button
+              variant="contained"
               className="deposit-action-btn"
               onClick={() => {
                 setModalMode("Deposit");
@@ -129,8 +146,8 @@ export default function Funds() {
             >
               Add Funds
             </Button>
-            <Button 
-              variant="contained" 
+            <Button
+              variant="contained"
               className="withdraw-action-btn"
               onClick={() => {
                 setModalMode("Withdraw");
@@ -142,13 +159,16 @@ export default function Funds() {
             </Button>
           </div>
         </div>
-        
+
         <div className="wallet-illustration-card">
-           <PieChart size={120} strokeWidth={1} className="illustration-icon" />
-           <div className="illustration-text">
-              <h4>Safe & Secure</h4>
-              <p>Your funds are protected with bank-grade encryption and real-time monitoring.</p>
-           </div>
+          <PieChart size={120} strokeWidth={1} className="illustration-icon" />
+          <div className="illustration-text">
+            <h4>Safe & Secure</h4>
+            <p>
+              Your funds are protected with bank-grade encryption and real-time
+              monitoring.
+            </p>
+          </div>
         </div>
       </div>
 
@@ -157,7 +177,7 @@ export default function Funds() {
           <History size={20} />
           <h3>Transaction History</h3>
         </div>
-        
+
         <div className="orders-table-container">
           <table className="orders-table">
             <thead>
@@ -184,26 +204,37 @@ export default function Funds() {
                 return (
                   <tr key={h._id}>
                     <td>
-                      <div className={`transaction-type-cell ${getStatusClass(h.type)}`}>
+                      <div
+                        className={`transaction-type-cell ${getStatusClass(h.type)}`}
+                      >
                         <div className="type-icon">
-                          {h.type === "ADD" || h.type === "SELL" ? <Plus size={14} /> : <Minus size={14} />}
+                          {h.type === "ADD" || h.type === "SELL" ? (
+                            <Plus size={14} />
+                          ) : (
+                            <Minus size={14} />
+                          )}
                         </div>
                         <span className="type-text">{h.type}</span>
                       </div>
                     </td>
                     <td>
-                      <span className={`transaction-amount ${h.type === "ADD" || h.type === "SELL" ? "credit" : "debit"}`}>
-                        {h.type === "ADD" || h.type === "SELL" ? '+' : '-'}{formatINR(h.amount)}
+                      <span
+                        className={`transaction-amount ${h.type === "ADD" || h.type === "SELL" ? "credit" : "debit"}`}
+                      >
+                        {h.type === "ADD" || h.type === "SELL" ? "+" : "-"}
+                        {formatINR(h.amount)}
                       </span>
                     </td>
                     <td>
                       {h.symbol ? (
-                         <div className="asset-tag">
-                            <IndianRupee size={12} />
-                            <span>{h.symbol}</span>
-                         </div>
+                        <div className="asset-tag">
+                          <IndianRupee size={12} />
+                          <span>{h.symbol}</span>
+                        </div>
                       ) : (
-                         <span className="status-label-muted">System Transfer</span>
+                        <span className="status-label-muted">
+                          System Transfer
+                        </span>
                       )}
                     </td>
                     <td>
@@ -244,14 +275,16 @@ export default function Funds() {
                 <span className="exchange-label">Wallet</span>
               </div>
             </div>
-            
+
             <div className="fund-modal-body">
               <div className="current-balance-preview">
                 <small>Available Balance</small>
                 <p>{formatINR(balance || 0)}</p>
               </div>
 
-              <div className={`amount-input-wrapper ${modalMode === "Withdraw" && balance < amount ? "error" : ""}`}>
+              <div
+                className={`amount-input-wrapper ${modalMode === "Withdraw" && balance < amount ? "error" : ""}`}
+              >
                 <div className="input-field-group">
                   <span className="currency-symbol">₹</span>
                   <input
@@ -262,34 +295,44 @@ export default function Funds() {
                     autoFocus
                   />
                 </div>
-                
+
                 <div className="quick-amount-chips">
-                  {[1000, 5000, 10000, 25000].map(val => (
-                    <button 
-                      key={val} 
+                  {[1000, 5000, 10000, 25000].map((val) => (
+                    <button
+                      key={val}
                       className="amount-chip"
                       onClick={() => setAmount(val.toString())}
                     >
-                      +₹{val >= 1000 ? `${val/1000}k` : val}
+                      +₹{val >= 1000 ? `${val / 1000}k` : val}
                     </button>
                   ))}
                 </div>
               </div>
-              
+
               {modalMode === "Withdraw" && balance < amount && (
-                <p className="input-error-msg">Insufficient funds for this withdrawal.</p>
+                <p className="input-error-msg">
+                  Insufficient funds for this withdrawal.
+                </p>
               )}
             </div>
 
             <div className="modal-footer">
-              <Button onClick={handleCancel} className="cancel-btn">Cancel</Button>
-              <Button 
+              <Button onClick={handleCancel} className="cancel-btn">
+                Cancel
+              </Button>
+              <Button
                 variant="contained"
                 className={`confirm-btn ${modalMode.toLowerCase()}`}
-                disabled={loading || (modalMode === "Withdraw" && balance < amount)}
+                disabled={
+                  loading || (modalMode === "Withdraw" && balance < amount)
+                }
                 onClick={handleTransaction}
               >
-                {loading ? <LoaderCircle className="spinner" size={18} /> : `Confirm ${modalMode}`}
+                {loading ? (
+                  <LoaderCircle className="spinner" size={18} />
+                ) : (
+                  `Confirm ${modalMode}`
+                )}
               </Button>
             </div>
           </div>
@@ -298,5 +341,3 @@ export default function Funds() {
     </div>
   );
 }
-
-

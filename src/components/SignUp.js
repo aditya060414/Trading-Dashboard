@@ -4,6 +4,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import Button from "@mui/material/Button";
 import { LoaderCircle } from "lucide-react";
+import { api } from "../API";
+
 export default function SignUp() {
   const navigate = useNavigate();
   const [inputValue, setInputValue] = useState({
@@ -34,7 +36,7 @@ export default function SignUp() {
     try {
       setLoader(true);
       const { data } = await axios.post(
-        "https://trading-backend-tf3j.onrender.com/api/v1/auth/signUp",
+        `${api}auth/signUp`,
         {
           ...inputValue,
         },
@@ -51,7 +53,11 @@ export default function SignUp() {
         handleError(message);
       }
     } catch (err) {
-      const errorMsg = err.response?.data?.message || (typeof err.response?.data === 'string' ? err.response.data : null) || err.message || "An error occurred during registration";
+      const errorMsg =
+        err.response?.data?.message ||
+        (typeof err.response?.data === "string" ? err.response.data : null) ||
+        err.message ||
+        "An error occurred during registration";
       handleError(errorMsg);
     } finally {
       setLoader(false);

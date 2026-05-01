@@ -3,9 +3,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Auth";
 import axios from "axios";
-import {  toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { LoaderCircle } from "lucide-react";
-
+import { api } from "../API";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -38,7 +38,7 @@ export default function Login() {
     try {
       setLoader(true);
       const { data } = await axios.post(
-        "https://trading-backend-tf3j.onrender.com/api/v1/auth/login",
+        `${api}auth/login`,
         {
           ...inputValue,
         },
@@ -56,7 +56,13 @@ export default function Login() {
       }
     } catch (error) {
       console.log(error.response?.data?.message || error.response?.data);
-      const errorMsg = error.response?.data?.message || (typeof error.response?.data === 'string' ? error.response.data : null) || error.message || "An error occurred during login";
+      const errorMsg =
+        error.response?.data?.message ||
+        (typeof error.response?.data === "string"
+          ? error.response.data
+          : null) ||
+        error.message ||
+        "An error occurred during login";
       handleError(errorMsg);
     } finally {
       setLoader(false);
@@ -89,7 +95,7 @@ export default function Login() {
             onChange={handleOnChange}
             required
           />
-          <Button type="submit" variant="contained" className="auth-btn-login" >
+          <Button type="submit" variant="contained" className="auth-btn-login">
             {loader ? <LoaderCircle className="spinner" /> : "Login"}
           </Button>
         </form>

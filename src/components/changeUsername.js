@@ -3,7 +3,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { ArrowLeft, Lock, User, Check } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
-
+import { api } from "../API";
 export default function ChangeUsername() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -36,7 +36,7 @@ export default function ChangeUsername() {
     if (!validate()) return;
     setLoader(true);
     try {
-      await axios.patch('https://trading-backend-tf3j.onrender.com/api/v1/update/username', { password, username }, { withCredentials: true });
+      await axios.patch(`${api}update/username`, { password, username }, { withCredentials: true });
       toast.success('Username updated successfully!');
       setPassword(''); setUsername(''); setConfirmUsername('');
       setErrors({});
