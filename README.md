@@ -1,72 +1,96 @@
-# Will be updated soon.
+# MarketEx Dashboard
 
-# Getting Started with Create React App
+Welcome to the **MarketEx Dashboard**, the comprehensive frontend web application for the MarketEx platform. This dashboard serves as the central hub for users to manage their investments, track live market data, execute trades, and monitor their portfolios in real time.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Built with modern web technologies, the dashboard provides a highly responsive, intuitive, and professional trading experience.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## Key Features
 
-### `npm start`
+* **Real-time Market Data:** Live updates for stock prices and market movements utilizing WebSockets.
+* **Advanced Charting:** Interactive candlestick and line charts powered by `lightweight-charts` and `chart.js` for deep technical analysis.
+* **Portfolio Management:** Detailed views of user holdings, funds, and transaction summaries.
+* **Trading Interface:** Seamless buy and sell components to execute orders efficiently.
+* **Custom Watchlists:** Users can create and manage watchlists to keep track of their favorite stocks.
+* **User Authentication:** Secure login, signup, and profile management (username/password changes) features.
+* **Responsive Design:** A polished, user-friendly interface built with Material UI (`@mui/material`) for consistency and responsiveness across devices.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Technology Stack
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+* **Core:** [React 19](https://react.dev/)
+* **Routing:** [React Router DOM](https://reactrouter.com/) for seamless single-page application navigation.
+* **Styling & UI:** [Material UI (MUI)](https://mui.com/) & [Emotion](https://emotion.sh/) for robust component styling, plus [Lucide React](https://lucide.dev/) for iconography.
+* **Charting:** 
+  * [Lightweight Charts](https://tradingview.github.io/lightweight-charts/) (by TradingView)
+  * [Chart.js](https://www.chartjs.org/) & `react-chartjs-2`
+* **Data Fetching:** [Axios](https://axios-http.com/) for REST API communication.
+* **Real-time Communication:** [WebSocket (`ws`)](https://github.com/websockets/ws) for live market feeds.
+* **Notifications:** [React Toastify](https://fkhadra.github.io/react-toastify/) for user-friendly alert messages.
 
-### `npm test`
+## Project Structure
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+The core application logic resides in the `src/` directory.
 
-### `npm run build`
+```text
+src/
+├── components/          # Reusable UI components
+│   ├── AuthLayout.js    # Authentication wrappers
+│   ├── Dashboard.js     # Main dashboard view
+│   ├── CandleChart.js   # Candlestick charting component
+│   ├── Holdings.js      # Portfolio holdings view
+│   ├── WatchList.js     # User watchlist management
+│   ├── BuyComponent.js / SellComponent.js # Order execution
+│   └── ...              # Other core components
+├── API.js               # Centralized API service configuration
+├── Auth.js              # Authentication logic and context
+├── ProtectedRoute.jsx   # Route guards for authenticated views
+├── index.js             # Application entry point
+└── index.css            # Global styling configurations
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Getting Started
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+To get a local copy up and running, follow these simple steps.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Prerequisites
 
-### `npm run eject`
+Ensure you have Node.js and npm installed on your local machine.
+* [Node.js](https://nodejs.org/) (v16 or higher recommended)
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Installation
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+1. **Navigate to the dashboard directory:**
+   ```bash
+   cd dashboard
+   ```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+3. **Set up Environment Variables:**
+   Create a `.env` file in the root of the `dashboard` directory and add the necessary environment variables (e.g., API base URLs, WebSocket endpoints).
 
-## Learn More
+### Running the Application
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+To start the development server:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```bash
+npm start
+```
 
-### Code Splitting
+The application will be available at [http://localhost:3000](http://localhost:3000). The page will automatically reload if you make edits.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### Building for Production
 
-### Analyzing the Bundle Size
+To create an optimized production build:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```bash
+npm run build
+```
 
-### Making a Progressive Web App
+This builds the app for production to the `build` folder, correctly bundling React and optimizing the build for the best performance.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
 
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
