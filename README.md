@@ -6,6 +6,15 @@ Built with modern web technologies, the dashboard provides a highly responsive, 
 
 ---
 
+---
+
+## Live link
+```link
+https://trading-dashboard-v2mi.onrender.com
+```
+
+---
+
 ## Key Features
 
 * **Real-time Market Data:** Live updates for stock prices and market movements utilizing WebSockets.
